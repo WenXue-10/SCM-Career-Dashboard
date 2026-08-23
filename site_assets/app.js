@@ -107,10 +107,21 @@ function openCmp(gi, ci){
   var g = COMPS[gi], c = g.groups[ci];
   var items = [];
   c.name.split(/[、，,]/).forEach(function(n){ n=n.trim(); if(n) items.push(n); });
-  var rows = items.map(function(n){ return '<div class="note-item" onclick="toast(\'🏢 公司详情见正式版\')"><span class="ni-ic">🏢</span>'+esc(n)+'</div>'; }).join("");
+  var rows = items.map(function(n,i){
+    return '<div class="note-item" onclick="openCmpDetail('+gi+','+ci+','+i+')"><span class="ni-ic">🏢</span>'+esc(n)+'<span class="ni-more">详情 →</span></div>';
+  }).join("");
   setModal('<h2>'+esc(g.title)+' · '+esc(c.cat)+'</h2>'
     + '<div class="m-sub">'+esc(c.why||"")+'</div>'
-    + '<div class="m-sec">🏢 公司清单</div>'+rows);
+    + '<div class="m-sec">🏢 公司清单（点开看详情）</div>'+rows);
+}
+function openCmpDetail(gi, ci, i){
+  var c = COMPS[gi].groups[ci];
+  var items = c.name.split(/[、，,]/).map(function(n){ return n.trim(); }).filter(Boolean);
+  var nm = items[i] || c.name;
+  setModal('<h2>🏢 '+esc(nm)+'</h2>'
+    + '<div class="m-sec">📌 所属类别</div><p style="font-size:13.5px">'+esc(COMPS[gi].title)+' · '+esc(c.cat)+'</p>'
+    + '<div class="m-sec">💡 入选理由</div><p style="font-size:13.5px;color:var(--muted)">'+esc(c.why||"（暂无详细理由）")+'</p>'
+    + '<div class="m-sec">📋 说明</div><p style="font-size:12.5px;color:var(--muted)">该公司的详细背调报告，会在该岗位被收录并执行 Skill 2 后自动生成并出现在这里。</p>');
 }
 
 /* ---------- 日报 ---------- */
@@ -201,6 +212,67 @@ function openKbNote(idx){
   var n = KB_FLAT[idx];
   if(!n) return;
   setModal('<h2>'+n.icon+' '+esc(n.title)+'</h2><div style="margin-top:12px" class="note-body">'+(n.html||'<p>暂无内容</p>')+'</div>');
+}
+
+/* ---------- 全局搜索 ---------- */
+function plainText(html){
+  var d = document.createElement("div"); d.innerHTML = html || ""; return (d.textContent||"").replace(/\s+/g," ").trim();
+}
+var GSEARCH_IDX = null, gsList = [];
+function buildSearchIndex(){
+  var idx = [];
+  JOBS.forEach(function(j){
+    idx.push({type:"岗位", icon:"🐾", title: j.company+" · "+j.pos, sub: (j.city+" ｜ "+j.statusTxt+" ｜ 分"+j.score),
+      keys: (j.company+j.pos+j.city).toLowerCase(),
+      open: function(){ closeModal(); go("jobs"); openJob(JOBS.indexOf(j)); }});
+  });
+  var allRes = (RESUMES.general||[]).slice();
+  (RESUMES.custom||[]).forEach(function(cg){ allRes = allRes.concat(cg.items); });
+  allRes.forEach(function(r){
+    idx.push({type:"简历", icon:"📄", title: r.name, sub: r.desc||"", keys: (r.name+(r.desc||"")).toLowerCase(),
+      open: function(){ closeModal(); go("resume"); }});
+  });
+  COMPS.forEach(function(g){ g.groups.forEach(function(c){
+    (c.name||"").split(/[、，,]/).forEach(function(nm){ nm=nm.trim(); if(!nm) return;
+      idx.push({type:"公司", icon:"🐈", title: nm, sub: g.title+" ｜ "+c.cat, keys: (nm+g.title+c.cat).toLowerCase(),
+        open: function(){ closeModal(); go("companies"); }});
+    });
+  });});
+  KBS.forEach(function(k){
+    (k.groups||[{title:"", notes:k.notes||[]}]).forEach(function(g){
+      (g.notes||[]).forEach(function(n){
+        (n.children||[n]).forEach(function(nn){
+          var txt = plainText(nn.html);
+          idx.push({type:"笔记", icon:nn.icon||"📄", title: nn.title, sub: txt.slice(0,60), keys: (nn.title+" "+txt).toLowerCase(),
+            open: function(){ closeModal(); go("knowledge"); }});
+        });
+      });
+    });
+  });
+  return idx;
+}
+function openGlobalSearch(){
+  if(!GSEARCH_IDX) GSEARCH_IDX = buildSearchIndex();
+  setModal('<h2>🔍 全局搜索</h2><div class="m-sub">搜岗位 / 笔记 / 公司 / 简历，全部知识库内容</div>'
+    + '<div class="search" style="margin-bottom:12px"><span>🔍</span><input id="gsInput" placeholder="输入关键词，如：供应链 / 济南 / 比亚迪…" autofocus></div>'
+    + '<div id="gsResults"></div>');
+  var inp = document.getElementById("gsInput");
+  function doSearch(){
+    var q = (inp.value||"").toLowerCase();
+    gsList = q ? GSEARCH_IDX.filter(function(x){ return x.keys.indexOf(q) >= 0; }) : [];
+    var html = gsList.slice(0,30).map(function(x,i){
+      return '<div class="note-item" onclick="gsOpen('+i+')"><span class="ni-ic">'+x.icon+'</span><div style="flex:1;min-width:0"><div style="font-weight:800;font-size:13.5px">'+esc(x.title)+'</div><div style="font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(x.sub)+'</div></div><span style="font-size:11px;color:var(--pink-deep);background:var(--pink-soft);padding:2px 8px;border-radius:20px;flex-shrink:0">'+x.type+'</span></div>';
+    }).join("");
+    document.getElementById("gsResults").innerHTML = q ? (html || '<div style="text-align:center;color:var(--muted);padding:20px">🐾 没有找到相关结果</div>') : '<div style="text-align:center;color:var(--muted);padding:20px">输入关键词开始搜索～</div>';
+  }
+  inp.addEventListener("input", doSearch);
+  inp.addEventListener("keydown", function(e){ if(e.key==="Enter") doSearch(); });
+  setTimeout(function(){ inp.focus(); }, 100);
+  doSearch();
+}
+function gsOpen(i){
+  var x = gsList[i];
+  if(x && x.open) x.open();
 }
 
 /* ---------- 头像 & 背景 ---------- */

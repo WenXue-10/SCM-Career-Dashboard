@@ -1,0 +1,123 @@
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="icon">🐱</div>
+      <div><div class="name">文雪求职小窝</div><div class="sub">🐾 求职全周期 · 供应链</div></div>
+    </div>
+    <div class="nav-item active" data-go="home">🐱 作战看板</div>
+    <div class="nav-item" data-go="jobs">🐾 岗位看板</div>
+    <div class="nav-item" data-go="companies">🐈 目标公司池</div>
+    <div class="nav-item" data-go="timeline">😺 每日日报</div>
+    <div class="nav-item" data-go="resume">📄 简历库</div>
+    <div class="nav-item" data-go="knowledge">📚 知识库</div>
+    <div class="foot">🐾 全站公开 · 由 Codex 自动同步<br>数据实时生成自 Obsidian 知识库</div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <h1 id="pageTitle">🐱 作战看板</h1>
+      <div class="top-right">
+        <div class="sync"><span class="dot"></span><span id="syncText">自动同步</span></div>
+        <div class="avatar" onclick="openPersonalize()" title="换头像 / 换背景"><img id="avatarImg" src="" alt="头像"></div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <section id="view-home" class="view active">
+        <div class="card" style="background:linear-gradient(135deg,rgba(255,240,246,.72),rgba(243,236,255,.72));border:none;padding:16px 20px">
+          <div style="font-size:15px;font-weight:800">🐱 喵～今天也一起加油找工作吧！</div>
+          <div style="font-size:12.5px;color:var(--muted);margin-top:4px">秋招 · 实习 · 春招 全周期进行中 · 每投一份简历，就离理想 offer 更近一步 🐾</div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card p1"><div class="em">🐾</div><div class="lab">已收录岗位</div><div class="num" id="statJobs">0</div></div>
+          <div class="stat-card p2"><div class="em">🐟</div><div class="lab">推荐投递（≥70）</div><div class="num" id="statRec">0</div></div>
+          <div class="stat-card p3"><div class="em">😺</div><div class="lab">面试中</div><div class="num" id="statInt">0</div></div>
+          <div class="stat-card p4"><div class="em">🎉</div><div class="lab">已拿 Offer</div><div class="num" id="statOff">0</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-head">🐾 今日待办 <small>来自每日日报</small></div>
+            <ul class="todo-list" id="todoList"></ul>
+          </div>
+          <div class="card">
+            <div class="card-head">😺 最新日报</div>
+            <div class="mini-tl" id="homeTl"></div>
+            <div style="margin-top:10px"><a class="text-link" data-go="timeline">查看全部日报 →</a></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">🐱 快捷入口</div>
+          <div class="quick-grid">
+            <a data-go="jobs">🐾 岗位看板</a>
+            <a data-go="companies">🐈 公司池</a>
+            <a data-go="resume">📄 简历库</a>
+            <a data-go="knowledge">📚 知识库</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-jobs" class="view">
+        <div class="filterbar">
+          <div class="search"><span>🔍</span><input id="search" placeholder="搜索公司 / 岗位 / 城市…"></div>
+          <div class="chips" id="chips">
+            <span class="chip active" data-f="all">全部</span>
+            <span class="chip" data-f="rec">🐟 推荐</span>
+            <span class="chip" data-f="backup">🗂️ 备选</span>
+            <span class="chip" data-f="done">✅ 已背调</span>
+            <span class="chip" data-f="warn">⚠️ 待核实</span>
+          </div>
+        </div>
+        <div id="jobList" class="job-list"></div>
+      </section>
+
+      <section id="view-companies" class="view">
+        <div class="note">💡 目标公司池按真实口碑筛选：A 级每轮必检、B 级轮换补充；点卡片可看完整清单。</div>
+        <div id="cmpList"></div>
+      </section>
+
+      <section id="view-timeline" class="view">
+        <div class="timeline" id="tlList"></div>
+      </section>
+
+      <section id="view-resume" class="view">
+        <div class="note">📱 手机投简历时直接点「下载 PDF」发给 HR 即可；Word 版也保留。简历和知识库里一样，分成「通用底版」和「各企业定制」两组。</div>
+        <div class="resume-group">
+          <div class="group-head">📁 通用简历（底版） <small>不同求职方向</small></div>
+          <div class="resume-list" id="resumeGeneral"></div>
+        </div>
+        <div class="resume-group">
+          <div class="group-head">📁 各企业定制版 <small>按公司分组 · Skill 3 定制后自动增加</small></div>
+          <div id="resumeCustom"></div>
+          <div class="empty-tip">🐾 以后每执行一次 Skill 3 定制简历，新公司的定制版会自动出现在这里</div>
+        </div>
+      </section>
+
+      <section id="view-knowledge" class="view">
+        <div class="note">🐾 全部文件夹都可以点开看内容，笔记全文自动从知识库同步。</div>
+        <div class="kb-grid" id="kbGrid"></div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <span class="m-close" onclick="closeModal()">✕</span>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <div class="bn-item active" data-go="home"><span class="ic">🐱</span>看板</div>
+  <div class="bn-item" data-go="jobs"><span class="ic">🐾</span>岗位</div>
+  <div class="bn-item" data-go="companies"><span class="ic">🐈</span>公司</div>
+  <div class="bn-item" data-go="timeline"><span class="ic">😺</span>日报</div>
+  <div class="bn-item" data-go="resume"><span class="ic">📄</span>简历</div>
+  <div class="bn-item" data-go="knowledge"><span class="ic">📚</span>知识库</div>
+</nav>
+
+<div id="floats"></div>
+<div class="toast" id="toast"></div>

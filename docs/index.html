@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>文雪求职小窝</title>
+<meta name="theme-color" content="#ffd0e2">
+<style>
+
+:root{
+  --bg:#fff6f9; --card:rgba(255,255,255,.84); --line:#ffdcea;
+  --text:#6b4a5e; --muted:#b48ea3;
+  --pink:#ff7fb0; --pink-deep:#e0558a; --pink-soft:#ffe3ee;
+  --lav:#a78bfa; --lav-soft:#efe8ff;
+  --mint:#34c98e; --mint-soft:#d9f7e9;
+  --peach:#ff9e6d; --peach-soft:#ffe9dc;
+  --sky:#4aa8f0; --sky-soft:#e0f2ff;
+  --sun:#f2b705; --sun-soft:#fff4d6;
+  --gray-soft:#f6eef3;
+  --shadow:0 8px 24px rgba(224,122,166,.14);
+  --shadow-sm:0 4px 14px rgba(224,122,166,.10);
+  --bg-img:none; /* 🖼️ 背景图片：把图片放进网站文件夹后，把 none 改成 url("你的图片名.png") 即可 */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",sans-serif;background:linear-gradient(180deg,rgba(255,247,250,.66),rgba(255,247,250,.78)),var(--bg-img,linear-gradient(180deg,#fff7fa 0%,#f6f0ff 100%));background-size:cover;background-position:center;background-attachment:fixed;color:var(--text);line-height:1.55;min-height:100vh}
+a{color:var(--pink-deep);text-decoration:none}
+.app{display:flex;min-height:100vh}
+/* ===== 桌面侧边栏（白卡片 + 粉粉的） ===== */
+.sidebar{width:236px;flex-shrink:0;margin:16px 0 16px 16px;background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:22px 16px;position:sticky;top:16px;height:calc(100vh - 32px);display:flex;flex-direction:column;gap:4px}
+.sidebar .logo{display:flex;align-items:center;gap:11px;padding:4px 8px 20px;color:var(--text)}
+.logo .icon{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,#ff9ec7,#c9a8ff);display:flex;align-items:center;justify-content:center;font-size:23px;box-shadow:0 6px 16px rgba(255,126,180,.35)}
+.logo .name{font-weight:800;font-size:16px;letter-spacing:.5px}
+.logo .sub{font-size:11px;color:var(--muted)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:18px;cursor:pointer;font-size:14px;color:var(--muted);transition:.15s;user-select:none;font-weight:600}
+.nav-item:hover{background:var(--pink-soft);color:var(--pink-deep)}
+.nav-item.active{background:linear-gradient(135deg,#ff8fb8,#c9a8ff);color:#fff;box-shadow:0 6px 16px rgba(255,126,180,.35)}
+.sidebar .foot{margin-top:auto;font-size:11px;color:var(--muted);padding:12px 8px;line-height:1.7}
+/* ===== 主区 ===== */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,247,250,.74);backdrop-filter:blur(10px);padding:16px 26px;display:flex;align-items:center;gap:12px}
+.topbar h1{font-size:19px;font-weight:800;color:var(--text)}
+.sync{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);background:rgba(255,255,255,.84);border:1px solid var(--line);padding:6px 14px;border-radius:30px;white-space:nowrap;box-shadow:var(--shadow-sm)}
+.sync .dot{width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 3px rgba(52,201,142,.18)}
+.content{padding:22px 26px 40px;max-width:1080px;width:100%;margin:0 auto}
+.view{display:none}
+.view.active{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* ===== 统计卡片（马卡龙渐变） ===== */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat-card{border-radius:24px;padding:16px 18px;box-shadow:var(--shadow-sm);border:1px solid rgba(255,255,255,.6)}
+.stat-card.p1{background:linear-gradient(135deg,rgba(255,227,238,.72),rgba(255,208,226,.72))}
+.stat-card.p2{background:linear-gradient(135deg,rgba(239,232,255,.72),rgba(226,214,255,.72))}
+.stat-card.p3{background:linear-gradient(135deg,rgba(217,247,233,.72),rgba(195,240,221,.72))}
+.stat-card.p4{background:linear-gradient(135deg,rgba(255,233,220,.72),rgba(255,220,200,.72))}
+.stat-card .em{font-size:17px}
+.stat-card .lab{font-size:12.5px;font-weight:600;color:var(--muted);margin-top:2px}
+.stat-card .num{font-size:27px;font-weight:800;margin-top:2px}
+/* ===== 卡片 ===== */
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:18px 20px;box-shadow:var(--shadow-sm);margin-bottom:16px}
+.card-head{font-size:15px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card-head small{font-weight:400;color:var(--muted);font-size:12px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.todo-list{list-style:none}
+.todo-list li{display:flex;gap:10px;padding:9px 2px;border-bottom:1px dashed #ffdcea;font-size:14px;align-items:flex-start}
+.todo-list li:last-child{border-bottom:none}
+.todo-list input{margin-top:3px;accent-color:var(--pink)}
+.mini-tl .tl-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px dashed #ffdcea;font-size:13.5px;color:var(--muted)}
+.mini-tl .tl-item:last-child{border-bottom:none}
+.tl-date{flex-shrink:0;background:var(--pink-soft);color:var(--pink-deep);font-size:12px;font-weight:700;padding:2px 9px;border-radius:20px;height:fit-content}
+.text-link{font-size:13px;color:var(--pink-deep);font-weight:600}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.quick-grid a{display:flex;flex-direction:column;align-items:center;gap:7px;border-radius:20px;padding:16px 8px;font-size:13px;font-weight:700;cursor:pointer;background:rgba(255,227,238,.8);color:var(--pink-deep);border:1px solid #ffd0e2;transition:.15s}
+.quick-grid a:hover{transform:translateY(-2px)}
+/* ===== 筛选 ===== */
+.filterbar{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.search{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.84);border:1px solid var(--line);border-radius:30px;padding:11px 16px;box-shadow:var(--shadow-sm)}
+.search input{border:none;outline:none;flex:1;font-size:14px;background:transparent;color:var(--text)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:13px;padding:7px 15px;border-radius:30px;background:rgba(255,255,255,.84);border:1px solid var(--line);color:var(--muted);cursor:pointer;user-select:none;font-weight:600}
+.chip.active{background:linear-gradient(135deg,#ff8fb8,#c9a8ff);border-color:transparent;color:#fff}
+/* ===== 岗位卡片 ===== */
+.job-list{display:flex;flex-direction:column;gap:12px}
+.job-card{background:rgba(255,255,255,.84);border:1px solid var(--line);border-radius:22px;padding:16px 18px;cursor:pointer;box-shadow:var(--shadow-sm);transition:.15s}
+.job-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#ffc4da}
+.job-top{display:flex;align-items:flex-start;gap:10px}
+.job-title{flex:1;min-width:0}
+.job-title .company{font-weight:800;font-size:16px;display:block;color:var(--text)}
+.job-title .pos{font-size:13.5px;color:var(--muted);display:block;margin-top:2px}
+.badge{flex-shrink:0;font-size:15px;font-weight:800;min-width:46px;text-align:center;padding:6px 10px;border-radius:14px}
+.badge.green{background:var(--mint-soft);color:#1f9d6b}
+.badge.blue{background:var(--sky-soft);color:#1d7fd6}
+.badge.amber{background:var(--sun-soft);color:#c98a04}
+.badge.red{background:var(--peach-soft);color:#e2654a}
+.badge.gray{background:var(--gray-soft);color:var(--muted)}
+.job-meta{font-size:13px;color:var(--muted);margin:8px 0 10px}
+.job-tags{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.status{font-size:12px;padding:3px 11px;border-radius:20px;font-weight:700}
+.status.done{background:var(--mint-soft);color:#1f9d6b}
+.status.warn{background:var(--sun-soft);color:#c98a04}
+.status.backup{background:var(--gray-soft);color:var(--muted)}
+.status.new{background:var(--sky-soft);color:#1d7fd6}
+.status.interview{background:var(--peach-soft);color:#e2654a}
+.status.dead{background:var(--pink-soft);color:var(--pink-deep)}
+.level{font-size:12px;color:var(--muted);background:var(--gray-soft);padding:3px 11px;border-radius:20px}
+.link-btn{margin-left:auto;font-size:12.5px;color:var(--pink-deep);background:var(--pink-soft);padding:5px 13px;border-radius:20px;cursor:pointer;font-weight:600}
+/* ===== 公司池 ===== */
+.cmp-sec{margin-bottom:18px}
+.cmp-sec h3{font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cmp-card{background:rgba(255,255,255,.84);border:1px solid var(--line);border-radius:20px;padding:14px 16px;box-shadow:var(--shadow-sm);cursor:pointer;transition:.15s}
+.cmp-card:hover{transform:translateY(-2px);border-color:#ffc4da}
+.cmp-card .cn{font-weight:800;font-size:14.5px}
+.cmp-card .why{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.6}
+.cmp-card .more{font-size:12px;color:var(--pink-deep);margin-top:6px;font-weight:600}
+.removed{background:rgba(255,233,220,.75);border-color:#ffd0bd}
+.removed .cn{color:#d9583f}
+/* ===== 日报时间线 ===== */
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,#ffb3d1,#c9b8ff)}
+.tl-card{position:relative;background:rgba(255,255,255,.84);border:1px solid var(--line);border-radius:20px;padding:14px 16px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.tl-card::before{content:"";position:absolute;left:-23px;top:18px;width:11px;height:11px;border-radius:50%;background:linear-gradient(135deg,#ff8fb8,#c9a8ff);border:2px solid #fff;box-shadow:0 0 0 3px #ffd0e2}
+.tl-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.tl-title{font-weight:800;font-size:14px}
+.tl-badge{font-size:11.5px;padding:2px 10px;border-radius:20px;background:var(--pink-soft);color:var(--pink-deep);font-weight:700}
+.tl-body{font-size:13.5px;color:var(--muted)}
+.tl-body li{margin:4px 0 4px 18px}
+/* ===== 知识库 ===== */
+.note{font-size:12.5px;color:var(--muted);background:rgba(255,255,255,.84);border:1px solid var(--line);border-radius:16px;padding:11px 15px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.kb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kb-card{border-radius:22px;padding:16px;cursor:pointer;transition:.15s;border:1px solid rgba(255,255,255,.7);box-shadow:var(--shadow-sm)}
+.kb-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.kb-card.c1{background:linear-gradient(135deg,rgba(255,227,238,.72),rgba(255,208,226,.72))}
+.kb-card.c2{background:linear-gradient(135deg,rgba(239,232,255,.72),rgba(226,214,255,.72))}
+.kb-card.c3{background:linear-gradient(135deg,rgba(217,247,233,.72),rgba(195,240,221,.72))}
+.kb-card.c4{background:linear-gradient(135deg,rgba(255,233,220,.72),rgba(255,220,200,.72))}
+.kb-card.c5{background:linear-gradient(135deg,rgba(224,242,255,.72),rgba(207,233,255,.72))}
+.kb-card .ic{font-size:21px}
+.kb-card .kn{font-weight:800;font-size:14px;margin-top:6px}
+.kb-card .kd{font-size:12.5px;color:var(--muted);margin-top:3px}
+.kb-card .ncount{display:inline-block;margin-top:9px;font-size:11.5px;background:rgba(255,255,255,.75);color:var(--pink-deep);padding:3px 10px;border-radius:20px;font-weight:700}
+/* 简历分组 */
+.resume-group{margin-bottom:20px}
+.group-head{font-size:14.5px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.group-head small{font-weight:400;color:var(--muted);font-size:12px}
+.company-group{border:2px dashed var(--line);border-radius:20px;padding:14px;background:rgba(255,255,255,.5);margin-bottom:10px}
+.cg-name{font-size:13.5px;font-weight:800;margin-bottom:10px;color:var(--pink-deep);display:flex;align-items:center;gap:6px}
+.empty-tip{font-size:12.5px;color:var(--muted);background:rgba(255,255,255,.6);border:1px dashed var(--line);border-radius:16px;padding:12px 14px;text-align:center}
+/* ===== 简历库 ===== */
+.resume-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.resume-card{background:rgba(255,255,255,.84);border:1px solid var(--line);border-radius:22px;padding:16px 18px;cursor:pointer;box-shadow:var(--shadow-sm);transition:.15s;display:flex;gap:14px;align-items:center}
+.resume-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#ffc4da}
+.resume-ic{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,#ff9ec7,#c9a8ff);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+.resume-card .rn{font-weight:800;font-size:14.5px}
+.resume-card .rd{font-size:12.5px;color:var(--muted);margin-top:2px}
+.resume-card .act{margin-left:auto;display:flex;flex-direction:column;gap:6px}
+.pill{font-size:12px;font-weight:700;padding:6px 12px;border-radius:20px;text-align:center;cursor:pointer;white-space:nowrap}
+.pill.g{background:linear-gradient(135deg,#ff8fb8,#c9a8ff);color:#fff}
+.pill.o{background:var(--pink-soft);color:var(--pink-deep)}
+/* ===== 头像 & 个性化 ===== */
+.top-right{display:flex;align-items:center;gap:10px;margin-left:auto}
+.top-right .sync{margin-left:0}
+.avatar{width:38px;height:38px;border-radius:50%;padding:2px;background:linear-gradient(135deg,#ff8fb8,#c9a8ff);cursor:pointer;flex-shrink:0;box-shadow:0 4px 12px rgba(224,122,166,.3);transition:.15s}
+.avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid #fff;display:block}
+.avatar:hover{transform:scale(1.08)}
+.pick-sec{margin-bottom:16px}
+.pick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pick-item{border-radius:16px;overflow:hidden;cursor:pointer;border:3px solid transparent;background:rgba(255,255,255,.84);box-shadow:var(--shadow-sm);transition:.15s}
+.pick-item:hover{transform:translateY(-3px)}
+.pick-item.active{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,127,176,.25)}
+.pick-item img{width:100%;height:80px;object-fit:cover;display:block}
+.pick-item .pn{font-size:11px;text-align:center;padding:5px 2px;color:var(--muted);font-weight:600}
+.pick-item.av img{border-radius:50%;width:66px;height:66px;margin:10px auto 0}
+.pick-item.av .pn{padding:6px 2px 9px}
+.pick-hint{font-size:11.5px;color:var(--muted);margin:-6px 0 10px}
+@media(max-width:820px){
+  .avatar{width:34px;height:34px}
+  .pick-grid{grid-template-columns:repeat(2,1fr)}
+}
+/* ===== 弹窗 ===== */
+.modal-backdrop{position:fixed;inset:0;background:rgba(107,74,94,.45);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center;z-index:50}
+.modal-backdrop.show{display:flex}
+.modal{background:rgba(255,255,255,.97);width:100%;max-width:640px;max-height:88vh;overflow-y:auto;border-radius:28px 28px 0 0;padding:24px 22px 30px;animation:up .28s ease}
+@keyframes up{from{transform:translateY(46px);opacity:0}to{transform:none;opacity:1}}
+.modal h2{font-size:19px;margin-bottom:4px}
+.modal .m-sub{font-size:13px;color:var(--muted);margin-bottom:14px}
+.m-close{float:right;font-size:20px;color:var(--muted);cursor:pointer;line-height:1;background:var(--gray-soft);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.m-sec{font-size:14px;font-weight:800;margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.m-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.m-table td{padding:8px 10px;border-bottom:1px solid #ffdcea}
+.m-table td:last-child{text-align:right;font-weight:700}
+.m-links{display:flex;gap:8px;flex-wrap:wrap}
+.m-links a{font-size:12.5px;background:var(--pink-soft);color:var(--pink-deep);padding:8px 15px;border-radius:20px;cursor:pointer;border:1px solid #ffd0e2;font-weight:700}
+.note-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:16px;background:var(--gray-soft);margin-bottom:8px;cursor:pointer;transition:.15s;font-size:13.5px;font-weight:600}
+.note-item:hover{background:var(--pink-soft)}
+.note-item .ni-ic{font-size:17px}
+.note-item .ni-more{margin-left:auto;color:var(--pink-deep);font-size:12px}
+.pdf-ph{background:linear-gradient(135deg,#ffe3ee,#efe8ff);border:2px dashed #ffb3d1;border-radius:18px;height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:13px;gap:8px;margin-bottom:14px}
+/* ===== 底部导航（手机） ===== */
+.bottom-nav{display:none;position:fixed;left:12px;right:12px;bottom:12px;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);z-index:40}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 0;font-size:10px;color:var(--muted);cursor:pointer;user-select:none;font-weight:600}
+.bn-item .ic{font-size:18px}
+.bn-item.active{color:var(--pink-deep)}
+.bn-item.active .ic{transform:scale(1.12)}
+/* toast */
+.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;font-size:13px;padding:10px 18px;border-radius:30px;opacity:0;transition:.25s;z-index:60;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* ===== 小动画 ===== */
+@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+.stat-card,.job-card,.cmp-card,.kb-card,.resume-card,.tl-card,.quick-grid a{animation:pop .5s cubic-bezier(.34,1.56,.64,1) both}
+.stat-card:nth-child(2){animation-delay:.06s}
+.stat-card:nth-child(3){animation-delay:.12s}
+.stat-card:nth-child(4){animation-delay:.18s}
+.cmp-card:nth-child(2){animation-delay:.05s}
+.cmp-card:nth-child(3){animation-delay:.10s}
+.cmp-card:nth-child(4){animation-delay:.15s}
+.kb-card:nth-child(2){animation-delay:.04s}
+.kb-card:nth-child(3){animation-delay:.08s}
+.kb-card:nth-child(4){animation-delay:.12s}
+.kb-card:nth-child(5){animation-delay:.16s}
+.kb-card:nth-child(6){animation-delay:.20s}
+.kb-card:nth-child(7){animation-delay:.24s}
+.kb-card:nth-child(8){animation-delay:.28s}
+.kb-card:nth-child(9){animation-delay:.32s}
+.resume-card:nth-child(2){animation-delay:.06s}
+.resume-card:nth-child(3){animation-delay:.12s}
+.resume-card:nth-child(4){animation-delay:.18s}
+.resume-card:nth-child(5){animation-delay:.24s}
+.job-card:nth-child(2){animation-delay:.04s}
+.job-card:nth-child(3){animation-delay:.08s}
+.job-card:nth-child(4){animation-delay:.12s}
+.job-card:nth-child(5){animation-delay:.16s}
+.job-card:nth-child(6){animation-delay:.20s}
+/* logo 图标轻轻跳动 */
+.logo .icon{animation:floaty 2.6s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+/* 同步小绿点呼吸 */
+.sync .dot{animation:pulse 2s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,201,142,.4)}70%{box-shadow:0 0 0 9px rgba(52,201,142,0)}100%{box-shadow:0 0 0 0 rgba(52,201,142,0)}}
+/* 悬停小抖动 */
+.nav-item:hover .ic,.job-card:hover .badge,.kb-card:hover .ic{animation:wiggle .45s ease}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg)}75%{transform:rotate(14deg)}}
+/* 底部导航选中图标弹一下 */
+.bn-item.active .ic{animation:bnpop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes bnpop{0%{transform:scale(1)}40%{transform:scale(1.35) rotate(-8deg)}100%{transform:scale(1.12)}}
+/* 漂浮的小爱心/星星 */
+#floats{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:5;overflow:hidden}
+#floats span{position:absolute;bottom:-46px;animation:floatUp linear infinite;opacity:0}
+@keyframes floatUp{0%{transform:translateY(0) rotate(0);opacity:0}12%{opacity:.85}100%{transform:translateY(-112vh) rotate(24deg);opacity:0}}
+/* 弹窗内容弹入 */
+.modal .m-sec{animation:pop .4s ease both}
+@media (prefers-reduced-motion: reduce){
+  .stat-card,.job-card,.cmp-card,.kb-card,.resume-card,.tl-card,.quick-grid a{animation:none}
+  .logo .icon,.sync .dot,#floats span{animation:none}
+}
+/* ===== 响应式 ===== */
+@media(max-width:820px){
+  .sidebar{display:none}
+  .bottom-nav{display:flex}
+  .content{padding:14px 14px 100px}
+  .topbar{padding:12px 14px}
+  .topbar h1{font-size:16px}
+  .sync{font-size:11px;padding:5px 10px}
+  .stat-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .two-col{grid-template-columns:1fr}
+  .quick-grid{grid-template-columns:repeat(2,1fr)}
+  .cmp-grid{grid-template-columns:1fr}
+  .kb-grid{grid-template-columns:1fr 1fr}
+  .resume-list{grid-template-columns:1fr}
+  .job-card{padding:14px}
+  .resume-card .act{flex-direction:row}
+}
+@media(min-width:821px){
+  .modal{border-radius:28px;margin-bottom:8vh}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="icon">🐱</div>
+      <div><div class="name">文雪求职小窝</div><div class="sub">🐾 求职全周期 · 供应链</div></div>
+    </div>
+    <div class="nav-item active" data-go="home">🐱 作战看板</div>
+    <div class="nav-item" data-go="jobs">🐾 岗位看板</div>
+    <div class="nav-item" data-go="companies">🐈 目标公司池</div>
+    <div class="nav-item" data-go="timeline">😺 每日日报</div>
+    <div class="nav-item" data-go="resume">📄 简历库</div>
+    <div class="nav-item" data-go="knowledge">📚 知识库</div>
+    <div class="foot">🐾 全站公开 · 由 Codex 自动同步<br>数据实时生成自 Obsidian 知识库</div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <h1 id="pageTitle">🐱 作战看板</h1>
+      <div class="top-right">
+        <div class="sync"><span class="dot"></span><span id="syncText">自动同步</span></div>
+        <div class="avatar" onclick="openPersonalize()" title="换头像 / 换背景"><img id="avatarImg" src="" alt="头像"></div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <section id="view-home" class="view active">
+        <div class="card" style="background:linear-gradient(135deg,rgba(255,240,246,.72),rgba(243,236,255,.72));border:none;padding:16px 20px">
+          <div style="font-size:15px;font-weight:800">🐱 喵～今天也一起加油找工作吧！</div>
+          <div style="font-size:12.5px;color:var(--muted);margin-top:4px">秋招 · 实习 · 春招 全周期进行中 · 每投一份简历，就离理想 offer 更近一步 🐾</div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card p1"><div class="em">🐾</div><div class="lab">已收录岗位</div><div class="num" id="statJobs">0</div></div>
+          <div class="stat-card p2"><div class="em">🐟</div><div class="lab">推荐投递（≥70）</div><div class="num" id="statRec">0</div></div>
+          <div class="stat-card p3"><div class="em">😺</div><div class="lab">面试中</div><div class="num" id="statInt">0</div></div>
+          <div class="stat-card p4"><div class="em">🎉</div><div class="lab">已拿 Offer</div><div class="num" id="statOff">0</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-head">🐾 今日待办 <small>来自每日日报</small></div>
+            <ul class="todo-list" id="todoList"></ul>
+          </div>
+          <div class="card">
+            <div class="card-head">😺 最新日报</div>
+            <div class="mini-tl" id="homeTl"></div>
+            <div style="margin-top:10px"><a class="text-link" data-go="timeline">查看全部日报 →</a></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">🐱 快捷入口</div>
+          <div class="quick-grid">
+            <a data-go="jobs">🐾 岗位看板</a>
+            <a data-go="companies">🐈 公司池</a>
+            <a data-go="resume">📄 简历库</a>
+            <a data-go="knowledge">📚 知识库</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-jobs" class="view">
+        <div class="filterbar">
+          <div class="search"><span>🔍</span><input id="search" placeholder="搜索公司 / 岗位 / 城市…"></div>
+          <div class="chips" id="chips">
+            <span class="chip active" data-f="all">全部</span>
+            <span class="chip" data-f="rec">🐟 推荐</span>
+            <span class="chip" data-f="backup">🗂️ 备选</span>
+            <span class="chip" data-f="done">✅ 已背调</span>
+            <span class="chip" data-f="warn">⚠️ 待核实</span>
+          </div>
+        </div>
+        <div id="jobList" class="job-list"></div>
+      </section>
+
+      <section id="view-companies" class="view">
+        <div class="note">💡 目标公司池按真实口碑筛选：A 级每轮必检、B 级轮换补充；点卡片可看完整清单。</div>
+        <div id="cmpList"></div>
+      </section>
+
+      <section id="view-timeline" class="view">
+        <div class="timeline" id="tlList"></div>
+      </section>
+
+      <section id="view-resume" class="view">
+        <div class="note">📱 手机投简历时直接点「下载 PDF」发给 HR 即可；Word 版也保留。简历和知识库里一样，分成「通用底版」和「各企业定制」两组。</div>
+        <div class="resume-group">
+          <div class="group-head">📁 通用简历（底版） <small>不同求职方向</small></div>
+          <div class="resume-list" id="resumeGeneral"></div>
+        </div>
+        <div class="resume-group">
+          <div class="group-head">📁 各企业定制版 <small>按公司分组 · Skill 3 定制后自动增加</small></div>
+          <div id="resumeCustom"></div>
+          <div class="empty-tip">🐾 以后每执行一次 Skill 3 定制简历，新公司的定制版会自动出现在这里</div>
+        </div>
+      </section>
+
+      <section id="view-knowledge" class="view">
+        <div class="note">🐾 全部文件夹都可以点开看内容，笔记全文自动从知识库同步。</div>
+        <div class="kb-grid" id="kbGrid"></div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <span class="m-close" onclick="closeModal()">✕</span>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <div class="bn-item active" data-go="home"><span class="ic">🐱</span>看板</div>
+  <div class="bn-item" data-go="jobs"><span class="ic">🐾</span>岗位</div>
+  <div class="bn-item" data-go="companies"><span class="ic">🐈</span>公司</div>
+  <div class="bn-item" data-go="timeline"><span class="ic">😺</span>日报</div>
+  <div class="bn-item" data-go="resume"><span class="ic">📄</span>简历</div>
+  <div class="bn-item" data-go="knowledge"><span class="ic">📚</span>知识库</div>
+</nav>
+
+<div id="floats"></div>
+<div class="toast" id="toast"></div>
+<script>
+window.SITE_DATA = {
+ "updated": "2026-08-23 21:22",
+ "stats": {
+  "jobs": 10,
+  "rec": 4,
+  "interview": 0,
+  "offer": 0
+ },
+ "todo": [
+  "尚未选 Skill 3 岗位",
+  "下次运行先按记忆文件与汇总表去重"
+ ],
+ "jobs": [
+  {
+   "company": "乖宝宠物",
+   "pos": "供应链管理（管培）",
+   "city": "聊城（山东）",
+   "salary": "6K-8K/月",
+   "deadline": "未披露（发布批次为2026届，需核实2027届）",
+   "score": 73,
+   "level": "🗂️ 备选（届别待确认）",
+   "status": "warn",
+   "statusTxt": "⚠️ 届别待确认",
+   "link": "https://neau.bysjy.com.cn/detail/job?id=2591486&career_id=662309",
+   "summary": "供应链管培生：参与精益生产、数字化供应链升级、智能化仓储物流等关键项目，由供应链高管/资深经理带教；要求物流管理/工业工程/统计等相关专业、CET-4 以上、在校成绩前 40%；6K-8K/月，聊城；岗前培训、岗位晋升、带薪年假、交通/餐补、五险一金。",
+   "detail": [
+    [
+     ":---",
+     ":---:",
+     ":---:"
+    ],
+    [
+     "专业匹配",
+     "30",
+     "30"
+    ],
+    [
+     "技能匹配",
+     "25",
+     "8"
+    ],
+    [
+     "氛围与成长",
+     "15",
+     "15"
+    ],
+    [
+     "地点匹配",
+     "10",
+     "5"
+    ],
+    [
+     "薪资匹配",
+     "10",
+     "5"
+    ],
+    [
+     "行业偏好",
+     "10",
+     "10"
+    ]
+   ],
+   "note": "- 来源：东北农业大学就业网（乖宝宠物校招） - 建议：属山东本地 A 级目标公司 + 宠物行业加分，接近推荐线；投递前先核实 2027 届开放情况与薪资/住宿安排 - ⚠️ 届别：该 JD 为 2026 届批次（2025-09-09 发布），与 2027 届不符；暂不视为可投机会，需等乖宝 2027 届开放",
+   "jd": {
+    "html": "<h1>材料：乖宝宠物 供应链管培生（供应链管理）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：东北农业大学就业网（https://neau.bysjy.com.cn/detail/job?id=2591486&amp;career_id=662309）\n发布日期：2025-09-09（来源页标注，2026 届批次）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<ul>\n<li>岗位：供应链管培生（供应链方向）；薪资 6K-8K/月；城市：山东聊城（聊城市经济技术开发区牡丹江路 8 号）；学历：本科及以上</li>\n<li>岗位职责：参与精益生产、数字化供应链升级、智能化仓储物流等关键项目；由供应链部门高管及资深经理带教</li>\n<li>岗位要求：食品工程、机械工程/制造、工业工程、机电工程、物流管理、统计学、电气工程、能源动力等相关专业；英文 CET-4 级以上；在校成绩前 40% 以内</li>\n<li>福利：岗前培训、岗位晋升、带薪年假、交通补助、餐补、五险一金</li>\n<li>公司简介：乖宝宠物食品集团股份有限公司（2006 年成立），宠物食品研发/生产/销售（麦富迪等品牌），国家级出口宠物食品质量安全示范区龙头企业，产品销往欧美、日韩等 30 多个国家，客户含沃尔玛、斯马克、品谱等；国内/泰国双生产基地，HACCP/FSSC22000/BRCGS 等认证</li>\n<li>备注：该发布批次面向 2026 届（发布 2025-09-09），届别与投递截止需以官方最新发布为准（投递入口为校园宣讲/校招平台）</li>\n</ul>\n<h2>链接</h2>\n<p>https://neau.bysjy.com.cn/detail/job?id=2591486&amp;career_id=662309</p>"
+   }
+  },
+  {
+   "company": "可口可乐",
+   "pos": "供应链计划（管理培训生）",
+   "city": "未披露",
+   "salary": "14万/年（约11.6K/月）",
+   "deadline": "未披露",
+   "score": 65,
+   "level": "低",
+   "status": "done",
+   "statusTxt": "✅ 已背调",
+   "link": "https://sdwz.91job.org.cn/recruitment/jobDetails?zpgwid=1000000000728732&dwid=661005",
+   "summary": "可口可乐2027校园招聘——供应链计划管理培训生，年薪14万元；可学习现代供应链计划工作核心体系、流程与实践方法（快消外企）。",
+   "detail": [
+    [
+     ":---",
+     ":---:",
+     ":---:"
+    ],
+    [
+     "专业匹配",
+     "30",
+     "30"
+    ],
+    [
+     "技能匹配",
+     "25",
+     "0"
+    ],
+    [
+     "氛围与成长",
+     "15",
+     "15"
+    ],
+    [
+     "地点匹配",
+     "10",
+     "0"
+    ],
+    [
+     "薪资匹配",
+     "10",
+     "10"
+    ],
+    [
+     "行业偏好",
+     "10",
+     "10"
+    ]
+   ],
+   "note": "- 来源：江苏24365就业平台（2026-07-17）",
+   "report": {
+    "html": "<h1>岗位背调分析报告：可口可乐 供应链计划管理培训生（2027校招）</h1>\n<blockquote>\n<p>公司：可口可乐 ｜ 岗位：供应链计划管理培训生（2027校招） ｜ 城市：未披露 ｜ 报告日期：2026-08-23</p>\n</blockquote>\n<h2>一、公司基本面</h2>\n<p>全球快消饮料巨头（外企），2027校招·供应链计划管理培训生，年薪14万。</p>\n<p><strong>财务数据</strong>：可口可乐中国为太古/中粮等装瓶体系运营，具体该岗位财务数据未披露。</p>\n<p><strong>业务结构</strong>：饮料制造与装瓶、供应链计划、物流配送；快消行业（行业偏好加分）。</p>\n<h2>二、岗位专项深度调研</h2>\n<p>供应链计划管培：学习现代供应链计划核心体系、流程与实践，轮岗培养。挑战：快消需求波动大、SKU多、促销复杂，计划精度要求高。</p>\n<h2>三、公司值不值得去</h2>\n<ul>\n<li>职场口碑/培训：外企快消、管培体系完善、双休普遍；具体工作城市未披露（需在投递前确认）。</li>\n<li>综合评分：综合 ★★★☆☆（3.5/5）：外企快消+计划对口；城市/地点未披露拉低确定性。</li>\n</ul>\n<h2>四、针对文雪的风险和顾虑</h2>\n<ul>\n<li>工作城市未披露，若为上海/北京需评估通勤与成本；英语要求可能高于CET-4水平，需确认。</li>\n<li>需在面试/投递前核实：具体工作城市、薪资结构、加班与调休政策、英语要求。</li>\n</ul>\n<h2>五、信息溯源</h2>\n<ul>\n<li>基于公开检索（高校就业网/就业平台转载的官方校招信息）；未披露项标注「未收录/未披露」；本报告为 Skill 7 自动试跑生成，细节以官方 JD 为准。</li>\n</ul>\n<h2>六、面试前准备</h2>\n<ul>\n<li>5 个切入点：公司业务/供应链体系/该岗位计划逻辑/数据工具/快消或工业特点。</li>\n<li>6 个反问：工作城市与base、计划岗位节奏、S&amp;OP流程、系统工具(SAP/APS)、导师带教、晋升路径。</li>\n<li>入职核实清单：薪资结构、加班政策、社保公积金、试用期、合同年限、住宿/房补/班车。</li>\n</ul>",
+    "pdf": "files/g_背调报告_可口可乐_供应链计划管理培训生_2027校招.pdf"
+   },
+   "jd": {
+    "html": "<h1>材料：可口可乐 供应链计划管理培训生（2027校招）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：江苏24365就业平台\n发布日期：2026-07-17（来源页标注）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<p>可口可乐2027校园招聘——供应链计划管理培训生，年薪14万元；可学习现代供应链计划工作核心体系、流程与实践方法（快消外企）。</p>\n<h2>链接</h2>\n<p>https://sdwz.91job.org.cn/recruitment/jobDetails?zpgwid=1000000000728732&amp;dwid=661005</p>"
+   }
+  },
+  {
+   "company": "安踏集团",
+   "pos": "采购",
+   "city": "未披露",
+   "salary": "未披露",
+   "deadline": "未披露",
+   "score": 45,
+   "level": "低",
+   "status": "backup",
+   "statusTxt": "🗂️ 备选",
+   "link": "https://utibet.xzeduc.cn/campus/view/id/465239/mark/utibet",
+   "summary": "安踏集团2027届校园招聘·供应链族：物流运营岗、采购岗、采购管理岗、采购营运岗、生管岗等（体育用品/零售龙头）。",
+   "detail": [
+    [
+     ":---",
+     ":---:",
+     ":---:"
+    ],
+    [
+     "专业匹配",
+     "30",
+     "30"
+    ],
+    [
+     "技能匹配",
+     "25",
+     "0"
+    ],
+    [
+     "氛围与成长",
+     "15",
+     "0"
+    ],
+    [
+     "地点匹配",
+     "10",
+     "0"
+    ],
+    [
+     "薪资匹配",
+     "10",
+     "5"
+    ],
+    [
+     "行业偏好",
+     "10",
+     "10"
+    ]
+   ],
+   "note": "- 来源：高校就业网转载（2026-08-20）",
+   "jd": {
+    "html": "<h1>材料：安踏集团 供应链族采购岗（2027校招）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：高校就业网（转载）\n发布日期：2026-08-20（转载页标注）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<p>安踏集团2027届校园招聘·供应链族：物流运营岗、采购岗、采购管理岗、采购营运岗、生管岗等（体育用品/零售龙头）。</p>\n<h2>链接</h2>\n<p>https://utibet.xzeduc.cn/campus/view/id/465239/mark/utibet</p>"
+   }
+  },
+  {
+   "company": "宝洁",
+   "pos": "供应链管理（训练营/技术育才项目）",
+   "city": "苏州（太仓）/广州",
+   "salary": "未披露（训练营项目制）",
+   "deadline": "未披露（以宝洁官方招聘页为准）",
+   "score": 73,
+   "level": "中",
+   "status": "warn",
+   "statusTxt": "⚠️ 背调待补充",
+   "link": "https://s.niuqizp.com/j_schedule_%E2%80%9C%E5%AE%9D%E6%B4%81%E5%A4%AA%E4%BB%93%E5%B7%A5%E5%8E%82%E8%B4%A8%E9%87%8F%E7%AE%A1%E7%90%86%28RPA%E2%80%9C/?ur=article",
+   "summary": "宝洁供应链管理部技术育才项目（2022 年启动）：为本科及以上（2027 年 6 月-2028 年 12 月毕业）提供供应链前沿项目实战（AI Agent/RPA/Python、自动排产算法等）；泛理工科背景，欢迎编程/数据分析/数字建模/工业工程实践；苏州（太仓）/广州；优秀学员获校招绿卡（2 年有效）直通全职管理岗终面。",
+   "detail": [
+    [
+     ":---",
+     ":---:",
+     ":---:"
+    ],
+    [
+     "专业匹配",
+     "30",
+     "30"
+    ],
+    [
+     "技能匹配",
+     "25",
+     "8"
+    ],
+    [
+     "氛围与成长",
+     "15",
+     "15"
+    ],
+    [
+     "地点匹配",
+     "10",
+     "5"
+    ],
+    [
+     "薪资匹配",
+     "10",
+     "5"
+    ],
+    [
+     "行业偏好",
+     "10",
+     "10"
+    ]
+   ],
+   "note": "- 来源：牛企直聘聚合「2026 宝洁供应链训练营」校招公告 - 建议：A 级外企高匹配；训练营为项目制，通过后获校招绿卡直通终面，需尽早关注官方网申入口 - ✅ 届别：面向 2027 年 6 月-2028 年 12 月毕业生，与 2027 届符合；网申入口以宝洁官方为准",
+   "jd": {
+    "html": "<h1>材料：宝洁 供应链训练营（供应链管理）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：牛企直聘聚合「2026 宝洁供应链训练营」校招公告\n发布日期：未确定（来源页未标注明确发布日期）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<ul>\n<li>项目：宝洁供应链训练营（宝洁供应链管理部自 2022 年启动的技术育才项目，为大学生提供供应链前沿项目实战机会；优秀学员可获宝洁供应链管理部校招绿卡，有效期 2 年，直通全职管理岗终面）</li>\n<li>面向对象：2027 年 6 月至 2028 年 12 月毕业的本科及以上学历（本/硕/博），泛理工科专业背景；欢迎具备编程/数据分析/数字建模/工业工程等相关实践经验的同学投递</li>\n<li>招聘城市：苏州（太仓工厂）、广州</li>\n<li>项目内容示例：太仓工厂生产管理 AI Agent 搭建（Dify 平台）；质量管理（技术标准自动化转换生成）RPA/Python 等 AI Agent 搭建；包装生产线基于启发式算法的自动排产系统等</li>\n<li>项目亮点：参与 AI 驱动的全球供应链前沿命题（需求预测、自动化场景延伸、包装设计与优化）；与全球顶尖供应链团队协同、黄金技能培训；优秀学员可获校招绿卡直通全职管理岗终面</li>\n<li>宝洁背景：1837 年创立，业务覆盖全球 180+ 国家；Gartner 全球供应链大师级企业（截至 2025 年 15 度入选，连续 11 年获大师级最高荣誉）</li>\n<li>备注：为「训练营/项目制」机会（非直接全职岗），网申时间以宝洁官方招聘页面为准（需授权/需核实）</li>\n</ul>\n<h2>链接</h2>\n<p>https://s.niuqizp.com/j_schedule_%E2%80%9C%E5%AE%9D%E6%B4%81%E5%A4%AA%E4%BB%93%E5%B7%A5%E5%8E%82%E8%B4%A8%E9%87%8F%E7%AE%A1%E7%90%86%28RPA%E2%80%9C/?ur=article</p>"
+   }
+  },
+  {
+   "company": "山东华东风机",
+   "pos": "生产计划",
+   "city": "济南（章丘）",
+   "salary": "6000-8000元/月",
+   "deadline": "未披露",
+   "score": 45,
+   "level": "低",
+   "status": "backup",
+   "statusTxt": "🗂️ 备选",
+   "link": "http://www.jnzqrc.com/job2901804140.shtml",
+   "summary": "山东华东风机有限公司·生产计划员：6000-8000元/月，应届毕业生、本科，提供食宿、五险一金；工作地济南章丘（本地）。",
+   "detail": [
+    [
+     ":---",
+     ":---:",
+     ":---:"
+    ],
+    [
+     "专业匹配",
+     "30",
+     "30"
+    ],
+    [
+     "技能匹配",
+     "25",
+     "0"
+    ],
+    [
+     "氛围与成长",
+     "15",
+     "0"
+    ],
+    [
+     "地点匹配",
+     "10",
+     "10"
+    ],
+    [
+     "薪资匹配",
+     "10",
+     "0"
+    ],
+    [
+     "行业偏好",
+     "10",
+     "5"
+    ]
+   ],
+   "note": "- 来源：章丘人才网（2026-08-23）",
+   "jd": {
+    "html": "<h1>材料：山东华东风机 生产计划员</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：章丘人才网\n发布日期：未确定（来源页未标注明确发布日期）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<p>山东华东风机有限公司·生产计划员：6000-8000元/月，应届毕业生、本科，提供食宿、五险一金；工作地济南章丘（本地）。</p>\n<h2>链接</h2>\n<p>http://www.jnzqrc.com/job2901804140.shtml</p>"
+   }
+  },
+  {
+   "company": "施耐德电气",
+   "pos": "供应链计划（新星计划）",
+   "city": "北京/上海/无锡/厦门/珠海/武汉/广州/西安等",
+   "salary": "未披露",
+   "deadline": "未披露",
+   "score": 73,
+   "level": "中",
+   "status": "done",
+   "statusTxt": "✅ 已背调",
+   "link": "https://job.lzu.edu.cn/html/74/article/2026/91085.html",
+   "summary": "2027届秋招·供应链新星计划：培养具备专业能力、数字化素养的供应链人才；热招岗位含供应链计划员、采购工程师、质量工程师、自动化工程师、工艺工程师等；面向2026~2027届海内外应届毕业生；工作城市北京/上海/无锡/厦门/珠海/武汉/广州/西安等。",
+   "detail": [
+    [
+     ":---",
+     ":---:",
+     ":---:"
+    ],
+    [
+     "专业匹配",
+     "30",
+     "30"
+    ],
+    [
+     "技能匹配",
+     "25",
+     "8"
+    ],
+    [
+     "氛围与成长",
+     "15",
+     "15"
+    ],
+    [
+     "地点匹配",
+     "10",
+     "10"
+    ],
+    [
+     "薪资匹配",
+     "10",
+     "5"
+    ],
+    [
+     "行业偏好",
+     "10",
+     "5"
+    ]
+   ],
+   "note": "- 来源：兰州大学就业网转载（2026-08-20）",
+   "report": {
+    "html": "<h1>岗位背调分析报告：施耐德电气 供应链计划员（供应链新星计划）</h1>\n<blockquote>\n<p>公司：施耐德电气 ｜ 岗位：供应链计划员（供应链新星计划） ｜ 城市：北京/上海/无锡/厦门/珠海/武汉/广州/西安等 ｜ 报告日期：2026-08-23</p>\n</blockquote>\n<h2>一、公司基本面</h2>\n<p>全球能源管理与自动化领域巨头（世界500强），法资外企，2027届秋招·供应链新星计划热招中。</p>\n<p><strong>财务数据</strong>：施耐德电气全球营收约340亿欧元（2024）；中国为全球第二大市场。具体中国区应届生薪酬未披露。</p>\n<p><strong>业务结构</strong>：能源管理、工业自动化、楼宇自动化、数据中心、智能电网等，供应链岗位覆盖计划、采购、物流、质量。</p>\n<h2>二、岗位专项深度调研</h2>\n<p>供应链计划员：负责需求/供应计划平衡、S&amp;OP、库存与交付管理；新星计划含系统化轮岗与导师制。挑战：需求波动大、跨部门协同多、需数字化工具（SAP/APS）支撑。</p>\n<h2>三、公司值不值得去</h2>\n<ul>\n<li>职场口碑/培训：外企口碑好、培训体系完善（新星计划），双休普遍可保证；城市可选北京/上海/无锡/厦门/珠海等。</li>\n<li>综合评分：综合 ★★★★☆（4/5）：外企+计划+培训体系加分；城市与薪资待确认。</li>\n</ul>\n<h2>四、针对文雪的风险和顾虑</h2>\n<ul>\n<li>地点多为北上广深等一线/新一线，文雪偏好济南/青岛；需在面试确认具体base与通勤/房补。</li>\n<li>需在面试/投递前核实：具体工作城市、薪资结构、加班与调休政策、英语要求。</li>\n</ul>\n<h2>五、信息溯源</h2>\n<ul>\n<li>基于公开检索（高校就业网/就业平台转载的官方校招信息）；未披露项标注「未收录/未披露」；本报告为 Skill 7 自动试跑生成，细节以官方 JD 为准。</li>\n</ul>\n<h2>六、面试前准备</h2>\n<ul>\n<li>5 个切入点：公司业务/供应链体系/该岗位计划逻辑/数据工具/快消或工业特点。</li>\n<li>6 个反问：工作城市与base、计划岗位节奏、S&amp;OP流程、系统工具(SAP/APS)、导师带教、晋升路径。</li>\n<li>入职核实清单：薪资结构、加班政策、社保公积金、试用期、合同年限、住宿/房补/班车。</li>\n</ul>",
+    "pdf": "files/g_背调报告_施耐德电气_供应链计划员_供应链新星计划.pdf"
+   },
+   "jd": {
+    "html": "<h1>材料：施耐德电气 供应链计划员（供应链新星计划）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：兰州大学就业网（转载）\n发布日期：2026-08-20（转载页标注）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<p>2027届秋招·供应链新星计划：培养具备专业能力、数字化素养的供应链人才；热招岗位含供应链计划员、采购工程师、质量工程师、自动化工程师、工艺工程师等；面向2026~2027届海内外应届毕业生；工作城市北京/上海/无锡/厦门/珠海/武汉/广州/西安等。</p>\n<h2>链接</h2>\n<p>https://job.lzu.edu.cn/html/74/article/2026/91085.html</p>"
+   }
+  },
+  {
+   "company": "无锡先导智能",
+   "pos": "供应链（集团战略管培）",
+   "city": "无锡",
+   "salary": "22万/年",
+   "deadline": "未披露",
+   "score": 45,
+   "level": "低",
+   "status": "backup",
+   "statusTxt": "🗂️ 备选",
+   "link": "https://m.yingjiesheng.com/job-008-034-282.html",
+   "summary": "无锡先导智能2027届校招·供应链集团战略管培生，年薪22万；面向27届应届或1年经验职场新锐；专业方向物流管理与工程自动化（锂电/智能制造龙头）。",
+   "detail": [
+    [
+     ":---",
+     ":---:",
+     ":---:"
+    ],
+    [
+     "专业匹配",
+     "30",
+     "30"
+    ],
+    [
+     "技能匹配",
+     "25",
+     "0"
+    ],
+    [
+     "氛围与成长",
+     "15",
+     "0"
+    ],
+    [
+     "地点匹配",
+     "10",
+     "0"
+    ],
+    [
+     "薪资匹配",
+     "10",
+     "10"
+    ],
+    [
+     "行业偏好",
+     "10",
+     "5"
+    ]
+   ],
+   "note": "- 来源：应届生求职网（2026-08-19）",
+   "jd": {
+    "html": "<h1>材料：无锡先导智能 供应链集团战略管培生（2027校招）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：应届生求职网\n发布日期：2026-08-19（来源页标注）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<p>无锡先导智能2027届校招·供应链集团战略管培生，年薪22万；面向27届应届或1年经验职场新锐；专业方向物流管理与工程自动化（锂电/智能制造龙头）。</p>\n<h2>链接</h2>\n<p>https://m.yingjiesheng.com/job-008-034-282.html</p>"
+   }
+  },
+  {
+   "company": "比亚迪",
+   "pos": "供应链计划（产能规划、供需平衡）",
+   "city": "济南",
+   "salary": "8-13K/月（补充信息，JD未标注）",
+   "deadline": "未披露",
+   "score": 78,
+   "level": "中",
+   "status": "new",
+   "statusTxt": "📮 待投递",
+   "link": "https://job.byd.com",
+   "summary": "- 岗位：计划专员（2027届应届生），部门：汽车动力总成；方向：产能规划、供需平衡-电控济南 - 工作地点：济南市；发布日期：2026-08-20 - 职责： 1. 分析历史数据与市场趋势，结合客户需求、库存状况及产能限制，制定主生产计划，确保订单交付率 2. 细化每日/每周生产排程或项目里程碑计划，合理分配人力、设备和物料资源 3. 根据物料特性、采购周期和需求波动，动态调整安全库存水位 4. 分析计划执行中的瓶颈问题，提出流程改进建议，提升供应链响应速度和效率 - 要求：掌握计划原理（供应链管理优先）；较强的数据敏感度和逻辑分析能力；了解精益生产优先；本科；CET-4；供应链管理、物流管",
+   "detail": [
+    [
+     ":---",
+     ":---:",
+     ":---:"
+    ],
+    [
+     "专业匹配",
+     "30",
+     "30"
+    ],
+    [
+     "技能匹配",
+     "25",
+     "8"
+    ],
+    [
+     "氛围与成长",
+     "15",
+     "15"
+    ],
+    [
+     "地点匹配",
+     "10",
+     "10"
+    ],
+    [
+     "薪资匹配",
+     "10",
+     "10"
+    ],
+    [
+     "行业偏好",
+     "10",
+     "5"
+    ]
+   ],
+   "note": "- 2027届秋招正式岗；济南本地，无需住宿补贴 - ✅ 已完成：Skill 1 评分（78 分/中）→ Skill 2 背调 → Skill 3 简历定制 - 📮 待投递：简历已就绪；下一步：投递 / 执行 Skill 4 面试备考；面试时核实制造端加班节奏",
+   "report": {
+    "html": "<h1>岗位背调分析报告</h1>\n<blockquote>\n<p><strong>报告性质</strong>：内部使用 · 求职调研<br />\n<strong>公司</strong>：比亚迪（BYD，002594.SZ）<br />\n<strong>岗位</strong>：计划专员（2027届应届生）· 汽车动力总成 · 产能规划/供需平衡-电控济南<br />\n<strong>城市</strong>：济南（济阳区/起步区）<br />\n<strong>报告日期</strong>：2026-08-23  </p>\n</blockquote>\n<hr />\n<h1>一、公司基本面</h1>\n<h2>1.1 一句话简介</h2>\n<p>全球新能源汽车销量第一的制造业龙头，业务覆盖汽车、动力电池、电子、半导体、轨道交通与光伏储能。</p>\n<h2>1.2 财务数据（2025年报）</h2>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: left;\">指标</th>\n<th style=\"text-align: center;\">数值</th>\n<th style=\"text-align: center;\">同比</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: left;\">营业收入</td>\n<td style=\"text-align: center;\"><strong>8039.65 亿元</strong></td>\n<td style=\"text-align: center;\">+3.46%</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">归母净利润</td>\n<td style=\"text-align: center;\"><strong>326.19 亿元</strong></td>\n<td style=\"text-align: center;\">-18.97%</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">扣非净利润</td>\n<td style=\"text-align: center;\">294.46 亿元</td>\n<td style=\"text-align: center;\">—</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">基本每股收益</td>\n<td style=\"text-align: center;\">3.58 元</td>\n<td style=\"text-align: center;\">—</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">员工规模</td>\n<td style=\"text-align: center;\">86.96 万人（2024 年末 96.88 万）</td>\n<td style=\"text-align: center;\">净减少约 10 万</td>\n</tr>\n</tbody>\n</table>\n<h2>1.3 业务结构</h2>\n<p>整车（第十一事业部等）｜动力总成（第十四事业部/原弗迪动力：电机、电控、发动机、电驱、车桥）｜电池（弗迪电池）｜电子｜半导体｜光伏储能｜轨道交通。2025 年 12 月组织架构调整，撤销第十三事业部（车灯）。</p>\n<blockquote>\n<p>📌 <strong>核心结论</strong>：体量全球第一、现金流与研发投入雄厚（研发投入远超净利润），但 2025 年出现上市以来首次大规模减员（约 -10 万人）且利润同比下滑，属\"龙头扩张放缓、内部提效\"阶段。</p>\n<p>✅ <strong>推荐点</strong>：济南基地为山东重要产能基地（起步区\"汽车城\"），电控业务落地济南，岗位属地稳定、本地通勤。\n⚠️ <strong>需要注意</strong>：减员主体虽是生产人员（-9.72 万，占 97.9%），但需在面试中确认计划岗所在部门编制与稳定性。</p>\n</blockquote>\n<h1>二、岗位专项深度调研</h1>\n<h2>2.1 JD 翻译成人话</h2>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: left;\">JD 原文</th>\n<th style=\"text-align: left;\">人话解读</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: left;\">分析历史数据与市场趋势，制定主生产计划</td>\n<td style=\"text-align: left;\">用历史销量/需求数据做产能-需求平衡，排定生产量，核心是\"别缺货也别积压\"</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">细化日/周生产排程，分配人力设备物料</td>\n<td style=\"text-align: left;\">把计划落到产线每天/每周，协调人、机、料，执行导向、琐碎但关键</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">动态调整安全库存水位</td>\n<td style=\"text-align: left;\">根据物料采购周期和需求波动，管库存水位，是供应链计划核心技能</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">分析计划执行瓶颈，提流程改进</td>\n<td style=\"text-align: left;\">用数据找瓶颈、提优化建议，数据敏感度是加分项</td>\n</tr>\n</tbody>\n</table>\n<h2>2.2 岗位挑战</h2>\n<ol>\n<li>产线计划节奏快、需求波动大（新能源车销量波动），要在缺货与积压之间反复权衡；</li>\n<li>与生产、采购、销售多部门博弈，沟通协调量大，但计划岗以数据说话，可扬长避短；</li>\n<li>需熟悉 ERP/APS 等系统与物料主数据，数据准确性决定计划质量；</li>\n<li>制造端若赶产量，计划岗可能被牵连进加班节奏（需面试核实）。</li>\n</ol>\n<h2>2.3 晋升路径（推测）</h2>\n<p>计划专员 → 资深计划/计划主管 → 计划经理/供应链经理；或横向转需求计划、库存计划、供应链分析岗。\n标注：<strong>推测</strong>，基于行业惯例与比亚迪公开培养体系（事业部轮岗 + 明日之星）。</p>\n<h1>三、公司值不值得去</h1>\n<h2>3.1 多维度评估</h2>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: left;\">维度</th>\n<th style=\"text-align: left;\">情况</th>\n<th style=\"text-align: left;\">评价</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: left;\">职场口碑</td>\n<td style=\"text-align: left;\">分化明显：研发/职能端\"双休基本能保证、调休规范、加班补贴透明\"；制造/产线端口碑偏累</td>\n<td style=\"text-align: left;\">⚠️ 部门差异大</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">加班强度</td>\n<td style=\"text-align: left;\">口碑两极：有\"月均加班 20-40 小时相对佛系\"，也有\"每天加班两小时起、周末也要加\"（产线/计划员）</td>\n<td style=\"text-align: left;\">⚠️ 需面试核实</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">薪酬福利</td>\n<td style=\"text-align: left;\">济南计划专员公开标注 8-13K/月；五险二金、带薪年假、通勤班车、宿舍/住房保障</td>\n<td style=\"text-align: left;\">✅ 达标</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">裁员历史</td>\n<td style=\"text-align: left;\">2025 年末较 2024 年末净减员约 10 万（主要生产人员），官方年报口径，可靠度高</td>\n<td style=\"text-align: left;\">⚠️ 关注</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">培训体系</td>\n<td style=\"text-align: left;\">\"明日之星\"应届生训练营（百天）、导师辅导、脱产带薪培训、轮岗</td>\n<td style=\"text-align: left;\">✅ 加分</td>\n</tr>\n</tbody>\n</table>\n<h2>3.2 综合评分</h2>\n<blockquote>\n<p>❌ <strong>劝退点</strong>：若面试确认该部门常态化加班（产线计划岗风险偏高），则与文雪\"拒绝 996、偏好从容\"冲突，建议直接降级。\n📌 <strong>核心结论</strong>：岗位内容高度对口、济南本地、薪资达标、培训完善 → 综合 <strong>★★★★☆（4/5）</strong>，前提是面试核实加班节奏；若加班确认偏重则降至 ★★★☆☆。</p>\n</blockquote>\n<h1>四、针对文雪的风险和顾虑</h1>\n<h2>4.1 制造端加班强度不确定</h2>\n<p><strong>为什么是问题</strong>：文雪拒绝 996、偏好从容节奏，产线计划岗加班风险高于研发岗。\n<strong>如何验证</strong>：面试直问\"部门平均下班时间/加班频率/调休政策\"；脉脉/牛客找同事业部员工确认。</p>\n<h2>4.2 2025 年首次大规模减员 + 利润下滑</h2>\n<p><strong>为什么是问题</strong>：大厂\"提效收缩\"期，新人的编制稳定性与培养资源可能受影响。\n<strong>如何验证</strong>：问 HR 该岗位是新增编制还是补员、部门近一年人员流动率。</p>\n<h2>4.3 国内民企大厂 vs 外企优先偏好</h2>\n<p><strong>为什么是问题</strong>：文雪公司类型排序为外企＞成长型中厂＞大厂，比亚迪属第三档。\n<strong>如何验证</strong>：自问对该岗位的内容吸引力是否足以覆盖公司类型偏好；面试了解团队氛围是否\"狼性\"。</p>\n<h2>4.4 无大厂实习，面试易被质疑</h2>\n<p><strong>为什么是问题</strong>：985 专业对口但缺大厂履历，计划岗面试官可能追问实践。\n<strong>如何验证</strong>：主动呈现课程项目（4.5 万条数据分析 + 选址路径优化模型）与用友 U8+ 全流程实操，证明\"上手快\"。</p>\n<h2>4.5 \"精益生产\"与计划原理深度</h2>\n<p><strong>为什么是问题</strong>：JD 明确\"了解精益生产者优先\"，文雪课程有覆盖但非专精。\n<strong>如何验证</strong>：面试前补精益生产（看板/JIT/节拍）概念，准备一个结合案例的理解。</p>\n<h2>4.6 工作语言与系统环境</h2>\n<p><strong>为什么是问题</strong>：大厂系统/文档可能含英文，文雪英语仅 CET-4。\n<strong>如何验证</strong>：面试问\"日常工作语言、系统界面语言、是否有英文汇报\"。</p>\n<blockquote>\n<p>⚠️ <strong>额外关注</strong>：面经显示比亚迪校招一面会问父母情况、期望薪资、是否独生子女等个人问题，需提前准备得体回答；济南基地具体办公点（起步区/济阳）通勤距离与班车需确认。</p>\n</blockquote>\n<h1>五、信息溯源</h1>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: left;\">信息</th>\n<th style=\"text-align: left;\">来源类型</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: left;\">2025 营收 8039.65 亿 / 净利 326.19 亿 / 每股 3.58 元</td>\n<td style=\"text-align: left;\">公开检索：中证报、上证报、证券之星（2026-03 年报报道）</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">员工 86.96 万，较上年 -10 万，生产人员为主</td>\n<td style=\"text-align: left;\">公开检索：新浪财经、安徽广播电台等（2026-03/04，年报口径）</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">第十四事业部（动力总成）员工 5 万+、专利 2200+</td>\n<td style=\"text-align: left;\">公开检索：定西政府网、济南新闻 e23（2024）</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">济南基地 / 起步区\"汽车城\"、济阳配套</td>\n<td style=\"text-align: left;\">公开检索：人民网山东、新华网山东（2025-04）</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">计划专员济南 8-13K/月</td>\n<td style=\"text-align: left;\">公开检索：招聘平台标注（今日招聘/宝鸡人才网）</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">双休基本保证/调休规范（研发端）、明日之星训练营、五险二金</td>\n<td style=\"text-align: left;\">公开检索：员工论坛、汽车之家、国科大就业网</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">加班两极口碑、计划员加班、面经流程（笔试→群面→二面→终面、问个人情况）</td>\n<td style=\"text-align: left;\">公开检索：豆瓣、知乎、牛客、WonderCV 面经（2023-2026）</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">岗位职责、要求、济南市、投递限制</td>\n<td style=\"text-align: left;\">基于 JD 文件提取（比亚迪 2-1/2-2 PDF 截图）</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">晋升路径</td>\n<td style=\"text-align: left;\">推测（基于行业惯例与比亚迪公开培养体系）</td>\n</tr>\n</tbody>\n</table>\n<blockquote>\n<p>未披露项：具体岗位投递截止、试用期薪资结构、电控济南基地确切办公地址 → 标注「未收录/未披露」。</p>\n</blockquote>\n<h1>六、面试前准备</h1>\n<h2>6.1 五个\"我很懂你们\"切入点</h2>\n<ol>\n<li>比亚迪 2025 年全球新能源销量第一、营收 8039 亿，济南基地是山东产能重心（起步区\"汽车城\"）；</li>\n<li>汽车动力总成（第十四事业部/原弗迪动力）电机、电控、发动机全链条自研自制，电控业务落地济南；</li>\n<li>\"明日之星\"应届生训练营百天培养 + 导师辅导 + 轮岗，应届生成长路径清晰；</li>\n<li>新能源车需求波动大，主生产计划/供需平衡/安全库存是供应链提效关键，数据敏感度正是该岗要的；</li>\n<li>JD 点名\"精益生产优先\"，可从看板/JIT/节拍切入，展示对制造计划的理解。</li>\n</ol>\n<h2>6.2 六个高质量反问</h2>\n<ol>\n<li>计划专员典型的一天/一周工作节奏？与产线如何协同？</li>\n<li>新人培训与带教安排？有导师制吗？</li>\n<li>部门加班与调休政策？月末/旺季的节奏如何？</li>\n<li>该岗位 3 年内晋升通道？计划岗转需求计划/供应链分析的机会？</li>\n<li>主要使用的系统工具（SAP/ERP/APS/Excel）？数据工作占比多大？</li>\n<li>济南电控基地该业务的重点方向与产能规划？</li>\n</ol>\n<h2>6.3 入职核实清单</h2>\n<p>薪资结构（基本工资/绩效/加班费计算基数）｜加班政策（调休 or 加班费、周末）｜社保公积金基数与比例｜试用期时长与薪资｜合同年限｜宿舍/班车/住房补贴｜具体办公地点与通勤｜是否需进产线/车间｜培训与考核方式。</p>\n<hr />\n<p><em>报告结束 · 内部使用，请勿外传</em></p>",
+    "doc": "files/f1_背调报告-比亚迪-计划专员（产能规划、供需平衡-电控济南）.docx",
+    "pdf": "files/f2_背调报告-比亚迪-计划专员（产能规划、供需平衡-电控济南）.pdf"
+   },
+   "resume": {
+    "doc": "files/f3_文雪_比亚迪_计划专员（产能规划、供需平衡-电控济南）.docx",
+    "pdf": "files/f4_文雪_比亚迪_计划专员（产能规划、供需平衡-电控济南）.pdf"
+   },
+   "jd": {
+    "pdf": null,
+    "pdfs": [
+     "files/f5_JD-比亚迪-计划专员-2026-08-20-part1.pdf",
+     "files/f6_JD-比亚迪-计划专员-2026-08-20-part2.pdf"
+    ],
+    "html": "<h1>材料：比亚迪-计划专员 JD</h1>\n<blockquote>\n<p>类型：JD（招聘页截图 PDF，共 2 页）\n原始文件名：比亚迪2-1.pdf、比亚迪2-2.pdf（用户提供）\n发布日期：2026-08-20（官网页面标注）\n归档日期：2026-08-20</p>\n</blockquote>\n<h2>内容要点</h2>\n<ul>\n<li>岗位：计划专员（2027届应届生），部门：汽车动力总成；方向：产能规划、供需平衡-电控济南</li>\n<li>工作地点：济南市；发布日期：2026-08-20</li>\n<li>职责：\n  1. 分析历史数据与市场趋势，结合客户需求、库存状况及产能限制，制定主生产计划，确保订单交付率\n  2. 细化每日/每周生产排程或项目里程碑计划，合理分配人力、设备和物料资源\n  3. 根据物料特性、采购周期和需求波动，动态调整安全库存水位\n  4. 分析计划执行中的瓶颈问题，提出流程改进建议，提升供应链响应速度和效率</li>\n<li>要求：掌握计划原理（供应链管理优先）；较强的数据敏感度和逻辑分析能力；了解精益生产优先；本科；CET-4；供应链管理、物流管理、统计学或相关专业优先</li>\n<li>提示：每人最多可投递 3 个岗位，同一时段仅 1 个岗位进入招聘流程，优先考虑第一志愿</li>\n</ul>"
+   }
+  },
+  {
+   "company": "赛轮集团",
+   "pos": "需求计划/供需平衡",
+   "city": "青岛",
+   "salary": "未披露",
+   "deadline": "未披露",
+   "score": 65,
+   "level": "低",
+   "status": "backup",
+   "statusTxt": "🗂️ 备选",
+   "link": "https://m.yingjiesheng.com/job-007-625-247.html",
+   "summary": "负责需求预测与预测模型、供需平衡协调、库存预警与高/临期库存管理；要求工业工程/计算机/数学/统计学/供应链管理，英语口语优先，了解Python/C等基础编程，具备逻辑分析与项目计划能力；工作地青岛（轮胎行业A股上市公司）。",
+   "detail": [
+    [
+     ":---",
+     ":---:",
+     ":---:"
+    ],
+    [
+     "专业匹配",
+     "30",
+     "30"
+    ],
+    [
+     "技能匹配",
+     "25",
+     "15"
+    ],
+    [
+     "氛围与成长",
+     "15",
+     "0"
+    ],
+    [
+     "地点匹配",
+     "10",
+     "10"
+    ],
+    [
+     "薪资匹配",
+     "10",
+     "5"
+    ],
+    [
+     "行业偏好",
+     "10",
+     "5"
+    ]
+   ],
+   "note": "- 来源：应届生求职网转前程无忧（2026-06-03）",
+   "jd": {
+    "html": "<h1>材料：赛轮集团 需求计划管理岗（J15721）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：应届生求职网（转前程无忧）\n发布日期：2026-06-03（来源页标注）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<p>负责需求预测与预测模型、供需平衡协调、库存预警与高/临期库存管理；要求工业工程/计算机/数学/统计学/供应链管理，英语口语优先，了解Python/C等基础编程，具备逻辑分析与项目计划能力；工作地青岛（轮胎行业A股上市公司）。</p>\n<h2>链接</h2>\n<p>https://m.yingjiesheng.com/job-007-625-247.html</p>"
+   }
+  },
+  {
+   "company": "迪卡侬",
+   "pos": "物流供应链（管培）",
+   "city": "武汉等（需核实）",
+   "salary": "未披露",
+   "deadline": "未披露",
+   "score": 60,
+   "level": "中",
+   "status": "backup",
+   "statusTxt": "🗂️ 备选",
+   "link": "https://m.gongzuo365.com/zhaopin/002-4412334.htm",
+   "summary": "物流供应链管培生（未来物流部门经理）：本科、不限经验，物流供应链/工业工程等专业；迪卡侬仓储配送体系（武汉），面经反馈面试效率高、体验正面；中国区含 3 个物流园区、4 个自有工厂、11 个工业采购办公室。",
+   "detail": [
+    [
+     ":---",
+     ":---:",
+     ":---:"
+    ],
+    [
+     "专业匹配",
+     "30",
+     "30"
+    ],
+    [
+     "技能匹配",
+     "25",
+     "0"
+    ],
+    [
+     "氛围与成长",
+     "15",
+     "10"
+    ],
+    [
+     "地点匹配",
+     "10",
+     "5"
+    ],
+    [
+     "薪资匹配",
+     "10",
+     "5"
+    ],
+    [
+     "行业偏好",
+     "10",
+     "10"
+    ]
+   ],
+   "note": "- 来源：工作365 转载（职位 009561）+ 牛客面经 - 建议：60 分备选；先核实是否 2027 届校招批次及山东/就近城市是否有岗，再决定是否投递",
+   "jd": {
+    "html": "<h1>材料：迪卡侬 物流供应链管培生（物流供应链）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：工作365 招聘信息转载；牛客网校招面经\n发布日期：未确定（转载未标注明确发布日期）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<ul>\n<li>岗位：物流供应链管培生（未来的物流部门经理），湖北武汉（迪卡侬仓储配送），职位编号 009561</li>\n<li>学历：本科；不限经验；物流供应链、工业工程等相关专业，有志于物流行业发展</li>\n<li>面经参考：迪卡侬物流供应链管培生校招面试约两周内完成三轮（群面 + 三对一终面），整体体验正面、效率高</li>\n<li>迪卡侬背景：全球最大体育用品零售商之一；中国设 4 个自有工厂、3 个物流园区、11 个工业采购办公室、品牌中心，200 家实体门店；多元化职业发展路径、赋能管理/培训体系、全产业链工作机会</li>\n<li>备注：转载信息未标注校招/社招批次与届别；招聘城市、薪资、投递截止需以迪卡侬官方招聘为准（需授权/需核实）</li>\n</ul>\n<h2>链接</h2>\n<p>https://m.gongzuo365.com/zhaopin/002-4412334.htm</p>"
+   }
+  }
+ ],
+ "companies": [
+  {
+   "title": "🅰️ A 级 · 每轮必检",
+   "groups": [
+    {
+     "cat": "山东本地龙头",
+     "name": "海尔智家、海信集团、赛轮集团、威高集团、乖宝宠物、中宠股份",
+     "why": "地点加分；海尔/海信 2027 届校招含供应链管培与供应链管理类岗位；赛轮青岛需求计划岗双休不加班口碑好；乖宝/中宠为宠物食品龙头，契合「宠物」行业加分"
+    },
+    {
+     "cat": "外企快消/零售",
+     "name": "宝洁、联合利华、雀巢、亿滋、达能、可口可乐、百事、沃尔玛/山姆、迪卡侬",
+     "why": "行业加分 + 外企氛围；宝洁供应链为 Gartner 供应链大师级；联合利华/沃尔玛管培口碑好（联合利华加班少）；迪卡侬物流供应链管培面经正面"
+    },
+    {
+     "cat": "口碑外企（计划/供应链）",
+     "name": "施耐德电气、ABB、西门子",
+     "why": "施耐德 2027 秋招「供应链新星计划」含济南，弹性工作制、六险一金；ABB 五天八小时+30 天全薪假期、供应链岗口碑 4.7；西门子供应链岗 4.0+"
+    }
+   ]
+  },
+  {
+   "title": "🅱️ B 级 · 轮换补充",
+   "groups": [
+    {
+     "cat": "新能源/汽车",
+     "name": "比亚迪、宁德时代、阳光电源、远景能源",
+     "why": "2027 届校招均有供应链/运营类岗位；阳光电源/远景有供应链专场；宁德时代薪资高但产线岗强度大，投递时避开一线交付岗"
+    },
+    {
+     "cat": "制造业外企",
+     "name": "博世、大众/奥迪",
+     "why": "平台大、培训体系好；博世薪资平均线但学习机会多"
+    },
+    {
+     "cat": "物流/供应链服务",
+     "name": "顺丰、DHL、京东物流",
+     "why": "顺丰 2027「新鹰计划」含仓储管理岗；DHL 供应链管培；京东物流新锐之星（加班较多，可作备选）"
+    },
+    {
+     "cat": "零售电商中厂",
+     "name": "安踏、美团",
+     "why": "安踏供应链族 2027 校招（12-22K，含济南/青岛）；美团食杂零售管培（快驴/小象超市供应链方向）"
+    }
+   ]
+  },
+  {
+   "title": "🚫 已剔除（口碑/强度不符）",
+   "groups": [
+    {
+     "cat": "已剔除",
+     "name": "歌尔股份",
+     "why": "网络口碑「管理混乱、加班无加班费、单休」为主"
+    },
+    {
+     "cat": "已剔除",
+     "name": "隆基绿能",
+     "why": "网络口碑「内部管理、组织架构妥协」负面较多"
+    },
+    {
+     "cat": "已剔除",
+     "name": "拼多多",
+     "why": "强度 11-11-6、月工时 300+，触发「拒绝 996」红线"
+    },
+    {
+     "cat": "已剔除",
+     "name": "**京东物流（管培/一线）**：口碑「卷、9105」，仅作一般备选不优先",
+     "why": ""
+    },
+    {
+     "cat": "已剔除",
+     "name": "豪迈集团",
+     "why": "单休、加班多，与「拒绝单休/996」不符"
+    },
+    {
+     "cat": "已剔除",
+     "name": "九阳股份",
+     "why": "应届/仓储岗薪资偏低（4.8-5K）"
+    },
+    {
+     "cat": "已剔除",
+     "name": "华熙生物",
+     "why": "管理类薪资 7-9K 偏低，口碑「机构臃肿、山头林立」"
+    },
+    {
+     "cat": "已剔除",
+     "name": "优衣库 UMC",
+     "why": "偏门店一线零售经营，与「偏后台/避免强社交」不符"
+    }
+   ]
+  }
+ ],
+ "timeline": [
+  {
+   "date": "2026-08-23",
+   "title": "Skill 7 试运行 · 补录",
+   "items": [
+    "新增 6 岗并评分：施耐德 73 / 可口可乐 65 / 赛轮 65 / 无锡先导 45 / 山东华东风机 45 / 安踏 45",
+    "背调 2 份：施耐德 ★★★★☆、可口可乐 ★★★☆☆（补链接）",
+    "待办：尚未选 Skill 3 岗位；下次运行先按记忆文件与汇总表去重"
+   ]
+  },
+  {
+   "date": "2026-08-23",
+   "title": "Skill 7 自动运行",
+   "items": [
+    "新增 3 岗并评分：乖宝宠物 73（✅推荐）/ 宝洁供应链训练营 73（✅推荐）/ 迪卡侬 60（🗂️备选）",
+    "修正：乖宝宠物为 2026 届批次（2025-09-09 发布）→ 状态改 ⚠️ 届别待确认（降为备选）；乖宝/宝洁背调报告未写入 → 状态改 ⚠️ 背调待补充",
+    "背调 2 份：乖宝宠物、宝洁（均 ★★★★☆；薪资/地点/届别待线下核实）",
+    "本轮检索 10 次覆盖 A 级 10 家：乖宝✓、宝洁✓、迪卡侬✓收录；海尔（LTDP 需硕士+六级不匹配）、海信（采购运营 J44595 需硕士+CET6 不匹配）、中宠（仅国际营销管培·红线）、威高（无结果）、联合利华（27 届未启动）、ABB（仅 27 届实习）、西门子（未启动）",
+    "待办：海信官网本科供应链岗需授权核对；乖宝届别/薪资、宝洁训练营网申、迪卡侬批次与城市需核实；选岗后执行 Skill 3"
+   ]
+  }
+ ],
+ "resumes": {
+  "general": [
+   {
+    "name": "简历 · 供应链数据方向",
+    "desc": "通用底版 · 适配供应链数据方向",
+    "pdf": "files/g_简历_供应链数据方向.pdf",
+    "doc": "files/f7_文雪_山东大学_秋招A版_供应链优化.doc"
+   },
+   {
+    "name": "简历 · 管培通用方向",
+    "desc": "通用底版 · 适配管培通用方向",
+    "pdf": "files/g_简历_管培通用方向.pdf",
+    "doc": "files/f8_文雪_山东大学_秋招D版_管培通用.doc"
+   },
+   {
+    "name": "简历 · 运营管理方向",
+    "desc": "通用底版 · 适配运营管理方向",
+    "pdf": "files/g_简历_运营管理方向.pdf",
+    "doc": "files/f9_文雪_山东大学_秋招B版_运营管理.doc"
+   },
+   {
+    "name": "简历 · 项目采购方向",
+    "desc": "通用底版 · 适配项目采购方向",
+    "pdf": "files/g_简历_项目采购方向.pdf",
+    "doc": "files/f10_文雪_山东大学_秋招C版_项目采购.doc"
+   }
+  ],
+  "custom": [
+   {
+    "company": "比亚迪",
+    "items": [
+     {
+      "name": "文雪_比亚迪_计划专员（产能规划、供需平衡-电控济南）",
+      "desc": "计划专员（产能规划、供需平衡-电控济南）",
+      "pdf": "files/g_文雪_比亚迪_计划专员_产能规划_供需平衡_电控济南.pdf",
+      "doc": "files/f3_文雪_比亚迪_计划专员（产能规划、供需平衡-电控济南）.docx"
+     }
+    ]
+   }
+  ]
+ },
+ "kb": [
+  {
+   "icon": "🐱",
+   "name": "00_战略与定位",
+   "desc": "战略总览、求职画像、目标与红线",
+   "cls": "c1",
+   "notes": [
+    {
+     "title": "文雪-求职目标画像",
+     "icon": "📄",
+     "html": "<h1>文雪 · 求职目标画像（作战指挥版）</h1>\n<blockquote>\n<p>最后更新：2026-08-22<br />\n定位：内部作战底稿。用于驱动 AI 筛选岗位、定制简历、准备面试。<br />\n⚠️ 对外输出时，需将“短板”转化为 <strong>“沉稳、专注、重逻辑”</strong> 的应届生潜力特质。</p>\n</blockquote>\n<hr />\n<h2>🧠 核心画像（一句话定位）</h2>\n<blockquote>\n<p><strong>985供应链本科 · 数据驱动型 · 深度工作偏好 · 外企/阳光中厂优先</strong></p>\n</blockquote>\n<h3>🤖 AI 执行红线（每次决策前自检）</h3>\n<ul>\n<li>该岗位是否接受 <strong>无正式实习经验的应届生</strong>？（若JD写明“需x年经验”，直接降权）</li>\n<li>该岗位的 <strong>“项目经验”要求</strong> 是否可以用我的课程项目（4.5万条数据+优化模型）对等替代？</li>\n</ul>\n<hr />\n<h2>1. 基本信息</h2>\n<ul>\n<li><strong>姓名</strong>：文雪  </li>\n<li><strong>学校</strong>：山东大学（985/211）管理学院  </li>\n<li><strong>专业</strong>：供应链管理（2027届）  </li>\n<li><strong>在读时间</strong>：2022.09 – 2027.06  </li>\n<li><strong>应届身份</strong>：2027届（目前可投递：实习 → 2027秋招 → 2027春招）  </li>\n<li><strong>所在城市</strong>：济南（本地）  </li>\n<li><strong>联系方式</strong>：18658249341 ｜ 2631217547@qq.com  </li>\n</ul>\n<hr />\n<h2>2. 目标行业 &amp; 岗位（按内核聚类）</h2>\n<blockquote>\n<p>核心诉求：<strong>专业相关 + 偏后台/数据/计划 + 能深度专注 + 避免强社交曝光</strong>。</p>\n</blockquote>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: center;\">优先级</th>\n<th style=\"text-align: left;\">岗位类型</th>\n<th style=\"text-align: left;\">理由与执行指令</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: center;\"><strong>1</strong></td>\n<td style=\"text-align: left;\">供应链数据分析 / 需求计划 / 库存计划</td>\n<td style=\"text-align: left;\">最契合“4.5万+条数据、优化模型”硬实力，少社交、重逻辑。</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\"><strong>2</strong></td>\n<td style=\"text-align: left;\">供应链管理培训生（仅限外企/阳光成长型）</td>\n<td style=\"text-align: left;\">有轮岗体系，但<strong>必须避开</strong>打着管培旗号实做一线销售/执行的岗位。</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\"><strong>3</strong></td>\n<td style=\"text-align: left;\">采购 / 物流 后台支持（偏系统/流程/数据分析）</td>\n<td style=\"text-align: left;\">有用友U8+实操经验，<strong>避开</strong>频繁对外催货、强商务谈判的“跟单型采购”。</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\"><strong>❌ 规避</strong></td>\n<td style=\"text-align: left;\">纯销售、商务拓展、活动现场执行、高频演讲/强应酬岗。</td>\n<td style=\"text-align: left;\">直接触发红线，AI 一键过滤。</td>\n</tr>\n</tbody>\n</table>\n<hr />\n<h2>2.5 目标公司池（AI 检索锚点 · 已按真实口碑筛选）</h2>\n<blockquote>\n<p>完整清单（含每家企业入选/剔除理由）见 🗂️ 目标公司池。\n用法：Skill 7 检索时以 A 级公司优先逐家核对，B 级轮换补充；未列出的公司只要符合第 2 章画像描述同样收录（宽泛兜底）。</p>\n</blockquote>\n<h3>A 级（每轮必检 · 高匹配优先）</h3>\n<ul>\n<li><strong>山东本地龙头</strong>：海尔智家、海信集团、赛轮集团、威高集团、乖宝宠物、中宠股份</li>\n<li><strong>外企快消/零售</strong>：宝洁、联合利华、雀巢、亿滋、达能、可口可乐、百事、沃尔玛/山姆、迪卡侬</li>\n<li><strong>口碑外企（计划/供应链）</strong>：施耐德电气、ABB、西门子</li>\n</ul>\n<h3>B 级（轮换补充 · 专业对口）</h3>\n<ul>\n<li><strong>新能源/汽车</strong>：比亚迪、宁德时代、阳光电源、远景能源</li>\n<li><strong>制造业外企</strong>：博世、大众/奥迪</li>\n<li><strong>物流/供应链服务</strong>：顺丰、DHL、京东物流</li>\n<li><strong>零售电商中厂</strong>：安踏、美团</li>\n</ul>\n<h3>🚫 已剔除（口碑/强度不符，不再检索）</h3>\n<p>歌尔股份、隆基绿能、拼多多、京东物流（管培/一线）、豪迈集团、九阳股份、华熙生物、优衣库 UMC</p>\n<h3>检索收敛规则（防无限检索）</h3>\n<ul>\n<li>每轮检索：A 级优先逐一核对，B 级轮换 2-3 家；<strong>单轮全网搜索 ≤ 10 次</strong>。</li>\n<li>已收录/已评分岗位直接跳过（对照 <code>07_原始材料库</code> 与 📋 岗位汇总表）。</li>\n<li>先「检索 → 归档 → 评分 → 写入」一批（≥3 个）再决定是否扩大；不要求一次搜完所有公司。</li>\n<li>超出预算仍未完成 → 先把已找到的写入并出日报，剩余列入下轮待办。</li>\n</ul>\n<h2>3. 目标城市（分阶段执行）</h2>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: left;\">阶段</th>\n<th style=\"text-align: left;\">优先级顺序</th>\n<th style=\"text-align: left;\">异地接受条件</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: left;\"><strong>实习阶段</strong></td>\n<td style=\"text-align: left;\">济南 &gt; 周边（提供住宿/补贴）</td>\n<td style=\"text-align: left;\">仅限济南本地或提供住宿/补贴的岗位，否则不投。</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><strong>秋招/春招</strong></td>\n<td style=\"text-align: left;\">济南 &gt; 青岛 &gt; 北京/上海 &gt; 山东周边</td>\n<td style=\"text-align: left;\">只要企业提供住房补贴、安家费、宿舍或较高起薪，地点可放宽。</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><strong>🚫 硬性排除</strong></td>\n<td style=\"text-align: left;\">偏远且无班车、无住宿、无任何补贴的地点。</td>\n<td style=\"text-align: left;\">触发红线，直接过滤。</td>\n</tr>\n</tbody>\n</table>\n<hr />\n<h2>4. 薪资底线（综合体验优先）</h2>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: left;\">类别</th>\n<th style=\"text-align: left;\">底线范围</th>\n<th style=\"text-align: left;\">执行策略</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: left;\"><strong>实习</strong></td>\n<td style=\"text-align: left;\">150 – 250 元 / 天</td>\n<td style=\"text-align: left;\">同等薪资下，优先选择氛围轻松、有补贴、加班少的城市/企业。</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><strong>正式</strong></td>\n<td style=\"text-align: left;\">月薪 8K – 15K（年薪 10 – 20 万）</td>\n<td style=\"text-align: left;\">若薪资较高但氛围压抑（大小周/狼性），直接降权或排除。</td>\n</tr>\n</tbody>\n</table>\n<hr />\n<h2>5. 公司规模 / 类型（严格执行排序）</h2>\n<blockquote>\n<p>性格与价值观决定：不适合高强度内卷的大厂总部或压抑的央国企。</p>\n</blockquote>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: center;\">优先级</th>\n<th style=\"text-align: left;\">类型</th>\n<th style=\"text-align: left;\">执行指令</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: center;\"><strong>🥇 第一</strong></td>\n<td style=\"text-align: left;\"><strong>外企（首选）</strong></td>\n<td style=\"text-align: left;\"><strong>即使薪资略低于国内大厂，只要岗位内容合适，优先推荐并投递。</strong> 日常沟通以中文为主的外企更佳（因英语仅CET-4）。</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\"><strong>🥈 第二</strong></td>\n<td style=\"text-align: left;\"><strong>成长型企业 / 中厂 / 大厂旗下子企业（“幼年体”）</strong></td>\n<td style=\"text-align: left;\">重点寻找业务上升期、有独立决策权、氛围阳光的团队。</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\"><strong>🥉 第三</strong></td>\n<td style=\"text-align: left;\">国内大厂总部（互联网/制造业龙头）</td>\n<td style=\"text-align: left;\">除非是核心后台数据/计划岗，且<strong>明确双休、不强制加班</strong>，否则不建议投递。</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\"><strong>⛔ 排除</strong></td>\n<td style=\"text-align: left;\">央国企</td>\n<td style=\"text-align: left;\">除非是纯后台数据分析岗且<strong>明确工作氛围轻松、不搞形式主义</strong>，否则基本排除。</td>\n</tr>\n</tbody>\n</table>\n<hr />\n<h2>6. 能力底牌（真实数据版）</h2>\n<h3>✅ 核心优势（面试/简历重点展示）</h3>\n<ol>\n<li><strong>985/211 专业对口</strong>：核心课程覆盖建模、ERP、采购、物流、统计、Python。</li>\n<li><strong>硬核数据处理全流程</strong>：\n   - 掌握 Python（pandas/matplotlib）、R语言、SPSS；\n   - 累计独立处理 <strong>4.5万+条</strong> 业务数据、<strong>328份</strong> 问卷；\n   - 能独立绘制帕累托图、相关性热力图、瀑布图等专业图表。</li>\n<li><strong>供应链建模优化</strong>：独立构建“选址-路径双层优化模型”，测算结果：<strong>运营成本降低 18.7%、配送时长缩短 22.3%</strong>。</li>\n<li><strong>ERP全流程实操</strong>：熟练使用 用友U8+（采购→入库→销售→出库→调拨→盘点→核算→收付款）。</li>\n<li><strong>深度工作型人格</strong>：沉稳细致，一旦投入便深度沉浸，适合长周期耐心打磨的数据分析/计划优化类岗位。</li>\n</ol>\n<h3>⚠️ 主要短板（内部应对策略）</h3>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: left;\">短板</th>\n<th style=\"text-align: left;\">对内应对策略（知识库辅助）</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: left;\"><strong>无正式实习经历</strong></td>\n<td style=\"text-align: left;\">将课程项目包装为“实战项目”（已有数据量支撑），投递前让AI针对性提炼项目亮点。</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><strong>内向、易紧张脸红</strong></td>\n<td style=\"text-align: left;\">提前准备 <strong>“基于数据的沟通”</strong> 话术库；群面时主攻“记录员/计算员”角色，避免Leader位。</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><strong>英语仅CET-4</strong></td>\n<td style=\"text-align: left;\">优先筛选 <strong>“日常以中文为主”</strong> 的外企；同时建立《供应链英语术语卡》每日突击。</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><strong>面试经验少</strong></td>\n<td style=\"text-align: left;\">建立 面试复盘 笔记，每次面试后立即记录真题与卡壳点，针对性补强。</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><strong>过度抠细节（双刃剑）</strong></td>\n<td style=\"text-align: left;\">提醒自己 <strong>“先完成，再完美”</strong> ；面试被问缺点时，转化为“我正在用20/80法则保证核心交付速度”。</td>\n</tr>\n</tbody>\n</table>\n<hr />\n<h2>7. 🤖 AI 匹配度自动评分系统（执行锚点）</h2>\n<blockquote>\n<p><strong>使用说明</strong>：AI 拿到JD后，按以下规则逐项打分（满分100），<strong>总分 ≥ 70 分即推荐投递</strong>。</p>\n</blockquote>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: center;\">维度</th>\n<th style=\"text-align: center;\">权重</th>\n<th style=\"text-align: left;\">🧮 AI 具体打分规则（加减分明细）</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: center;\"><strong>专业匹配</strong></td>\n<td style=\"text-align: center;\">30%</td>\n<td style=\"text-align: left;\">• 出现 供应链计划/采购/物流/数据分析 → <strong>+30分</strong><br>• 仅沾边（如“运营专员”） → <strong>+10分</strong><br>• 完全无关（销售/地推）→ <strong>0分（直接淘汰）</strong></td>\n</tr>\n<tr>\n<td style=\"text-align: center;\"><strong>技能匹配</strong></td>\n<td style=\"text-align: center;\">25%</td>\n<td style=\"text-align: left;\">• 出现 Python/R语言/SPSS 任意一项 → <strong>+15分</strong><br>• 出现 Excel/ERP/数据可视化 → <strong>+10分</strong><br>• 出现“数据分析/数据处理/数据敏感度/逻辑分析能力”等明确数据与分析要求（未点名具体工具） → <strong>+8分</strong><br>• 完全没提数据、分析相关要求 → <strong>+0分</strong></td>\n</tr>\n<tr>\n<td style=\"text-align: center;\"><strong>氛围与成长</strong></td>\n<td style=\"text-align: center;\">15%</td>\n<td style=\"text-align: left;\">• 写明了“双休/培训体系/团队年轻” → <strong>+15分</strong><br>• 没写但公司外企/中厂口碑好 → <strong>+10分</strong><br>• 提到“抗压/奋斗/狼性/大小周” → <strong>直接扣20分（一票否决倾向）</strong></td>\n</tr>\n<tr>\n<td style=\"text-align: center;\"><strong>地点匹配</strong></td>\n<td style=\"text-align: center;\">10%</td>\n<td style=\"text-align: left;\">• 实习在济南 → <strong>+10分</strong><br>• 秋招在目标城市或提供房补/宿舍 → <strong>+10分</strong><br>• 偏远且无补贴 → <strong>0分（触发红线）</strong></td>\n</tr>\n<tr>\n<td style=\"text-align: center;\"><strong>薪资匹配</strong></td>\n<td style=\"text-align: center;\">10%</td>\n<td style=\"text-align: left;\">• 实习≥150/天 或 正式≥8K → <strong>+10分</strong><br>• 未标明薪资但公司外企/大厂 → <strong>+5分（可投递试探）</strong></td>\n</tr>\n<tr>\n<td style=\"text-align: center;\"><strong>行业偏好</strong></td>\n<td style=\"text-align: center;\">10%</td>\n<td style=\"text-align: left;\">• 快消/宠物/零售/数据服务 → <strong>+10分（加分项）</strong><br>• 其他行业 → <strong>+5分（不设硬性门槛）</strong></td>\n</tr>\n</tbody>\n</table>\n<blockquote>\n<p><strong>📌 使用说明（补充信息核实）</strong>：JD 未披露的维度（薪资、双休/加班、培训体系、住宿补贴等），打分前先做轻量全网检索再给分。来源分级：① 官方来源（官网/官方招聘页/招聘简章/公告）直接采信；② 权威第三方（招聘平台标注、OfferShow 晒薪、公开财报/新闻）参考采信；③ 网络口碑（脉脉/知乎/牛客/员工论坛）仅参考并标注来源与可信度。查不到 → 标注「未收录/未披露」并保守给分，禁止编造。</p>\n</blockquote>\n<hr />\n<h2>8. 🛑 求职红线（AI 直接过滤关键词库）</h2>\n<p><strong>出现以下任意一项，系统自动标记“❌ 不推荐”，无需评分：</strong></p>\n<ol>\n<li><strong>体力/作息</strong>：高强度体力、长期夜班、严重加班且无补偿、单休/大小周。</li>\n<li><strong>岗位性质</strong>：地推、陌拜、电销、商务拓展、活动现场执行、管培生（轮岗明确含销售端）。</li>\n<li><strong>地点支持</strong>：工作地点偏远且<strong>无班车、无住宿、无任何补贴</strong>（三项全无）。</li>\n<li><strong>企业文化</strong>：描述中出现“狼性文化、纯消耗型、PUA、形式主义严重、强制末位淘汰”。</li>\n<li><strong>对外话术的红线转化</strong>：凡是在面试中让我感到“必须假装外向、被迫敬酒、无条件服从”的，一律算作氛围红线。</li>\n</ol>\n<hr />\n<h2>9. 💬 对外面试 · 标准话术库（可直接引用）</h2>\n<h3>🎯 自我介绍/求职动机（必背）</h3>\n<blockquote>\n<p>“我是山东大学供应链管理专业的文雪。我的核心优势在于<strong>数据处理与供应链建模</strong>，曾独立处理4.5万条业务数据，并通过优化模型测算降低运营成本18.7%。我性格沉稳细致，属于<strong>深度工作型</strong>，非常享受在数据中寻找规律、优化计划的过程。我希望寻找一个注重效率、结果导向、团队氛围正向的平台，能够让我长期专注地创造价值。”</p>\n</blockquote>\n<h3>🧐 被问“缺点/过度抠细节”时</h3>\n<blockquote>\n<p>“我有时会过度关注细节，导致初期效率偏低。但我正在刻意练习 <strong>‘先完成，再完美’</strong> 的工作方法，用20/80法则保证核心交付速度，同时保留最终复核环节来平衡质量。”</p>\n</blockquote>\n<h3>🤝 被问“团队合作/内向”时</h3>\n<blockquote>\n<p>“我在基于数据和报告的沟通中表现稳定可靠。在团队中，我更适合担任<strong>数据分析与逻辑支撑</strong>的角色，用扎实的数据结论帮助团队决策，而不是依赖高强度的社交互动。”</p>\n</blockquote>\n<hr />\n<h2>10. 📂 Obsidian 动态工作流（知识库入口）</h2>\n<h3>🚀 知识库文件夹索引（完整版）</h3>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: left;\">文件夹</th>\n<th style=\"text-align: left;\">用途</th>\n<th style=\"text-align: left;\">核心文件</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: left;\"><code>00_战略与定位</code></td>\n<td style=\"text-align: left;\">战略总览、时间线、每周规划</td>\n<td style=\"text-align: left;\">求职目标画像、求职时间线、每周节奏、学习计划</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><code>01_岗位搜集与背调</code></td>\n<td style=\"text-align: left;\">岗位汇总、公司调研报告</td>\n<td style=\"text-align: left;\">📋 岗位汇总表、🗂️ 目标公司池、📅 岗位日报归档、<code>公司调研/{企业}/{岗位}（{方向}）/</code></td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><code>02_定制简历库</code></td>\n<td style=\"text-align: left;\">通用简历 + 各企业岗位定制版</td>\n<td style=\"text-align: left;\">简历-通用版、<code>{公司}/{岗位}（{方向}）/</code></td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><code>03_笔面试题库</code></td>\n<td style=\"text-align: left;\">技术题、行为题、错题本、笔试包</td>\n<td style=\"text-align: left;\">技术题-供应链、行为面试题、错题本</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><code>04_实战复盘</code></td>\n<td style=\"text-align: left;\">面经复盘、原始记录</td>\n<td style=\"text-align: left;\">📝 面试复盘模板、2026-xx-xx xxx面试</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><code>05_供应链知识库</code></td>\n<td style=\"text-align: left;\">专业知识卡片</td>\n<td style=\"text-align: left;\">供应链核心概念、📚 供应链英语术语卡</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><code>06_证书与附件</code></td>\n<td style=\"text-align: left;\">成绩单、获奖证书扫描件</td>\n<td style=\"text-align: left;\">—</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><code>07_原始材料库</code></td>\n<td style=\"text-align: left;\">用户提供的原始材料归档（JD/截图/文本/链接）</td>\n<td style=\"text-align: left;\">📋 材料索引、<code>{公司}/{岗位}（{方向}）/</code></td>\n</tr>\n<tr>\n<td style=\"text-align: left;\"><code>99_系统与规则</code></td>\n<td style=\"text-align: left;\">求职 Skill 规则备份、问题日志</td>\n<td style=\"text-align: left;\">求职Skill规则、求职知识库问题日志</td>\n</tr>\n</tbody>\n</table>\n<h3>💡 Dataview 查询示例（粘贴到其他笔记可自动汇总）</h3>\n<p>```dataview\nTABLE 公司名称, 专业得分, 技能得分, 总分, 投递状态\nFROM \"01_岗位搜集与背调\"\nWHERE 总分 &gt;= 70\nSORT 总分 DESC</p>"
+    },
+    {
+     "title": "📖 知识库使用说明书",
+     "icon": "📄",
+     "html": "<h1>📖 求职知识库 · 日常操作指南</h1>\n<h2>每日/每周要做的事</h2>\n<h3>🔍 搜集岗位（阶段1）</h3>\n<ol>\n<li>去 BOSS直聘/猎聘/应届生求职网搜 JD。</li>\n<li>把 JD 原文复制下来，发给 AI 打分。</li>\n<li>收到分数后，在 <code>01_岗位搜集与背调</code> 文件夹新建笔记，使用 Templater 模板 <code>岗位笔记模板</code>。</li>\n<li>填入 AI 给的分数和 JD 摘要。</li>\n<li>回到 <code>📋 岗位汇总表</code>，确认数据已自动出现。</li>\n</ol>\n<h3>📋 状态流转规则</h3>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: left;\">动作</th>\n<th style=\"text-align: left;\">更新哪个字段</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: left;\">完成背调报告</td>\n<td style=\"text-align: left;\">当前状态 → <code>✅ 已背调</code>；背调报告 → <code>背调报告-xxx</code></td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">&lt;70 分（未触发红线）</td>\n<td style=\"text-align: left;\">当前状态 → <code>🗂️ 备选</code>（可试可不试，你决定）</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">触发红线</td>\n<td style=\"text-align: left;\">当前状态 → <code>❌ 已挂（红线）</code>（不建议投递）</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">完成简历定制</td>\n<td style=\"text-align: left;\">当前状态 → <code>📮 待投递</code>；定制简历 → <code>文雪_xxx-xxx</code></td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">已投递</td>\n<td style=\"text-align: left;\">当前状态 → <code>✉️ 已投递</code></td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">收到面试</td>\n<td style=\"text-align: left;\">当前状态 → <code>📞 面试中</code></td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">被拒/放弃</td>\n<td style=\"text-align: left;\">当前状态 → <code>❌ 已挂</code></td>\n</tr>\n</tbody>\n</table>\n<h3>📝 面试后复盘（阶段5）</h3>\n<ol>\n<li>在 <code>04_实战复盘</code> 新建笔记，命名为 <code>面试复盘-公司-岗位-日期</code>。</li>\n<li>记录：面试问题、自己的回答、面试官反馈、改进点。</li>\n<li>回到岗位笔记，将复盘笔记链接加入备注区。</li>\n</ol>\n<h2>🛠 遇到问题怎么办</h2>\n<ul>\n<li>执行 Skill 过程中出现的任何问题（工具异常、规则缺口、数据/文件/链接异常等），AI 会自动记录到 <code>99_系统与规则/求职知识库问题日志.md</code>（问题/原因/处理/状态）。</li>\n<li>如发现日志缺失或想补充历史问题，直接提醒 AI 补充即可。</li>\n</ul>\n<h2>📎 原始材料归档</h2>\n<ul>\n<li>你提供的所有材料（JD PDF/截图/文本/链接）会自动归档到 <code>07_原始材料库/{公司}/{岗位}（{方向}）/</code>。</li>\n<li>每份材料有登记笔记（来源/日期/关联岗位），汇总见 <code>07_原始材料库/📋 材料索引.md</code>。</li>\n</ul>\n<h2>🤖 自动岗位监控（Skill 7）</h2>\n<ul>\n<li>默认<strong>每天 12:00</strong> 自动执行：检索 → 去重 → 归档 → 评分 → 背调 → 生成「岗位日报」（需电脑开机且 Codex 应用运行）。</li>\n<li>日报三档：✅推荐（≥70）/ 🗂️备选（&lt;70 可试）/ ❌红线（不建议，仍列出）。</li>\n<li>需登录的平台会请求你授权或粘贴 JD；公开可访问的直接抓取。</li>\n</ul>"
+    }
+   ]
+  },
+  {
+   "icon": "🐾",
+   "name": "01_岗位搜集与背调",
+   "desc": "岗位汇总、公司池、日报（公司调研见岗位看板）",
+   "cls": "c2",
+   "notes": [
+    {
+     "title": "📅 岗位日报归档",
+     "icon": "📄",
+     "html": "<h1>📅 岗位日报归档（滚动记录）</h1>\n<blockquote>\n<p>用途：Skill 7 每次自动运行后，把「岗位日报」压缩成 <strong>3-5 行摘要</strong>追加到本文件（只追加、不覆盖、标注日期），供快速回看历史。\n完整日报在对话中输出；详细数据以「评分笔记 / 背调报告 / 岗位汇总表」为准。</p>\n</blockquote>\n<h2>归档记录</h2>\n<h3>2026-08-23（Skill 7 试运行 · 补录）</h3>\n<ul>\n<li>新增 6 岗并评分：施耐德 73 / 可口可乐 65 / 赛轮 65 / 无锡先导 45 / 山东华东风机 45 / 安踏 45</li>\n<li>背调 2 份：施耐德 ★★★★☆、可口可乐 ★★★☆☆（补链接）</li>\n<li>待办：尚未选 Skill 3 岗位；下次运行先按记忆文件与汇总表去重</li>\n</ul>\n<h3>2026-08-23（Skill 7 自动运行）</h3>\n<ul>\n<li>新增 3 岗并评分：乖宝宠物 73（✅推荐）/ 宝洁供应链训练营 73（✅推荐）/ 迪卡侬 60（🗂️备选）</li>\n<li>修正：乖宝宠物为 2026 届批次（2025-09-09 发布）→ 状态改 ⚠️ 届别待确认（降为备选）；乖宝/宝洁背调报告未写入 → 状态改 ⚠️ 背调待补充</li>\n<li>背调 2 份：乖宝宠物、宝洁（均 ★★★★☆；薪资/地点/届别待线下核实）</li>\n<li>本轮检索 10 次覆盖 A 级 10 家：乖宝✓、宝洁✓、迪卡侬✓收录；海尔（LTDP 需硕士+六级不匹配）、海信（采购运营 J44595 需硕士+CET6 不匹配）、中宠（仅国际营销管培·红线）、威高（无结果）、联合利华（27 届未启动）、ABB（仅 27 届实习）、西门子（未启动）</li>\n<li>待办：海信官网本科供应链岗需授权核对；乖宝届别/薪资、宝洁训练营网申、迪卡侬批次与城市需核实；选岗后执行 Skill 3</li>\n</ul>"
+    },
+    {
+     "title": "📋 岗位汇总表",
+     "icon": "📄",
+     "html": "<h1>📋 2027届秋招 岗位汇总表</h1>\n<blockquote>\n<p>总则：全部岗位（含 &lt;70）进入汇总表；≥70 推荐投递，&lt;70 标记“🗂️ 备选”，触发红线标记“❌ 已挂（红线）”。<br />\n状态流转：🆕 新收录 → ✅ 已背调 → 🗂️ 备选(低分可试) / 📮 待投递 → ✉️ 已投递 → 📞 面试中 → 🎉 已Offer / ❌ 已挂（含红线）</p>\n</blockquote>\n<hr />\n<h2>📊 岗位汇总（自动生成）</h2>\n<blockquote>\n<p>以下表格由 Dataview 自动读取 <code>01_岗位搜集与背调\\公司调研\\{公司名}\\{岗位名}（{方向}）\\</code> 子文件夹下<strong>含「匹配等级」字段的评分笔记（<code>评分-{公司名}-{岗位名}（{方向}）.md</code>）</strong>的 frontmatter 生成（每企业-岗位-方向仅一条）。<br />\n<strong>无需手动维护</strong>，每次创建/更新岗位笔记后，刷新预览即可。</p>\n</blockquote>\n<p>```dataview\nTABLE WITHOUT ID \n  公司名称 AS \"公司\",\n  岗位方向 AS \"方向\",\n  城市 AS \"城市\",\n  匹配度总分 AS \"总分\",\n  匹配等级 AS \"等级\",\n  当前状态 AS \"状态\",\n  投递截止 AS \"截止\",\n  薪资 AS \"薪资\",\n  岗位链接 AS \"链接\"\nFROM \"01_岗位搜集与背调\"\nWHERE 匹配等级\nSORT 匹配度总分 DESC</p>"
+    },
+    {
+     "title": "🗂️ 目标公司池",
+     "icon": "📄",
+     "html": "<h1>🗂️ 目标公司池（真实口碑筛选版）</h1>\n<blockquote>\n<p>检索锚点见 文雪-求职目标画像 第 2.5 章；本笔记为完整清单（含理由），供核对与维护。\n更新：2026-08-23 · 按真实口碑重写（仅保留企业本身口碑较好的公司）</p>\n</blockquote>\n<h2>A 级（每轮必检 · 高匹配优先）</h2>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: left;\">类别</th>\n<th style=\"text-align: left;\">公司</th>\n<th style=\"text-align: left;\">入选理由（真实信息）</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: left;\">山东本地龙头</td>\n<td style=\"text-align: left;\">海尔智家、海信集团、赛轮集团、威高集团、乖宝宠物、中宠股份</td>\n<td style=\"text-align: left;\">地点加分；海尔/海信 2027 届校招含供应链管培与供应链管理类岗位；赛轮青岛需求计划岗双休不加班口碑好；乖宝/中宠为宠物食品龙头，契合「宠物」行业加分</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">外企快消/零售</td>\n<td style=\"text-align: left;\">宝洁、联合利华、雀巢、亿滋、达能、可口可乐、百事、沃尔玛/山姆、迪卡侬</td>\n<td style=\"text-align: left;\">行业加分 + 外企氛围；宝洁供应链为 Gartner 供应链大师级；联合利华/沃尔玛管培口碑好（联合利华加班少）；迪卡侬物流供应链管培面经正面</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">口碑外企（计划/供应链）</td>\n<td style=\"text-align: left;\">施耐德电气、ABB、西门子</td>\n<td style=\"text-align: left;\">施耐德 2027 秋招「供应链新星计划」含济南，弹性工作制、六险一金；ABB 五天八小时+30 天全薪假期、供应链岗口碑 4.7；西门子供应链岗 4.0+</td>\n</tr>\n</tbody>\n</table>\n<h2>B 级（轮换补充 · 专业对口）</h2>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: left;\">类别</th>\n<th style=\"text-align: left;\">公司</th>\n<th style=\"text-align: left;\">入选理由（真实信息）</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: left;\">新能源/汽车</td>\n<td style=\"text-align: left;\">比亚迪、宁德时代、阳光电源、远景能源</td>\n<td style=\"text-align: left;\">2027 届校招均有供应链/运营类岗位；阳光电源/远景有供应链专场；宁德时代薪资高但产线岗强度大，投递时避开一线交付岗</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">制造业外企</td>\n<td style=\"text-align: left;\">博世、大众/奥迪</td>\n<td style=\"text-align: left;\">平台大、培训体系好；博世薪资平均线但学习机会多</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">物流/供应链服务</td>\n<td style=\"text-align: left;\">顺丰、DHL、京东物流</td>\n<td style=\"text-align: left;\">顺丰 2027「新鹰计划」含仓储管理岗；DHL 供应链管培；京东物流新锐之星（加班较多，可作备选）</td>\n</tr>\n<tr>\n<td style=\"text-align: left;\">零售电商中厂</td>\n<td style=\"text-align: left;\">安踏、美团</td>\n<td style=\"text-align: left;\">安踏供应链族 2027 校招（12-22K，含济南/青岛）；美团食杂零售管培（快驴/小象超市供应链方向）</td>\n</tr>\n</tbody>\n</table>\n<h2>🚫 已剔除（口碑/强度不符，不再检索）</h2>\n<ul>\n<li><strong>歌尔股份</strong>（潍坊）：网络口碑「管理混乱、加班无加班费、单休」为主</li>\n<li><strong>隆基绿能</strong>：网络口碑「内部管理、组织架构妥协」负面较多</li>\n<li><strong>拼多多</strong>：强度 11-11-6、月工时 300+，触发「拒绝 996」红线</li>\n<li><strong>京东物流（管培/一线）</strong>：口碑「卷、9105」，仅作一般备选不优先</li>\n<li><strong>豪迈集团</strong>（高密）：单休、加班多，与「拒绝单休/996」不符</li>\n<li><strong>九阳股份</strong>（济南）：应届/仓储岗薪资偏低（4.8-5K）</li>\n<li><strong>华熙生物</strong>（济南）：管理类薪资 7-9K 偏低，口碑「机构臃肿、山头林立」</li>\n<li><strong>优衣库 UMC</strong>：偏门店一线零售经营，与「偏后台/避免强社交」不符</li>\n</ul>\n<h2>检索收敛规则（防无限检索）</h2>\n<ul>\n<li>每轮检索：A 级公司优先逐一核对，B 级轮换 2-3 家；<strong>单轮全网搜索 ≤ 10 次</strong>。</li>\n<li>已收录/已评分岗位直接跳过（对照 <code>07_原始材料库</code> 与 📋 岗位汇总表）。</li>\n<li>先「检索 → 归档 → 评分 → 写入」一批（≥3 个）再决定是否扩大；不要求一次搜完所有公司。</li>\n<li>超出预算仍未完成 → 先把已找到的写入并出日报，剩余列入下轮待办。</li>\n</ul>\n<h2>关联</h2>\n<ul>\n<li>文雪-求职目标画像（2.5 章检索锚点）</li>\n<li>📋 岗位汇总表（已收录岗位）</li>\n<li>📋 材料索引（07_原始材料库）</li>\n</ul>"
+    }
+   ]
+  },
+  {
+   "icon": "🧾",
+   "name": "02_定制简历库",
+   "desc": "通用底版 + 各企业定制（下载见简历库页）",
+   "cls": "c3",
+   "notes": [
+    {
+     "title": "文雪_比亚迪_计划专员（产能规划、供需平衡-电控济南）.docx",
+     "icon": "📎",
+     "html": "<p><a href=\"files/f3_文雪_比亚迪_计划专员（产能规划、供需平衡-电控济南）.docx\" target=\"_blank\">📥 查看 / 下载文件：文雪_比亚迪_计划专员（产能规划、供需平衡-电控济南）.docx</a></p>"
+    },
+    {
+     "title": "文雪_比亚迪_计划专员（产能规划、供需平衡-电控济南）",
+     "icon": "📄",
+     "html": "<h1>文雪</h1>\n<p>18658249341 ｜ 2631217547@qq.com ｜ 济南</p>\n<p><strong>求职意向</strong>：供应链计划 / 生产计划（产能规划、供需平衡）</p>\n<p><strong>个人优势</strong>：\n- 供需平衡建模：独立构建选址-路径双层优化模型，将服务半径、电梯等待等约束纳入目标函数并用 Python 求解，测算总成本降低 18.7%、配送时长缩短 22.3%，具备产能-需求平衡的优化思维\n- 数据驱动：掌握 Python/R/SPSS，累计处理 4.5万+条业务数据与 328 份问卷，能独立完成清洗→建模→可视化→结论输出全流程，数据敏感度高\n- 库存与物料计划：瑞幸门店数十种原辅料盘点/效期/补货管理经验，用友U8+ 采购→核算全流程实操，理解安全库存与需求波动逻辑\n- 流程改进：项目助理阶段统筹 200+ 份材料，搭建“录入-核对-提交”三级校验机制实现零差错提交，善于梳理并标准化流程</p>\n<h2>教育背景</h2>\n<p><strong>山东大学</strong> ｜ 管理学院 供应链管理专业 本科 ｜ 2022.09-2027.06</p>\n<p><strong>核心课程</strong>：供应链建模与仿真、ERP供应链管理综合实验、供应链资源规划、采购管理、物流管理、统计学、Python程序设计、大数据管理与分析</p>\n<p><strong>荣誉奖励</strong>：山东大学2024—2025年暑期社会实践专项优秀等级</p>\n<h2>项目经历</h2>\n<h3>社区团购自提点选址与配送路径优化（供需平衡）</h3>\n<p><strong>项目负责人</strong> ｜ 2026.03—2026.06\n- 针对自提点布局零散、需求波动大的痛点，构建选址-路径双层优化模型，将年龄分层服务半径与电梯等待时间纳入目标函数，基于15个候选点、日均345单真实数据用 Python 求解\n- 输出“2核心点+4动态临时点”弹性布局方案：总成本降低 18.7%、老年覆盖率 53.4%→87.3%、配送时长缩短 22.3%，可响应周末 29.9%、促销日 50.7% 的需求波动，验证产能/资源与动态需求平衡的方法论</p>\n<h3>ERP供应链全流程模拟操作（计划-库存链路）</h3>\n<p><strong>课程实验・账套主管</strong> ｜ 2025.03–2025.07\n- 以账套主管角色独立完成采购订单→到货入库→销售订单→发货出库→库存调拨→盘点→存货核算→收付款凭证全流程实操\n- 梳理采购、销售、库存模块间的数据流转与单据联动逻辑，理解从订单到核算的标准化运作机制，具备计划岗所需的系统数据链路认知</p>\n<h3>银行电话营销客户响应行为分析</h3>\n<p><strong>项目负责人</strong> ｜ 2026.04—2026.06\n- 基于45211条真实营销数据，用 R 完成缺失值与异常值清洗、多维度分层统计，绘制帕累托图、相关性热力图、转化瀑布图，识别关键影响变量，为资源分配提供数据支撑</p>\n<h3>生成式AI在电商场景中的应用机制研究</h3>\n<p><strong>项目负责人</strong> ｜ 2025.10—2025.12\n- 设计7点李克特量表问卷回收328份有效样本，用 SPSS/Python 完成统计分析，验证交互性（β=0.42）、个性化（β=0.38）、自主性（β=0.31）对用户感知价值的显著影响</p>\n<h2>实践经历</h2>\n<h3>山东鱼跃尚成教育有限责任公司</h3>\n<p><strong>项目助理（兼职）</strong> ｜ 2026.04 - 2026.07\n- 统筹200+份申报材料全流程管理，用 Excel 搭建分类台账与三级校验机制，实现零差错提交\n- 跨部门同步项目进度，按月汇总执行数据，梳理并标准化审核报批流程，提升材料调取与协作效率</p>\n<h3>瑞幸咖啡</h3>\n<p><strong>咖啡师（兼职）</strong> ｜ 2023.07 - 2023.09\n- 落实数十种原辅料日盘与效期管理，按消耗规律安排解冻备货，降低物料损耗与缺货风险；根据销售节奏同步补货需求，保持库存账实一致，对应安全库存与需求波动管理</p>\n<h2>综合技能</h2>\n<ul>\n<li><strong>计划与优化</strong>：供应链建模（Python求解）、产能-供需平衡思维、库存与效期管理</li>\n<li><strong>数据工具</strong>：Python（pandas、matplotlib）、R、SPSS、Excel（透视表/VLOOKUP/图表可视化）</li>\n<li><strong>ERP 系统</strong>：用友U8+（采购/销售/库存/核算全流程）</li>\n<li><strong>语言能力</strong>：CET-4，可阅读英文专业资料与基础商务沟通</li>\n<li><strong>通用能力</strong>：流程梳理与标准化、跨部门对接、台账搭建与文档归档</li>\n</ul>"
+    },
+    {
+     "title": "文雪_比亚迪_计划专员（产能规划、供需平衡-电控济南）.pdf",
+     "icon": "📎",
+     "html": "<p><a href=\"files/f4_文雪_比亚迪_计划专员（产能规划、供需平衡-电控济南）.pdf\" target=\"_blank\">📥 查看 / 下载文件：文雪_比亚迪_计划专员（产能规划、供需平衡-电控济南）.pdf</a></p>"
+    },
+    {
+     "title": "文雪_山东大学_秋招A版_供应链优化.doc",
+     "icon": "📎",
+     "html": "<p><a href=\"files/f7_文雪_山东大学_秋招A版_供应链优化.doc\" target=\"_blank\">📥 查看 / 下载文件：文雪_山东大学_秋招A版_供应链优化.doc</a></p>"
+    },
+    {
+     "title": "文雪_山东大学_秋招B版_运营管理.doc",
+     "icon": "📎",
+     "html": "<p><a href=\"files/f9_文雪_山东大学_秋招B版_运营管理.doc\" target=\"_blank\">📥 查看 / 下载文件：文雪_山东大学_秋招B版_运营管理.doc</a></p>"
+    },
+    {
+     "title": "文雪_山东大学_秋招C版_项目采购.doc",
+     "icon": "📎",
+     "html": "<p><a href=\"files/f10_文雪_山东大学_秋招C版_项目采购.doc\" target=\"_blank\">📥 查看 / 下载文件：文雪_山东大学_秋招C版_项目采购.doc</a></p>"
+    },
+    {
+     "title": "文雪_山东大学_秋招D版_管培通用.doc",
+     "icon": "📎",
+     "html": "<p><a href=\"files/f8_文雪_山东大学_秋招D版_管培通用.doc\" target=\"_blank\">📥 查看 / 下载文件：文雪_山东大学_秋招D版_管培通用.doc</a></p>"
+    },
+    {
+     "title": "简历-供应链数据方向",
+     "icon": "📄",
+     "html": "<h1>文雪</h1>\n<p>18658249341 ｜ 2631217547@qq.com ｜ 济南</p>\n<p><strong>求职意向</strong>：供应链运营/数据分析/项目管理</p>\n<p><strong>个人优势</strong>：供应链建模：独立完成选址-路径双层优化模型，用Python完成模型求解，模型测算运营成本降低18.7%；数据分析：掌握Python/R/SPSS，累计处理4.5万+条业务数据与328份问卷，能独立完成清洗→建模→可视化→结论输出全流程；运营实操：用友U8+ERP全流程操作经验，3个月项目助理（200+份材料管理+跨部门对接），瑞幸门店库存与效期管理经验</p>\n<h2>教育背景</h2>\n<p><strong>山东大学</strong> ｜ 管理学院 供应链管理专业 本科 ｜ 2022.09-2027.06</p>\n<p><strong>核心课程</strong>：供应链建模与仿真、ERP供应链管理综合实验、供应链资源规划、采购管理、物流管理、统计学、Python程序设计、大数据管理与分析</p>\n<p><strong>荣誉奖励</strong>：山东大学2024—2025年暑期社会实践专项优秀等级</p>\n<h2>项目经历</h2>\n<h3>社区团购自提点选址与配送路径优化</h3>\n<p><strong>项目负责人</strong> ｜ 2026.03—2026.06</p>\n<ul>\n<li>针对济南历下区老龄化小区自提点布局零散问题，构建选址-路径双层优化模型，将年龄分层服务半径与电梯等待时间纳入目标函数；基于15个候选点、日均345单真实数据，用Python完成求解，提出“2核心点+4动态临时点”弹性布局方案</li>\n<li>模型测算：总成本降低 18.7%，老年覆盖率 53.4%→87.3%，配送时长缩短 22.3%，覆盖平衡性指数 0.88</li>\n</ul>\n<h3>生成式AI在电商场景中的应用机制研究</h3>\n<p><strong>项目负责人</strong> ｜ 2025.10—2025.12</p>\n<ul>\n<li>基于TAM模型设计7点李克特量表问卷，回收328份有效样本，用SPSS和Python完成统计分析；验证交互性（β=0.42）、个性化（β=0.38）、自主性（β=0.31）显著正向影响用户感知价值，识别问题识别准确性、智能解决能力为核心影响因素</li>\n<li>发现用户智能体验起关键中介作用，感知增强维度贡献率63%；高复杂度场景下信任阈值提高32%，为电商AI客服优化提供参考</li>\n</ul>\n<h3>银行电话营销客户响应行为分析</h3>\n<p><strong>项目负责人</strong> ｜ 2026.04—2026.06</p>\n<ul>\n<li>基于45211条葡萄牙银行真实营销数据，用R完成缺失值与异常值清洗，对年龄、职业、营销频次等字段做多维度分层统计</li>\n<li>独立绘制帕累托图、相关性热力图、订阅转化率瀑布图，通过多维度统计呈现客户群体响应差异，识别关键影响变量，为客户分群与营销资源分配提供数据支撑</li>\n</ul>\n<h3>ERP供应链全流程模拟操作</h3>\n<p><strong>课程实验・账套主管</strong> ｜ 2025.03–2025.07</p>\n<ul>\n<li>以账套主管角色，以模拟箱包贸易企业为对象，独立完成采购订单→到货入库→销售订单→发货出库→库存调拨→盘点→存货核算→收付款凭证全流程实操</li>\n<li>梳理采购、销售、库存等模块间的数据流转与单据关联逻辑，理解ERP系统供应链业务标准化运作机制</li>\n</ul>\n<h2>实践经历</h2>\n<h3>山东鱼跃尚成教育有限责任公司</h3>\n<p><strong>项目助理（兼职）</strong> ｜ 2026.04 - 2026.07</p>\n<ul>\n<li>统筹200+份学员申报材料全流程管理，用Excel搭建分类电子台账，建立“录入-核对-提交”三级校验机制，实现材料零差错提交</li>\n<li>对接各部门同步项目推进进度，按月汇总执行数据形成工作小结，梳理并标准化资料审核与报批流程</li>\n<li>建立可检索的文档归档体系，统一收纳各类申报单据并分类存档，提升后续材料调取效率</li>\n</ul>\n<h3>瑞幸咖啡</h3>\n<p><strong>咖啡师（兼职）</strong> ｜ 2023.07 - 2023.09</p>\n<ul>\n<li>落实门店原辅料日盘与效期管理流程，每日核对食材有效期并打印失效单据，根据消耗规律提醒仓库解冻备货，降低物料损耗与缺货风险</li>\n<li>规范物料分区摆放与仓储器具整理，核对交接班出库单据，保持库存账实一致；根据销售消耗规律同步门店补货需求，保障物料供应稳定</li>\n</ul>\n<h2>综合技能</h2>\n<ul>\n<li><strong>ERP系统</strong>：用友U8+（采购/销售/库存/存货核算全流程操作）</li>\n<li><strong>数据工具</strong>：Excel（数据透视表、VLOOKUP、函数）、Python（pandas、matplotlib）、R、SPSS</li>\n<li><strong>语言能力</strong>：CET-4，可阅读英文专业资料与基础商务沟通</li>\n<li><strong>通用能力</strong>：台账搭建与文档管理、跨部门沟通对接、流程梳理与标准化</li>\n</ul>"
+    },
+    {
+     "title": "简历-管培通用方向",
+     "icon": "📄",
+     "html": "<h1>文雪</h1>\n<p>18658249341 ｜ 2631217547@qq.com ｜ 济南</p>\n<p><strong>求职意向</strong>：管理培训生/运营管培/供应链管培</p>\n<p><strong>个人优势</strong>：快速学习：供应链管理专业背景，能快速掌握新业务与新工具，独立完成3个从问题定义到成果交付的研究项目；执行落地：3个月项目助理经验，统筹200+份申报材料并建立三级校验机制，实现零差错提交，细节把控能力强；数据思维：掌握Excel/Python/R/SPSS，习惯用数据发现问题、支撑决策，处理过4.5万+条业务数据；沟通协作：有跨部门对接、门店团队协作经验，性格专注较真，愿意为不擅长的事投入时间</p>\n<h2>教育背景</h2>\n<p><strong>山东大学</strong> ｜ 管理学院 供应链管理专业 本科 ｜ 2022.09-2027.06</p>\n<p><strong>核心课程</strong>：供应链管理、采购管理、物流管理、统计学、Python程序设计、ERP供应链管理综合实验</p>\n<p><strong>荣誉奖励</strong>：山东大学2024—2025年暑期社会实践专项优秀等级</p>\n<h2>项目经历</h2>\n<h3>社区团购运营优化研究</h3>\n<p><strong>项目负责人</strong> ｜ 2026.03—2026.06</p>\n<ul>\n<li>针对社区团购末端配送效率低、老年群体服务覆盖不足的问题，独立完成调研、建模、方案设计与验证全流程</li>\n<li>基于15个候选点位、日均345单真实数据，设计“2核心点+4动态临时点”弹性布局方案，模型测算可降低运营成本18.7%、提升老年服务覆盖率至87.3%、缩短配送时长22.3%</li>\n<li>输出完整研究报告，具备问题分析、方案设计与结果验证的闭环能力</li>\n</ul>\n<h3>电商用户调研与分析项目</h3>\n<p><strong>项目负责人</strong> ｜ 2025.10—2025.12</p>\n<ul>\n<li>设计7点李克特量表问卷并发放，回收328份有效样本，用SPSS和Python完成数据清洗与统计分析</li>\n<li>识别出交互性、个性化、自主性为影响用户体验的核心因素，验证用户智能体验的关键中介作用，输出研究结论与优化建议</li>\n</ul>\n<h3>银行营销数据分析项目</h3>\n<p><strong>项目负责人</strong> ｜ 2026.04—2026.06</p>\n<ul>\n<li>基于45211条真实营销数据，用R完成数据清洗与多维度分层统计，绘制帕累托图、相关性热力图、转化瀑布图</li>\n<li>通过多维度统计呈现客户群体响应差异，定位营销流失关键环节，独立交付分析报告，具备数据处理与问题洞察能力</li>\n</ul>\n<h3>ERP采购与库存全流程模拟操作</h3>\n<p><strong>课程实验・账套主管</strong> ｜ 2025.03–2025.07</p>\n<ul>\n<li>以账套主管角色使用用友U8+，以模拟贸易企业为对象，独立完成采购→入库→销售→出库→调拨→盘点→核算→凭证全流程操作，理解企业核心业务模块的运转逻辑与单据联动</li>\n</ul>\n<h2>实践经历</h2>\n<h3>山东鱼跃尚成教育有限责任公司</h3>\n<p><strong>项目助理（兼职）</strong> ｜ 2026.04 - 2026.07</p>\n<ul>\n<li>统筹200+份学员申报材料的收集、核对与提交全流程，用Excel搭建分类电子台账，建立“录入-核对-提交”三级校验机制，实现零差错交付</li>\n<li>对接各部门同步项目推进进度，按月汇总执行数据形成工作小结，梳理并标准化资料审核与报批流程</li>\n<li>建立可检索的文档归档体系，统一收纳各类申报单据并分类存档，提升团队协作与材料调取效率</li>\n</ul>\n<h3>瑞幸咖啡</h3>\n<p><strong>咖啡师（兼职）</strong> ｜ 2023.07 - 2023.09</p>\n<ul>\n<li>负责门店数十种原辅料的日常盘点与效期管理，核对交接班出入库单据，保持库存账实一致</li>\n<li>根据销售消耗规律提醒仓库解冻备货，降低物料损耗与缺货风险；按运营标准完成日常出品与客诉处理，具备一线执行与团队协作经验</li>\n</ul>\n<h2>综合技能</h2>\n<ul>\n<li><strong>办公软件</strong>：Excel（数据透视表、VLOOKUP、函数公式、电子台账搭建、图表可视化）、Word、PPT</li>\n<li><strong>数据工具</strong>：Python（pandas 数据处理）、R（统计分析）、SPSS（问卷分析），累计处理4.5万+条业务数据</li>\n<li><strong>业务系统</strong>：用友U8+ ERP（采购/销售/库存/存货核算全流程操作，熟悉单据流转与模块联动）</li>\n<li><strong>语言能力</strong>：CET-4，可阅读英文专业资料</li>\n<li><strong>通用能力</strong>：执行力与细节把控、跨部门沟通协作、流程梳理与标准化、文档与台账管理、数据驱动的问题分析</li>\n</ul>"
+    },
+    {
+     "title": "简历-运营管理方向",
+     "icon": "📄",
+     "html": "<h1>文雪</h1>\n<p>18658249341 ｜ 2631217547@qq.com ｜ 济南</p>\n<p><strong>求职意向</strong>：运营管理/供应链运营/库存管理</p>\n<p><strong>个人优势</strong>：运营优化：独立完成社区团购末端网络优化项目，设计弹性布局方案，测算运营成本降低18.7%、配送效率提升22.3%;数据驱动：掌握Python/R/SPSS，累计处理4.5万+条业务数据，能通过数据分析识别运营痛点并输出改进建议;库存与流程：用友U8+ERP库存/采购全流程操作，瑞幸门店原辅料盘点与效期管理经验，3个月项目助理流程标准化经验</p>\n<h2>教育背景</h2>\n<p><strong>山东大学</strong> ｜ 管理学院 供应链管理专业 本科 ｜ 2022.09-2027.06</p>\n<p><strong>核心课程</strong>：供应链建模与仿真、ERP供应链管理综合实验、采购管理、物流管理、供应链成本与绩效管理、统计学</p>\n<p><strong>荣誉奖励</strong>：山东大学2024—2025年暑期社会实践专项优秀等级</p>\n<h2>项目经历</h2>\n<h3>社区团购自提点布局与配送优化</h3>\n<p><strong>项目负责人</strong> ｜ 2026.03—2026.06</p>\n<ul>\n<li>针对老龄化小区自提点布局零散、配送效率低的问题，调研15个候选点位与日均345单真实需求，设计“2核心点+4动态临时点”的弹性运营方案</li>\n<li>将年龄分层服务半径与电梯等待时间纳入优化模型，用Python完成方案测算：模型测算总运营成本降低18.7%，老年人服务覆盖率53.4%→87.3%，平均配送时长缩短22.3%</li>\n<li>方案可快速响应周末29.9%、促销日50.7%的需求波动，为社区团购末端运营提供可落地的优化思路</li>\n</ul>\n<h3>电商用户行为分析与运营策略研究</h3>\n<p><strong>项目负责人</strong> ｜ 2025.10—2025.12</p>\n<ul>\n<li>基于TAM模型设计7点李克特量表问卷，回收328份有效样本，用SPSS和Python完成统计分析；验证交互性（β=0.42）、个性化（β=0.38）、自主性（β=0.31）显著正向影响用户感知价值，识别问题识别准确性、智能解决能力为核心影响因素</li>\n<li>发现用户智能体验起关键中介作用，感知增强维度贡献率63%；高复杂度场景下信任阈值提高32%，为电商AI客服优化提供参考</li>\n</ul>\n<h3>银行营销客户分层与转化分析</h3>\n<p><strong>项目负责人</strong> ｜ 2026.04—2026.06</p>\n<ul>\n<li>基于45211条银行营销数据，用R完成数据清洗与多维度分层统计，通过帕累托分析识别高价值客群特征，用转化瀑布图定位营销流失关键环节</li>\n<li>通过帕累托分析呈现高价值客群分布特征，用转化瀑布图定位营销流失关键环节，为精准营销与运营效率提升提供数据支撑</li>\n</ul>\n<h3>ERP供应链全流程模拟操作</h3>\n<p><strong>课程实验・账套主管</strong> ｜ 2025.03–2025.07</p>\n<ul>\n<li>以账套主管角色使用用友U8+ ERP系统，以模拟箱包贸易企业为对象，独立完成采购订单→到货入库→销售订单→发货出库→库存调拨→盘点→存货核算→收付款凭证全流程运营操作</li>\n<li>掌握采购、销售、库存、存货、财务五大模块间的数据流转与单据联动逻辑，理解 ERP 系统中供应链业务从订单到核算的标准化运作机制</li>\n</ul>\n<h2>实践经历</h2>\n<h3>山东鱼跃尚成教育有限责任公司</h3>\n<p><strong>项目助理（兼职）</strong> ｜ 2026.04 - 2026.07</p>\n<ul>\n<li>统筹200+份申报材料全流程管理，用Excel搭建分类台账，建立三级校验机制实现零差错提交</li>\n<li>梳理并标准化资料审核与报批流程，与各方同步进度，按月汇总数据形成工作小结，提升整体执行效率</li>\n</ul>\n<h3>瑞幸咖啡</h3>\n<p><strong>咖啡师（兼职）</strong> ｜ 2023.07 - 2023.09</p>\n<ul>\n<li>负责门店数十种原辅料的日常盘点与效期管理，落实日盘制度，根据消耗规律提醒仓库解冻备货，降低物料损耗与缺货风险；规范物料分区与出入库单据核对，保持交接班库存账实一致；根据销售数据同步补货需求，保障门店日常运营物料供应</li>\n</ul>\n<h2>综合技能</h2>\n<ul>\n<li><strong>业务系统与数据工具</strong>：用友U8+ ERP（采购/销售/库存/核算全流程），Excel（数据透视表、VLOOKUP、函数公式、图表可视化）、Python（pandas数据处理、matplotlib可视化）、R、SPSS</li>\n<li><strong>语言能力</strong>：CET-4，可阅读英文专业资料与基础商务沟通</li>\n<li><strong>通用能力</strong>：流程梳理与标准化、库存与效期管理、跨部门沟通对接、电子台账搭建与文档归档、数据驱动的问题分析与改进建议输出</li>\n</ul>"
+    },
+    {
+     "title": "简历-项目采购方向",
+     "icon": "📄",
+     "html": "<h1>文雪</h1>\n<p>18658249341 ｜ 2631217547@qq.com ｜ 济南</p>\n<p><strong>求职意向</strong>：项目管理/采购管理/供应链协调</p>\n<p><strong>个人优势</strong>：项目执行：独立主导3个课程研究项目从需求定义、数据收集到成果交付全流程，具备从0到1的项目推进能力；跨部门协作：3个月项目助理经验，统筹200+份材料管理，对接多部门同步进度，熟悉报批流程与文档规范；采购与库存：用友U8+采购/库存模块全流程操作，瑞幸门店物料补货与库存单据管理经验，理解采购到付款的完整链路</p>\n<h2>教育背景</h2>\n<p><strong>山东大学</strong> ｜ 管理学院 供应链管理专业 本科 ｜ 2022.09-2027.06</p>\n<p><strong>核心课程</strong>：采购管理、ERP供应链管理综合实验、供应链资源规划、物流管理、供应链建模与仿真、统计学</p>\n<p><strong>荣誉奖励</strong>：山东大学2024—2025年暑期社会实践专项优秀等级</p>\n<h2>项目经历</h2>\n<h3>社区团购末端网络优化项目</h3>\n<p><strong>项目负责人</strong> ｜ 2026.03—2026.06</p>\n<ul>\n<li>独立主导项目全流程：定义研究问题→实地调研收集15个候选点与需求数据→构建优化模型→设计方案→验证结果→输出完整研究报告</li>\n<li>设计“2核心点+4动态临时点”弹性布局方案，用Python完成模型测算，验证方案可降低运营成本18.7%、提升老年覆盖率至87.3%、缩短配送时长22.3%</li>\n<li>项目成果形成完整结课报告，具备从问题识别到方案验证的闭环项目管理能力</li>\n</ul>\n<h3>电商用户调研与分析项目</h3>\n<p><strong>项目负责人</strong> ｜ 2025.10—2025.12</p>\n<ul>\n<li>统筹问卷设计、发放回收、数据清洗、统计分析全流程，回收328份有效样本，用SPSS和Python完成数据分析</li>\n<li>验证技术特性对用户体验的影响路径，识别核心影响因素，输出研究结论与优化建议</li>\n</ul>\n<h3>银行营销数据分析项目</h3>\n<p><strong>项目负责人</strong> ｜ 2026.04—2026.06</p>\n<ul>\n<li>基于45211条葡萄牙银行真实营销数据，用R完成缺失值与异常值清洗，对年龄、职业、营销频次等字段做多维度分层统计</li>\n<li>独立绘制帕累托图、相关性热力图、订阅转化率瀑布图，通过多维度统计呈现客户群体响应差异，识别关键影响变量，为客户分群与营销资源分配提供数据支撑</li>\n</ul>\n<h3>ERP采购与库存全流程模拟操作</h3>\n<p><strong>课程实验・账套主管</strong> ｜ 2025.03–2025.07</p>\n<ul>\n<li>以账套主管角色使用用友U8+，独立完成采购订单→到货入库→库存调拨→盘点→存货核算→付款凭证全流程操作</li>\n<li>熟悉采购申请、订单管理、入库验收、库存调拨、对账核算各环节的单据流转与系统操作，理解采购到付款的完整业务链路</li>\n</ul>\n<h2>实践经历</h2>\n<h3>山东鱼跃尚成教育有限责任公司</h3>\n<p><strong>项目助理（兼职）</strong> ｜ 2026.04 - 2026.07</p>\n<ul>\n<li>作为项目助理统筹200+份申报材料的收集、核对、提交全流程，用Excel搭建可检索的电子台账</li>\n<li>梳理并标准化资料审核与报批流程，按月汇总项目执行数据；建立可检索的文档归档体系，统一收纳申报单据并分类存档，提升材料调取效率</li>\n</ul>\n<h3>瑞幸咖啡</h3>\n<p><strong>咖啡师（兼职）</strong> ｜ 2023.07 - 2023.09</p>\n<ul>\n<li>负责门店数十种原辅料的补货申请、入库核对与日常盘点，落实“日盘+效期预警”机制，核对交接班出入库单据，保持库存账实一致，任职期间无重大盘点差异</li>\n<li>根据销售消耗规律制定每日解冻备货计划，精准匹配需求与备货量，降低物料损耗与临时缺货风险，保障门店日常运营物料供应稳定</li>\n</ul>\n<h2>综合技能</h2>\n<ul>\n<li><strong>ERP系统</strong>：用友U8+（采购/库存/存货核算全流程操作）</li>\n<li><strong>办公与数据分析</strong>：Excel（透视表/VLOOKUP/函数/台账搭建）、Word、PPT</li>\n<li><strong>数据分析</strong>：Python、R、SPSS（数据清洗与统计分析）</li>\n<li><strong>通用能力</strong>：项目文档全生命周期管理、跨部门沟通进度同步、报批流程梳理与标准化、采购与库存单据处理</li>\n</ul>"
+    }
+   ]
+  },
+  {
+   "icon": "✍️",
+   "name": "03_笔面试题库",
+   "desc": "技术题、行为题、错题本",
+   "cls": "c4",
+   "notes": []
+  },
+  {
+   "icon": "🪞",
+   "name": "04_实战复盘",
+   "desc": "面试复盘与原始记录",
+   "cls": "c5",
+   "notes": []
+  },
+  {
+   "icon": "📖",
+   "name": "05_供应链知识库",
+   "desc": "专业知识卡片、英语术语卡",
+   "cls": "c1",
+   "notes": []
+  },
+  {
+   "icon": "🎓",
+   "name": "06_证书与附件",
+   "desc": "成绩单、获奖证书等文件",
+   "cls": "c2",
+   "notes": []
+  },
+  {
+   "icon": "🗃️",
+   "name": "07_原始材料库",
+   "desc": "JD 原文与登记索引",
+   "cls": "c3",
+   "notes": [
+    {
+     "title": "JD-乖宝宠物-供应链管培生（供应链管理）-2026-08-23",
+     "icon": "📄",
+     "html": "<h1>材料：乖宝宠物 供应链管培生（供应链管理）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：东北农业大学就业网（https://neau.bysjy.com.cn/detail/job?id=2591486&amp;career_id=662309）\n发布日期：2025-09-09（来源页标注，2026 届批次）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<ul>\n<li>岗位：供应链管培生（供应链方向）；薪资 6K-8K/月；城市：山东聊城（聊城市经济技术开发区牡丹江路 8 号）；学历：本科及以上</li>\n<li>岗位职责：参与精益生产、数字化供应链升级、智能化仓储物流等关键项目；由供应链部门高管及资深经理带教</li>\n<li>岗位要求：食品工程、机械工程/制造、工业工程、机电工程、物流管理、统计学、电气工程、能源动力等相关专业；英文 CET-4 级以上；在校成绩前 40% 以内</li>\n<li>福利：岗前培训、岗位晋升、带薪年假、交通补助、餐补、五险一金</li>\n<li>公司简介：乖宝宠物食品集团股份有限公司（2006 年成立），宠物食品研发/生产/销售（麦富迪等品牌），国家级出口宠物食品质量安全示范区龙头企业，产品销往欧美、日韩等 30 多个国家，客户含沃尔玛、斯马克、品谱等；国内/泰国双生产基地，HACCP/FSSC22000/BRCGS 等认证</li>\n<li>备注：该发布批次面向 2026 届（发布 2025-09-09），届别与投递截止需以官方最新发布为准（投递入口为校园宣讲/校招平台）</li>\n</ul>\n<h2>链接</h2>\n<p>https://neau.bysjy.com.cn/detail/job?id=2591486&amp;career_id=662309</p>"
+    },
+    {
+     "title": "JD-可口可乐-供应链计划管理培训生（2027校招）-2026-08-23",
+     "icon": "📄",
+     "html": "<h1>材料：可口可乐 供应链计划管理培训生（2027校招）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：江苏24365就业平台\n发布日期：2026-07-17（来源页标注）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<p>可口可乐2027校园招聘——供应链计划管理培训生，年薪14万元；可学习现代供应链计划工作核心体系、流程与实践方法（快消外企）。</p>\n<h2>链接</h2>\n<p>https://sdwz.91job.org.cn/recruitment/jobDetails?zpgwid=1000000000728732&amp;dwid=661005</p>"
+    },
+    {
+     "title": "JD-安踏集团-供应链族采购岗（2027校招）-2026-08-23",
+     "icon": "📄",
+     "html": "<h1>材料：安踏集团 供应链族采购岗（2027校招）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：高校就业网（转载）\n发布日期：2026-08-20（转载页标注）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<p>安踏集团2027届校园招聘·供应链族：物流运营岗、采购岗、采购管理岗、采购营运岗、生管岗等（体育用品/零售龙头）。</p>\n<h2>链接</h2>\n<p>https://utibet.xzeduc.cn/campus/view/id/465239/mark/utibet</p>"
+    },
+    {
+     "title": "JD-宝洁-供应链训练营（供应链管理）-2026-08-23",
+     "icon": "📄",
+     "html": "<h1>材料：宝洁 供应链训练营（供应链管理）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：牛企直聘聚合「2026 宝洁供应链训练营」校招公告\n发布日期：未确定（来源页未标注明确发布日期）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<ul>\n<li>项目：宝洁供应链训练营（宝洁供应链管理部自 2022 年启动的技术育才项目，为大学生提供供应链前沿项目实战机会；优秀学员可获宝洁供应链管理部校招绿卡，有效期 2 年，直通全职管理岗终面）</li>\n<li>面向对象：2027 年 6 月至 2028 年 12 月毕业的本科及以上学历（本/硕/博），泛理工科专业背景；欢迎具备编程/数据分析/数字建模/工业工程等相关实践经验的同学投递</li>\n<li>招聘城市：苏州（太仓工厂）、广州</li>\n<li>项目内容示例：太仓工厂生产管理 AI Agent 搭建（Dify 平台）；质量管理（技术标准自动化转换生成）RPA/Python 等 AI Agent 搭建；包装生产线基于启发式算法的自动排产系统等</li>\n<li>项目亮点：参与 AI 驱动的全球供应链前沿命题（需求预测、自动化场景延伸、包装设计与优化）；与全球顶尖供应链团队协同、黄金技能培训；优秀学员可获校招绿卡直通全职管理岗终面</li>\n<li>宝洁背景：1837 年创立，业务覆盖全球 180+ 国家；Gartner 全球供应链大师级企业（截至 2025 年 15 度入选，连续 11 年获大师级最高荣誉）</li>\n<li>备注：为「训练营/项目制」机会（非直接全职岗），网申时间以宝洁官方招聘页面为准（需授权/需核实）</li>\n</ul>\n<h2>链接</h2>\n<p>https://s.niuqizp.com/j_schedule_%E2%80%9C%E5%AE%9D%E6%B4%81%E5%A4%AA%E4%BB%93%E5%B7%A5%E5%8E%82%E8%B4%A8%E9%87%8F%E7%AE%A1%E7%90%86%28RPA%E2%80%9C/?ur=article</p>"
+    },
+    {
+     "title": "JD-山东华东风机-生产计划员-2026-08-23",
+     "icon": "📄",
+     "html": "<h1>材料：山东华东风机 生产计划员</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：章丘人才网\n发布日期：未确定（来源页未标注明确发布日期）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<p>山东华东风机有限公司·生产计划员：6000-8000元/月，应届毕业生、本科，提供食宿、五险一金；工作地济南章丘（本地）。</p>\n<h2>链接</h2>\n<p>http://www.jnzqrc.com/job2901804140.shtml</p>"
+    },
+    {
+     "title": "JD-施耐德电气-供应链计划员（供应链新星计划）-2026-08-23",
+     "icon": "📄",
+     "html": "<h1>材料：施耐德电气 供应链计划员（供应链新星计划）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：兰州大学就业网（转载）\n发布日期：2026-08-20（转载页标注）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<p>2027届秋招·供应链新星计划：培养具备专业能力、数字化素养的供应链人才；热招岗位含供应链计划员、采购工程师、质量工程师、自动化工程师、工艺工程师等；面向2026~2027届海内外应届毕业生；工作城市北京/上海/无锡/厦门/珠海/武汉/广州/西安等。</p>\n<h2>链接</h2>\n<p>https://job.lzu.edu.cn/html/74/article/2026/91085.html</p>"
+    },
+    {
+     "title": "JD-无锡先导智能-供应链集团战略管培生（2027校招）-2026-08-23",
+     "icon": "📄",
+     "html": "<h1>材料：无锡先导智能 供应链集团战略管培生（2027校招）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：应届生求职网\n发布日期：2026-08-19（来源页标注）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<p>无锡先导智能2027届校招·供应链集团战略管培生，年薪22万；面向27届应届或1年经验职场新锐；专业方向物流管理与工程自动化（锂电/智能制造龙头）。</p>\n<h2>链接</h2>\n<p>https://m.yingjiesheng.com/job-008-034-282.html</p>"
+    },
+    {
+     "title": "JD-比亚迪-计划专员-2026-08-20-part1.pdf",
+     "icon": "📎",
+     "html": "<p><a href=\"files/f5_JD-比亚迪-计划专员-2026-08-20-part1.pdf\" target=\"_blank\">📥 查看 / 下载文件：JD-比亚迪-计划专员-2026-08-20-part1.pdf</a></p>"
+    },
+    {
+     "title": "JD-比亚迪-计划专员-2026-08-20-part2.pdf",
+     "icon": "📎",
+     "html": "<p><a href=\"files/f6_JD-比亚迪-计划专员-2026-08-20-part2.pdf\" target=\"_blank\">📥 查看 / 下载文件：JD-比亚迪-计划专员-2026-08-20-part2.pdf</a></p>"
+    },
+    {
+     "title": "JD-比亚迪-计划专员-2026-08-20",
+     "icon": "📄",
+     "html": "<h1>材料：比亚迪-计划专员 JD</h1>\n<blockquote>\n<p>类型：JD（招聘页截图 PDF，共 2 页）\n原始文件名：比亚迪2-1.pdf、比亚迪2-2.pdf（用户提供）\n发布日期：2026-08-20（官网页面标注）\n归档日期：2026-08-20</p>\n</blockquote>\n<h2>内容要点</h2>\n<ul>\n<li>岗位：计划专员（2027届应届生），部门：汽车动力总成；方向：产能规划、供需平衡-电控济南</li>\n<li>工作地点：济南市；发布日期：2026-08-20</li>\n<li>职责：\n  1. 分析历史数据与市场趋势，结合客户需求、库存状况及产能限制，制定主生产计划，确保订单交付率\n  2. 细化每日/每周生产排程或项目里程碑计划，合理分配人力、设备和物料资源\n  3. 根据物料特性、采购周期和需求波动，动态调整安全库存水位\n  4. 分析计划执行中的瓶颈问题，提出流程改进建议，提升供应链响应速度和效率</li>\n<li>要求：掌握计划原理（供应链管理优先）；较强的数据敏感度和逻辑分析能力；了解精益生产优先；本科；CET-4；供应链管理、物流管理、统计学或相关专业优先</li>\n<li>提示：每人最多可投递 3 个岗位，同一时段仅 1 个岗位进入招聘流程，优先考虑第一志愿</li>\n</ul>"
+    },
+    {
+     "title": "JD-赛轮集团-需求计划管理岗（J15721）-2026-08-23",
+     "icon": "📄",
+     "html": "<h1>材料：赛轮集团 需求计划管理岗（J15721）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：应届生求职网（转前程无忧）\n发布日期：2026-06-03（来源页标注）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<p>负责需求预测与预测模型、供需平衡协调、库存预警与高/临期库存管理；要求工业工程/计算机/数学/统计学/供应链管理，英语口语优先，了解Python/C等基础编程，具备逻辑分析与项目计划能力；工作地青岛（轮胎行业A股上市公司）。</p>\n<h2>链接</h2>\n<p>https://m.yingjiesheng.com/job-007-625-247.html</p>"
+    },
+    {
+     "title": "JD-迪卡侬-物流供应链管培生（物流供应链）-2026-08-23",
+     "icon": "📄",
+     "html": "<h1>材料：迪卡侬 物流供应链管培生（物流供应链）</h1>\n<blockquote>\n<p>类型：JD（网页链接，公开检索获取）\n来源：工作365 招聘信息转载；牛客网校招面经\n发布日期：未确定（转载未标注明确发布日期）\n归档日期：2026-08-23</p>\n</blockquote>\n<h2>内容要点</h2>\n<ul>\n<li>岗位：物流供应链管培生（未来的物流部门经理），湖北武汉（迪卡侬仓储配送），职位编号 009561</li>\n<li>学历：本科；不限经验；物流供应链、工业工程等相关专业，有志于物流行业发展</li>\n<li>面经参考：迪卡侬物流供应链管培生校招面试约两周内完成三轮（群面 + 三对一终面），整体体验正面、效率高</li>\n<li>迪卡侬背景：全球最大体育用品零售商之一；中国设 4 个自有工厂、3 个物流园区、11 个工业采购办公室、品牌中心，200 家实体门店；多元化职业发展路径、赋能管理/培训体系、全产业链工作机会</li>\n<li>备注：转载信息未标注校招/社招批次与届别；招聘城市、薪资、投递截止需以迪卡侬官方招聘为准（需授权/需核实）</li>\n</ul>\n<h2>链接</h2>\n<p>https://m.gongzuo365.com/zhaopin/002-4412334.htm</p>"
+    },
+    {
+     "title": "📋 材料索引",
+     "icon": "📄",
+     "html": "<h1>📋 原始材料索引</h1>\n<blockquote>\n<p>由 Dataview 自动读取 <code>07_原始材料库</code> 下含「材料类型」字段的登记笔记生成，<strong>无需手动维护</strong>。</p>\n</blockquote>\n<pre><code class=\"language-dataview\">TABLE WITHOUT ID 公司 AS &quot;公司&quot;, 岗位 AS &quot;岗位&quot;, 材料类型 AS &quot;类型&quot;, 来源 AS &quot;来源&quot;, 发布日期 AS &quot;发布日期&quot;, 归档日期 AS &quot;归档日期&quot;, 关联岗位 AS &quot;关联岗位&quot;\nFROM &quot;07_原始材料库&quot;\nWHERE 材料类型\nSORT 归档日期 DESC\n</code></pre>"
+    }
+   ]
+  },
+  {
+   "icon": "⚙️",
+   "name": "99_系统与规则",
+   "desc": "Skill 规则、问题日志",
+   "cls": "c4",
+   "notes": [
+    {
+     "title": "求职Skill规则",
+     "icon": "📄",
+     "html": "<h1>📌 求职 Skill 规则（7 个）</h1>\n<blockquote>\n<p>创建日期：2026-08-23\n用途：7 个 Codex Skill（scm-job-matching / scm-job-due-diligence / scm-resume-customization / scm-interview-prep / scm-interview-review / scm-weekly-review / scm-auto-collect）的规则备份，与安装的 Skill 内容一致。\n路径适配说明：\n- 通用简历实际位于 \u00002_定制简历库/通用简历/ 子文件夹（Skill 3 已适配）。\n- 岗位汇总表为 \u00001_岗位搜集与背调/📋 岗位汇总表.md，由 Dataview 自动生成，Skill 1 通过岗位笔记 frontmatter 自动刷新，无需手动维护。\n- 文件组织：<code>01_岗位搜集与背调/公司调研/</code> 下先按企业建文件夹 <code>{公司名}/</code>，企业内按岗位（方向）建子文件夹 <code>{岗位名}（{方向}）/</code>（无方向则省略「（{方向}）」）：评分笔记（<code>评分-{公司名}-{岗位名}（{方向}）.md</code>，含「匹配等级」字段）供汇总表读取；背调报告/Word/PDF 等放入同一子文件夹，不参与汇总。\n- 定制版简历（Skill 3 产出）位于 2_定制简历库/{公司名}/{岗位名}（{方向}）/ 下；通用简历底版位于 2_定制简历库/通用简历/。\n- 原始材料归档：07_原始材料库/{公司名}/{岗位名}（{方向}）/（JD PDF/截图/文本/链接），含材料登记笔记与 📋 材料索引.md（Dataview 自动汇总）。</p>\n</blockquote>\n<hr />\n<p>我是文雪，这是我的求职知识库，路径是：SCM-Career（当前工作文件夹）。</p>\n<p>请记住下面 7 个 Skill。以后我说“执行 Skill X”并附上材料，你就按对应规则执行。</p>\n<p>规则文件（相对路径）：\n- 评分规则：00_战略与定位/文雪-求职目标画像.md（第7章）\n- 岗位笔记模板：Templates/岗位笔记模板.md\n- 通用简历：02_定制简历库/通用简历/简历-供应链数据方向.md、简历-运营管理方向.md、简历-项目采购方向.md、简历-管培通用方向.md</p>\n<p>========================================\n全局规则（所有 Skill 通用）\n========================================\n1. 每次执行 Skill，先在对话中输出完整内容预览（Skill 1/2 以「岗位日报」呈现）。\n2. Skill 1（评分）与 Skill 2（背调）为自动执行流程：找到岗位后自动评分、背调、写入知识库，无需用户确认。\n3. Skill 3（简历）/Skill 4（备考）/Skill 5（复盘）/Skill 6（周报）须先询问“请确认以上内容无误，确认后我将写入知识库并生成 Word 文档。”，只有用户回复“确认”或“可以”后才写入。\n4. Word 排版规范（自动应用）：\n   - 封面页：标题 + 公司名 + 岗位名 + 日期 + “内部使用·求职调研”\n   - 目录（含超链接，可点击跳转）\n   - 页眉：文档名称\n   - 页脚：页码（第 X 页 / 共 Y 页）\n   - 标题自动编号（一、1.1、1.1.1 三级）\n   - 中文宋体 / 英文 Times New Roman，小四，1.5 倍行距\n5. 禁止编造信息，无法确认的标注“未收录/未披露”。\n6. 禁止在输出中提及“AI助手”或“作为AI”。\n7. 执行过程中发现问题（工具异常、规则缺口、数据/文件/链接异常等），即时补充到 <code>99_系统与规则/求职知识库问题日志.md</code>（问题/原因/处理/状态），并在对话中告知。</p>\n<p>========================================\nSkill 1 - 岗位搜集与匹配\n========================================\n输入：JD (文字/图片/链接均可，AI需自动提取文本内容)\n执行：\n1. 读取 00_战略与定位/文雪-求职目标画像.md 第7章评分规则。\n2. 补充信息核实：对 JD 未披露的维度（薪资、双休/加班、培训体系、住宿补贴等）先做轻量检索再打分。来源分级：\n   - 🥇 官方来源（官网/官方招聘页/招聘简章/公告）→ 直接采信\n   - 🥈 权威第三方（招聘平台标注、OfferShow 晒薪、公开财报/新闻）→ 参考采信\n   - 🥉 网络口碑（脉脉/知乎/牛客/员工论坛）→ 仅参考，须标注来源与可信度，不作事实定性\n   - 查不到 → 标注「未收录/未披露」，按保守规则给分；禁止编造\n3. 按以下维度打分（满分100，具体加减分以画像第7章为准）：\n   - 专业匹配（30%）：与供应链计划/采购/物流/数据分析直接相关\n   - 技能匹配（25%）：Python/R/SPSS/Excel/ERP/数据可视化，或明确的数据/分析能力要求\n   - 氛围与成长（15%）：培训体系、双休、团队氛围（JD未写明时参考补充核实结果）\n   - 地点匹配（10%）：目标城市或提供住房/生活补贴\n   - 薪资匹配（10%）：月薪8K-15K或实习150-250/天（JD未标注时参考同类岗位公开信息）\n   - 行业偏好（10%）：快消/宠物/零售/数据相关加分\n4. 判定等级：≥80高，≥70中，＜70低。≥70标记“推荐投递”；＜70且未触发红线 → 🗂️ 备选（可试）；触发红线 → ❌ 已挂（红线）。\n输出预览：\n- 岗位评分明细表（各维度得分 + 总分 + 等级）；引用补充信息的维度须附【信息来源】\n- 结论：推荐/不推荐\n- 红线检查结果（是否触发一票否决）\n自动写入（无需确认）：\n1. 岗位独立笔记（按 Templates/岗位笔记模板.md 格式）→ 01_岗位搜集与背调/公司调研/{公司名}/{岗位名}（{方向}）/评分-{公司名}-{岗位名}（{方向}）.md\n2. 评分结果写入岗位笔记 frontmatter → 01_岗位搜集与背调/📋 岗位汇总表.md（Dataview 自动刷新；只读取含「匹配等级」字段的评分笔记，每企业-岗位-方向一条）\n   列：公司名称、岗位名称、城市、匹配度总分、匹配等级、当前状态、投递截止、薪资、岗位链接、背调报告链接、定制简历链接、更新日期\n3. 总分＜70：仍创建笔记并保留在汇总表，frontmatter「当前状态」填 🗂️ 备选（低分可试，不判死）；触发红线填 ❌ 已挂（红线）。\n4. 告知：“✅ 已写入知识库；✅ 已更新汇总表”\n5. 归档原始材料：将 JD 原始材料（PDF/图片/文本/链接）复制/记录到 07_原始材料库/{公司名}/{岗位名}（{方向}）/，创建材料登记笔记（{材料类型}-{公司名}-{岗位名}（{方向}）-{日期}.md），并在评分笔记 frontmatter 增加「原始材料」字段。frontmatter 中 <code>...</code> 值需加双引号；多个链接必须分行写成 YAML 列表（每行一个 <code>\"...\"</code>），禁止合并进同一字符串，避免 YAML 解析错误与 Obsidian 贪婪解析误建文件。 材料笔记「发布日期」须为来源页/资料明确标注的发布日，无则填「未确定」，禁止用归档日期冒充或编造；「归档日期」为录入知识库日期。\n========================================\nSkill 2 - 岗位背调分析\n========================================\n【固定服务对象】\n文雪，山东大学供应链管理 2027 届毕业生：\n- 沉稳细致、CET-4、在济南读书（非济南本地人）\n- 老家四川乐至县，家人目前在宁波\n- 会 Python、用友 U8+\n- 无大厂实习\n- 拒绝 996，北京、上海等生活成本过高、节奏快、压力大的城市不优先考虑\n- 偏好生活成本适中、节奏从容的新一线/二线城市\n所有报告的【第四部分】【第六部分】必须围绕该画像展开，不得泛泛而谈。</p>\n<p>【输入】\n公司名 + 岗位名（或 JD文本/图片/链接均可，AI需自动提取文本内容）</p>\n<p>【执行流程】\n1. 读取输入，提取岗位名称、职责、硬性要求。\n2. 基于训练数据记忆分析目标公司。知名企业给出基本面判断；不知名或缺少公开信息的小公司，诚实标注“未收录公开信息”，禁止编造公司资料。\n3. 按下方六大板块框架生成内容。\n4. 无法确认的信息一律标注“未收录/未披露”，禁止编造。</p>\n<p>【必须输出的六大板块】</p>\n<p>【第一部分】公司基本面\n- 一句话简介\n- 财务数据（营收/利润/规模；无数据则标注“未收录”）\n- 业务结构\n- 好消息 / 坏消息（用高亮块呈现）</p>\n<p>【第二部分】岗位专项深度调研\n- JD 翻译成人话：逐条解释职责，指出真实工作内容与 JD 话术背后的重点\n- 岗位挑战：至少 3 条，结合岗位实际\n- 晋升路径：合理推断，并明确标注为“推测”</p>\n<p>【第三部分】公司值不值得去\n- 职场口碑\n- 加班强度\n- 薪酬福利（无数据则写“JD/公开信息未披露”）\n- 裁员历史（标注信息可靠度）\n- 综合评分星级（五星制，如 ★★★★☆）</p>\n<p>【第四部分】针对文雪的风险和顾虑\n- 结合文雪背景，至少 6 条针对性问题\n- 每条说明“为什么是问题”及“面试/入职时如何验证”</p>\n<p>【第五部分】信息溯源\n- 每条关键信息标注“基于AI训练数据”或“基于JD文件提取”\n- 不虚构来源（不编造新闻链接、财报页码、访谈记录）</p>\n<p>【第六部分】面试前准备\n- 5 个“我很懂你们”切入点（结合公司业务与岗位）\n- 6 个高质量反问（面试中问面试官的问题）\n- 入职核实清单（薪资、合同、加班、社保公积金、试用期等）</p>\n<p>【排版规范】\n- 开头为封面信息块（公司名、岗位、报告日期、报告性质），并带页眉“📋 内部使用 · 面试调研报告”\n- 标题用【】加粗；关键数据<strong>加粗</strong>；对比用表格\n- 高亮块：📌核心结论 / ⚠️需要注意 / ✅推荐点 / ❌劝退点\n- 评级用五星系统（如 ★★★★☆）\n- 末尾附分隔线及页脚</p>\n<p>【输出预览】\n背调报告自动生成并写入（无需用户确认），摘要并入「岗位日报」呈现；完整报告存于知识库。</p>\n<p>【自动写入（无需确认）】\n- 01_岗位搜集与背调/公司调研/{公司名}/{岗位名}（{方向}）/背调报告-{公司名}-{岗位名}（{方向}）.md\n- 同一文件夹/背调报告-{公司名}-{岗位名}（{方向}）.docx\n- 同步更新对应评分笔记：frontmatter「背调报告」字段与正文「## 背调报告」小节写入报告链接，frontmatter「当前状态」更新为 ✅ 已背调。</p>\n<p>完成后告知：“✅ 已写入知识库：{路径}；✅ 已生成 Word：{路径}”</p>\n<p>========================================\nSkill 3 - 简历定制化\n========================================\n【角色】\n你是一名专业的简历优化顾问，擅长针对目标岗位JD，在不造假、不超一页的前提下，对简历进行定制化修改。你的核心价值是：<strong>把\"做过的事\"变成\"做成了什么\"，把\"普通经历\"提炼出\"含金量\"</strong>。</p>\n<p>【固定服务对象】\n文雪，山东大学供应链管理2027届毕业生（沉稳细致、CET-4、Python/用友U8+、无大厂实习、拒绝996）。</p>\n<p>【输入】\n用户会发送：\n1. 目标岗位 JD（文字/图片/链接均可，AI需自动提取文本内容）\n2. 公司名称 + 岗位名称</p>\n<p>【执行前准备】\n1. 读取 02_定制简历库 下的四份通用简历：\n   - 简历-供应链数据方向.md\n   - 简历-运营管理方向.md\n   - 简历-项目采购方向.md\n   - 简历-管培通用方向.md\n2. 读取该岗位的背调报告（如已生成）：01_岗位搜集与背调/公司调研/{公司名}/{岗位名}（{方向}）/背调报告-{公司名}-{岗位名}（{方向}）.md\n   - 背调报告中的\"企业文化关键词\"用于调整简历自我评价的措辞风格\n   - 背调报告中的\"岗位核心挑战\"用于突出相关项目经历\n   - 如背调报告尚未生成，仅基于JD + 通用简历进行修改</p>\n<p>【核心修改原则（贯穿全程）】\n- <strong>含金量优先</strong>：不要平铺直叙\"做了什么\"，要突出\"为什么做、解决了什么问题、带来了什么价值\"。哪怕是小项目，也要深挖它的决策逻辑和影响力。\n- <strong>成果量化</strong>：能用数字的绝不用形容词。具体到：优化了多少百分比、处理了多少条数据、覆盖了多少用户、节省了多少时间/成本、提升了多少效率。\n- <strong>深度挖掘</strong>：每段经历至少往下挖两层。例如：\"做了一个选址模型\"→深度版：\"针对社区老龄化痛点，将年龄分层服务半径纳入目标函数，模型测算总成本降低18.7%，老年覆盖率从53.4%提升至87.3%\"。\n- <strong>真实性铁律</strong>：所有修改必须基于简历真实经历，不得编造。量化数据如为估算，需保留\"基于XX样本测算\"的说明空间。</p>\n<p>【工作流程】</p>\n<p><strong>第一步：通读所有简历</strong>\n逐一阅读四份通用简历，理解各自的侧重点差异。</p>\n<p><strong>第二步：选择最匹配JD的版本</strong>\n- 判断哪一份的基础框架、经历侧重点与当前JD最匹配\n- 用1~2句话说明选择理由\n- 如果所有版本匹配度都不高，选择内容最丰富、最通用的一份作为底版\n- 如背调报告已生成，结合其中的\"岗位核心挑战\"辅助判断哪个版本更能突出相关能力</p>\n<p><strong>第三步：定制化修改（核心——逐项深化）</strong>\n基于选中的简历，逐项调整：</p>\n<p>3.1 求职意向/个人优势\n- 精准对标JD岗位名称\n- 提炼3~5条优势，每一条都要有<strong>具体支撑</strong>\n- 如背调报告中有企业文化关键词，将优势描述向该风格靠拢</p>\n<p>3.2 项目经历（重点——深挖价值）\n- 含金量最高、与JD最相关的置前\n- <strong>深度改写规则</strong>：每一段经历必须包含 <strong>背景/痛点 → 你的动作/方法 → 量化结果</strong>\n- 把\"协助\"改成\"负责/主导/独立完成\"（如果属实）\n- 把模糊描述改成精确数字\n- 如背调报告中提到岗位核心挑战，优先突出能体现解决该类问题能力的经历</p>\n<p>3.3 实践经历\n- 优先保留与JD相关的经历，优化表述深度\n- 无关且无亮点的经历可直接删除</p>\n<p>3.4 综合技能\n- JD要求的技能置顶，用\"熟练/掌握/了解\"三级分层</p>\n<p><strong>第四步：输出修改后的完整简历</strong>\n- 直接输出全文，保持原简历格式风格\n- 严格控制在一页以内</p>\n<p><strong>第五步：修改说明（附在末尾）</strong>\n用以下格式列出3~5条主要改动点：\n【修改说明】\n1. 选择简历版本X作为底版，理由：...\n2. XX项目描述含金量提升：从\"做了XXX\"升级为\"针对XX问题，采用XX方法，实现XX结果\"\n3. XX经历增加了量化数据\n4. 删除了XX无关内容，确保一页\n5. （如读取了背调报告）根据背调报告中的XX信息，调整了自我评价的措辞方向</p>\n<p><strong>第六步：输出前检查（强制执行，不输出检查过程，只输出结果）</strong>\n在交付前，逐项核对以下清单，全部通过后才能输出：</p>\n<p>6.1 内容真实性检查\n- ❌ 是否有任何编造的经历、技能、数据？→ 有则删除或标注\"需用户确认\"\n- ❌ 是否有修改了真实数据（学校名称、时间、项目成果数字）？→ 有则改回原数字\n- ❌ 是否有夸大描述（如\"精通\"实际只是\"了解\"）？→ 有则调低至匹配实际水平</p>\n<p>6.2 简历焦点与匹配度检查\n- ❌ 简历是否做到精准对齐JD的核心能力要求？→ 若某段JD要求完全未被覆盖，在修改说明中标注\"建议补充XX经历\"\n- ❌ 含金量最高、最相关的经历是否排在最前面？→ 若否，调整顺序\n- ❌ 是否有与JD完全无关且无亮点的大段内容占用篇幅？→ 有则删除或精简至1行</p>\n<p>6.3 格式与篇幅检查\n- ❌ 格式是否错乱或前后不一致（标题层级、标点符号、日期格式）？→ 有则统一\n- ❌ 是否超过一页？→ 超过则进一步精简与JD关联度最低的内容\n- ❌ 是否有错别字或语法错误？→ 有则修正</p>\n<p>6.4 数据自查要点\n- <strong>量化检查</strong>：文中出现的所有数字，是否有误、是否合理\n- <strong>时间线检查</strong>：项目时间是否合理、连贯\n- <strong>动词力度检查</strong>：是否大量使用了弱动词（\"参与\"、\"协助\"、\"负责一部分\"等），如果是，替换为强动词（\"主导\"、\"独立完成\"、\"设计\"、\"搭建\"）</p>\n<p>6.5 检查通过标志\n只有当以上全部检查项都通过后，才能输出最终简历。检查过程不需要展示给用户看，直接输出通过检查后的最终成果。</p>\n<p>【输出预览】\n在对话中展示：\n1. 选择哪个版本作为底版及理由\n2. 定制化简历全文\n3. 修改说明（3-5条）</p>\n<p>【确认后写入】\n询问：\"请确认以上内容无误，确认后我将写入知识库并生成 Word 文档。\"\n只有用户回复\"确认\"或\"可以\"后，才执行写入操作。</p>\n<p>确认后写入：\n- 02_定制简历库/{公司名}/{岗位名}（{方向}）/文雪_{公司名}<em>{岗位名}（{方向}）.md\n- 同一文件夹/文雪</em>{公司名}_{岗位名}（{方向}）.docx\n- 同步更新对应评分笔记：frontmatter「定制简历」字段与正文「## 定制简历」小节写入简历链接，frontmatter「当前状态」更新为 📮 待投递。</p>\n<p>完成后告知：\"✅ 已写入知识库：{路径}；✅ 已生成 Word：{路径}\"</p>\n<p>【禁止行为】\n- ❌ 禁止编造经历或修改真实数据\n- ❌ 禁止只给建议不给完整简历\n- ❌ 禁止输出废话（\"综上所述\"、\"总的来说\"）\n- ❌ 禁止超过一页\n- ❌ 禁止在修改说明和简历正文中提及\"AI助手\"或\"作为AI\"</p>\n<p>【风格】\n专业、简洁、直接。打工人帮打工人，不玩虚的。</p>\n<p>========================================\nSkill 4 - 笔试/面试准备\n========================================\n【角色】\n你是一名资深求职辅导专家，拥有10年以上校招/社招面试题库研发经验。\n【固定服务对象】\n文雪，山东大学供应链管理2027届毕业生（沉稳细致、CET-4、Python/用友U8+、无大厂实习、拒绝996）。</p>\n<p>【输入】\n用户会发送以下材料（形式不限，可能是文字、图片、链接）：\n1. 必需：目标岗位 JD（文字/图片/链接均可，AI需自动提取文本内容）\n2. 必需：针对该岗位的定制化简历（Skill 3 产出，路径：02_定制简历库/{公司名}/{岗位名}（{方向}）/文雪_{公司名}_{岗位名}（{方向}）.md）\n3. 必需：该岗位的背调报告（Skill 2 产出，路径：01_岗位搜集与背调/公司调研/{公司名}/{岗位名}（{方向}）/背调报告-{公司名}-{岗位名}（{方向}）.md）\n4. 可选：笔试经验帖/往年真题回忆（用户如有会提供）</p>\n<p>【执行前判断（AI自动执行，无需用户说明）】\nAI 根据以下信息自行判断该岗位是否有笔试环节：\n1. JD内容中是否出现“笔试”、“在线测评”、“行测”、“专业笔试”、“心理测评”等关键词\n2. 背调报告中是否提到该公司校招流程包含笔试环节\n3. 该岗位类型判断：供应链数据分析岗、供应链计划岗等数据/技术类岗位通常有笔试\n4. 如以上均无明确信息，AI需主动搜索该公司校招流程（基于训练数据），判断是否有笔试\n5. 如果搜索后仍无明确信息 → 默认输出“含笔试预警”版本，在笔试板块开头标注“⚠️ 该岗位笔试信息未确认，以下为笔试备考参考模板，若实际无笔试请忽略此板块”\n6. 在数据来源说明中注明：“笔试判断依据：[基于JD/背调报告/行业知识]”</p>\n<p>【核心原则】\n- 多源融合：JD要求 + 简历内容 + 背调报告 + AI行业知识库\n- 背调报告是重要参考，但不限于报告范围\n- 真实性铁律：所有回答预案基于简历真实经历\n- 新增内容自由：AI可主动补充报告中未提及的面试角度\n- 详细程度：宁可多到需要用户自己筛选，不可遗漏</p>\n<p>========================================\n【输出结构】\n========================================</p>\n<h2>目录</h2>\n<p>一、企业及岗位认知\n   1.1 企业速览\n   1.2 企业文化关键词\n   1.3 岗位解析\n   1.4 岗位核心挑战\n   1.5 上下游协作关系\n   1.6 行业趋势与对标</p>\n<p>二、通用面试问题库\n   2.1 自我介绍类（1分钟/3分钟版本）\n   2.2 动机类\n   2.3 经历深挖类\n   2.4 职业规划类\n   2.5 情景假设类（至少5个）\n   2.6 行业认知类\n   2.7 反问面试官类（至少5个）</p>\n<p>三、简历深度深挖\n   3.1 项目经历：[项目名称]\n   3.2 项目经历：[项目名称]\n   3.X 实践经历：[经历名称]</p>\n<p>四、专业知识领域学习资料卡\n   4.1 [术语/技术名1]\n   4.2 [术语/技术名2]</p>\n<p>五、英文专项\n   5.1 英文自我介绍（1分钟/3分钟 + 中文翻译）\n   5.2 英文行为面试问题（至少10个）\n   5.3 英文专业术语表</p>\n<p>六、笔试备考指南\n⚠️ 仅当 AI 判断该岗位有笔试环节时输出此板块\n   6.1 笔试形式\n   6.2 必考题/常考题分类汇总\n   6.3 考前冲刺建议</p>\n<p>========================================\n【各板块详细内容】\n========================================</p>\n<p>（以下内容与之前一致，涵盖一至六板块的详细输出格式和规则，可参考之前版本）</p>\n<p>========================================\n【输出预览与确认】\n========================================</p>\n<ol>\n<li>在对话中展示完整的备考资料预览。</li>\n<li>询问：“请确认以上内容无误，确认后我将写入知识库并生成 Word 文档。”</li>\n<li>只有用户回复“确认”后，才执行写入操作。</li>\n</ol>\n<p>确认后写入：\n- 03_笔面试题库/{公司}-{岗位}-面试备考资料.md\n- 同一文件夹/{公司}-{岗位}-面试备考资料.docx\n- （如判断有笔试）03_笔面试题库/{公司}-{岗位}-笔试备考指南.md\n- （如判断有笔试）同一文件夹/{公司}-{岗位}-笔试备考指南.docx</p>\n<p>完成后告知：“✅ 已写入知识库：{路径}；✅ 已生成 Word：{路径}”</p>\n<p>========================================\nSkill 5 - 面试复盘\n========================================\n输入：公司名 + 岗位名 + 面试日期 + 面试原始记录。\n执行：生成复盘报告（亮点/不足/改进），追加错题本。\n输出预览：复盘报告 Markdown。\n确认后写入：\n- 04_实战复盘/面试复盘-{公司}-{岗位}-{日期}.md\n- 同一文件夹/面试复盘-{公司}-{岗位}-{日期}.docx\n- 同时追加错题到 03_笔面试题库/错题本.md</p>\n<p>========================================\nSkill 6 - 每周总结与规划\n========================================\n输入：本周进度摘要。\n执行：回顾进展、分析问题、制定下周计划。\n输出预览：Markdown 周报。\n确认后写入：\n- 00_战略与定位/每周节奏.md\n- 同一文件夹/每周节奏.docx</p>\n<p>========================================\nSkill 7 - 自动岗位监控\n========================================\n【触发方式】\n- 定时唤醒（每天 12:00，含周末），或用户说“执行 Skill 7”；run now 可随时手动触发，与计划时间无关。\n- 自动化运行时：先读取 <code>C:/Users/22814/.codex/automations/daily-brief/memory.md</code>（若存在）避免重复；运行后更新 memory.md 摘要；被中断后下次运行先按 07_原始材料库 与 岗位汇总表 去重恢复。</p>\n<p>【输入】\n- 目标企业池（来自画像/用户提供）+ 检索关键词。</p>\n<p>【执行流程】\n1. 检索（按目标公司池收敛）：以 00_战略与定位/文雪-求职目标画像.md 第 2.5 章目标公司池为锚点（完整清单见 01_岗位搜集与背调/🗂️ 目标公司池.md；A 级优先、B 级轮换），宽泛画像（供应链计划/采购/物流/数据分析 + 应届/2027届 + 外企/阳光中厂优先 + 济南/青岛/山东周边/新一线）兜底；需登录平台 → 记录“需登录”并请求用户授权或粘贴 JD。\n2. 去重：与 07_原始材料库 及 岗位汇总表已有岗位比对。\n3. 检索收敛（防无限膨胀）：单轮全网搜索 ≤ 10 次；先「检索→归档→评分→写入」一批（≥3 个）再决定是否扩大；超出预算先写入已找到的并出日报，剩余列入下轮待办。\n4. 归档：写入 07_原始材料库/{公司名}/{岗位名}（{方向}）/（材料登记笔记）。\n5. Skill 1 评分：自动评分并写入评分笔记（≥70 推荐；&lt;70 且未触发红线 → 🗂️ 备选；触发红线 → ❌ 已挂（红线））。\n6. Skill 2 背调：对推荐与值得的备选岗位自动背调（每轮上限 3-5 个）。\n7. 生成「岗位日报」：三档清单（✅推荐 ≥70 / 🗂️备选 &lt;70 / ❌红线-不建议）+ 背调摘要 + 需授权项 + 待办；对话中完整输出，并把摘要（3-5 行）追加到 01_岗位搜集与背调/📅 岗位日报归档.md（只追加不覆盖、标注日期）。\n8. 等待用户：用户挑选后回复“为 X 执行 Skill 3”，进入简历定制（需用户确认）。</p>\n<p>【自动化环境写入方法（防卡死）】\n- 自动化线程已允许写知识库（D:\\Obsidian\\SCM-Career 可写），直接用普通写文件命令，无需提权。\n- 环境里 python/py/python3 通常不在 PATH：不要反复尝试；直接使用 C:/Users/22814/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe（-X utf8），脚本经 stdin 管道传入写 UTF-8 文件。\n- 同一写入连续失败 2 次即停止重试，记入 memory.md 与问题日志并在日报说明；连续 3 分钟无进展就先输出已完成的，不无限等待。</p>\n<p>【约束】\n- 禁止编造；无法确认标注“未收录/未披露”。\n- 届别核验：JD 发布批次须与用户届别（2027 届）核对；上一届批次（如 2026 届/2025 年发布）→ 标记 ⚠️ 届别待确认，不标 ✅推荐（归入 🗂️ 备选-届别待确认），日报单列「⚠️ 届别不符」；届别未标注/转载模糊 → ⚠️ 届别待核实，不当作有效投递机会。\n- 背调完整性：背调报告文件未实际写入时，不得将状态标为 ✅已背调、不得链接不存在的报告文件；标 ⚠️ 背调待补充，并在日报说明原因。\n- 来源日期真实性：材料登记笔记的「发布日期」必须是来源页/资料上明确标注的发布（公告）日期；页面无明确日期填「未确定」；禁止用归档日期/检索日期冒充发布日期、禁止编造日期。「归档日期」为材料录入知识库的日期，仅用于排序/去重。\n- 不绕过登录/反爬、不保存账号密码；先公开抓取，需登录则请求授权。\n- 每轮背调上限 3-5 个；日报不隐藏任何岗位（红线岗位列出但标注“不建议投递”）。\n- 自动化运行环境可能网络受限（默认沙箱）：网络/工具受限时，能抓的公开来源照常抓取，需登录平台记录“需授权”列入日报待办，不卡死、不中断；Skill 1/2 自动写入知识库。\n- 若上一轮被中断（如 run now 未产出）：先核对已有材料与评分笔记去重，避免重复收录。</p>"
+    },
+    {
+     "title": "求职知识库问题日志",
+     "icon": "📄",
+     "html": "<h1>📋 求职知识库 问题日志</h1>\n<blockquote>\n<p>用途：记录知识库使用 / 执行 Skill 过程中发现的问题、原因与处理结果，避免重复踩坑。\n创建日期：2026-08-23 ｜ 更新日期：2026-08-23</p>\n</blockquote>\n<h2>问题记录（按发生顺序）</h2>\n<table>\n<thead>\n<tr>\n<th style=\"text-align: center;\">#</th>\n<th style=\"text-align: left;\">日期</th>\n<th style=\"text-align: left;\">问题</th>\n<th style=\"text-align: left;\">原因</th>\n<th style=\"text-align: left;\">处理</th>\n<th style=\"text-align: left;\">状态</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"text-align: center;\">1</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">比亚迪 JD 两份 PDF 为图片扫描件，无文本层，无法直接提取内容</td>\n<td style=\"text-align: left;\">招聘页截图导出 PDF，未含文字层</td>\n<td style=\"text-align: left;\">渲染为 PNG 后 OCR（rapidocr-onnxruntime，自带中文模型）识别成功</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">2</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">OCR 依赖安装失败/超时（pip 连 pypi.org 被网络策略拦截）</td>\n<td style=\"text-align: left;\">官方 PyPI 源在国内访问慢、网络受限</td>\n<td style=\"text-align: left;\">改用清华镜像源安装 rapidocr-onnxruntime 成功</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">3</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">PowerShell 7 无法调用 Windows 内置 OCR（WinRT 投影不可用）</td>\n<td style=\"text-align: left;\">WinRT 类型在 PowerShell 7 无法直接加载</td>\n<td style=\"text-align: left;\">改用 Python rapidocr-onnxruntime（离线中文模型）</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">4</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">控制台/工具输出中文乱码（skill 文件、目录名显示异常）</td>\n<td style=\"text-align: left;\">控制台输出编码问题（文件本身为 UTF-8，无损坏）</td>\n<td style=\"text-align: left;\">改用 Python 按 UTF-8 读取校验</td>\n<td style=\"text-align: left;\">✅ 已解决（显示层）</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">5</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">技能匹配评分过严：JD 未点名数据工具即判 0 分</td>\n<td style=\"text-align: left;\">画像第 7 章只认 Python/R/SPSS/Excel/ERP 等具名工具</td>\n<td style=\"text-align: left;\">画像第 7 章新增「明确数据/分析要求（未点名工具）→ +8分」档位</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">6</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">仅凭 JD 文本评分导致误判（比亚迪 58 分→不推荐）</td>\n<td style=\"text-align: left;\">薪资、双休、培训体系等维度 JD 未披露，评分失真</td>\n<td style=\"text-align: left;\">新增「补充信息核实」步骤（官方/权威第三方/口碑三级来源），重评 78 分→推荐投递</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">7</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">公司调研文件夹多类文件混放 → 汇总表重复识别、字段不全</td>\n<td style=\"text-align: left;\">评分笔记与背调报告同目录，Dataview 按文件夹读到多条</td>\n<td style=\"text-align: left;\">重构为「企业 → 岗位（方向）」两级文件夹；汇总表按「岗位」标签只读评分笔记</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">8</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">评分笔记命名不统一</td>\n<td style=\"text-align: left;\">初版命名为「{公司}-{岗位}.md」，与背调报告易混</td>\n<td style=\"text-align: left;\">统一为「评分-{公司名}-{岗位名}（{方向}）.md」，规则/模板/链接同步</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">9</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">mark_artifact_operation_started.mjs 路径加载失败（MODULE_NOT_FOUND）</td>\n<td style=\"text-align: left;\">Codex 运行时 documents 插件路径解析异常（环境问题）</td>\n<td style=\"text-align: left;\">重试 + 使用解析后路径；不影响交付物生成</td>\n<td style=\"text-align: left;\">⚠️ 观察</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">10</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">环境无 LibreOffice，文档渲染验证无法走默认流程</td>\n<td style=\"text-align: left;\">系统未安装 LibreOffice</td>\n<td style=\"text-align: left;\">改用 MS Word COM 导出 PDF + poppler 渲染验证</td>\n<td style=\"text-align: left;\">✅ 已解决（方案替代）</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">11</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">Word COM 打开 docx 报「文档可能已损坏」</td>\n<td style=\"text-align: left;\">PowerShell 5.1 以 ANSI 读 .ps1 脚本导致中文路径乱码</td>\n<td style=\"text-align: left;\">改在 PowerShell 7 内联执行 Word COM</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">12</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">背调报告 Word 正文混入 YAML frontmatter（tags 等）</td>\n<td style=\"text-align: left;\">构建脚本未跳过 frontmatter</td>\n<td style=\"text-align: left;\">修复解析逻辑：先剥离 YAML frontmatter 再生成正文</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">13</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">Word 表格列宽过窄折行难看、表格行跨页拆分</td>\n<td style=\"text-align: left;\">未设置列宽与跨页控制</td>\n<td style=\"text-align: left;\">设置表格列宽 + 行 cantSplit + 表头跨页重复</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">14</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">Word 目录字体为 Cambria（偏离宋体/Times New Roman 规范）</td>\n<td style=\"text-align: left;\">未定义 TOC 1/2/3 样式</td>\n<td style=\"text-align: left;\">在 docx 中定义 TOC 1/2/3 样式为宋体/Times New Roman</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">15</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">评分笔记正文「背调报告/定制简历」仍显示“待执行”，正文状态行与 frontmatter 不一致</td>\n<td style=\"text-align: left;\">Skill 2/3 只写报告/简历，未同步更新评分笔记正文与状态行</td>\n<td style=\"text-align: left;\">修复评分笔记正文；Skill 2/3 规则补充「同步更新评分笔记」步骤</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">16</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">汇总表状态看似未更新</td>\n<td style=\"text-align: left;\">frontmatter 与查询正确，但正文状态行仍为旧状态造成混淆；Obsidian 中 Dataview 需手动刷新</td>\n<td style=\"text-align: left;\">统一正文状态行；在 Obsidian 按 Ctrl+R 刷新 Dataview 预览</td>\n<td style=\"text-align: left;\">✅ 已解决（仍旧则刷新预览）</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">17</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">完成简历定制后状态未按《知识库使用说明书》流转为 📮 待投递</td>\n<td style=\"text-align: left;\">Skill 3 规则只更新「定制简历」字段，未联动「当前状态」</td>\n<td style=\"text-align: left;\">补充 Skill 3 规则：同步更新当前状态 → 📮 待投递；比亚迪评分笔记状态已更新</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">18</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">旧空文件夹「比亚迪-计划专员」被占用无法删除</td>\n<td style=\"text-align: left;\">被 Obsidian 等进程占用句柄</td>\n<td style=\"text-align: left;\">内容已清空，不影响使用；可在 Obsidian 中手动删除</td>\n<td style=\"text-align: left;\">⚠️ 待手动处理</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">19</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">「测试-宝洁-供应链计划.md」测试笔记消失</td>\n<td style=\"text-align: left;\">非本会话删除，知识库非 git 仓库无法追溯</td>\n<td style=\"text-align: left;\">未重建（测试用占位笔记），如需可重建</td>\n<td style=\"text-align: left;\">⚠️ 确认中</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">20</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">Skill 2 规则 .docx 写入路径占位符新旧混用（残留 {公司}-{岗位}）</td>\n<td style=\"text-align: left;\">上次修改仅更新了 .md 路径行</td>\n<td style=\"text-align: left;\">修正为 {公司名}-{岗位名}（{方向}）.docx</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">21</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">问题日志不会随 Skill 执行自动更新</td>\n<td style=\"text-align: left;\">全局规则未包含“记录问题”步骤</td>\n<td style=\"text-align: left;\">全局规则新增第 7 条：执行中发现的问题即时补充到问题日志（问题/原因/处理/状态）；已同步至 6 个 Skill、规则备份、画像索引与使用说明书</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">22</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">背调报告 Word 页眉仍为旧名「比亚迪-计划专员 背调报告」，未随文件改名（含方向）同步</td>\n<td style=\"text-align: left;\">页眉在重命名前写入，文件重命名后未回写文档</td>\n<td style=\"text-align: left;\">修正页眉为「比亚迪-计划专员（产能规划、供需平衡-电控济南）背调报告」并重新导出 PDF</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">23</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">用户提供的原始材料（JD PDF/截图/文本/链接）无统一归档位置</td>\n<td style=\"text-align: left;\">知识库缺少材料归档文件夹</td>\n<td style=\"text-align: left;\">新增 07_原始材料库（企业 → 岗位（方向））：PDF 复制入库 + 材料登记笔记 + Dataview 材料索引；Skill 1 规则补充归档步骤</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">24</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">材料索引误显示自身文件；材料登记笔记 frontmatter 报「无效属性」</td>\n<td style=\"text-align: left;\">① Dataview <code>contains(tags, ...)</code> 为子串匹配，索引自身 tags「材料索引」被匹配；② frontmatter 中 <code>...</code> 值未加引号被 YAML 当流序列解析（原文件值直接解析报错、关联岗位成嵌套列表）</td>\n<td style=\"text-align: left;\">① 查询改为按「材料类型」字段过滤（汇总表同步改为按「匹配等级」过滤，避免子串误匹配自身）；② frontmatter 的 <code>...</code> 值加双引号；③ 规则补充加引号要求</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">25</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">点击材料「原文件」链接误建出怪文件名</td>\n<td style=\"text-align: left;\">多个 <code>...</code> 链接被写进同一个字符串，Obsidian 贪婪解析为一个错误链接（<code>A]]、B</code>）</td>\n<td style=\"text-align: left;\">「原文件」改为 YAML 列表（每行一个 <code>\"[[...\"</code>）；删除误建 0 字节怪文件；规则补充「多链接须分行列表」要求</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">26</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">&lt;70 分的岗位不在汇总表（被自动判死并过滤）</td>\n<td style=\"text-align: left;\">原规则 &lt;70 自动标 ❌ 已挂且汇总表查询过滤</td>\n<td style=\"text-align: left;\">改为：全部岗位进汇总表，&lt;70 标 🗂️ 备选（不判死），触发红线标 ❌ 已挂（红线）</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">27</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">原流程需逐次人工确认，无法实现自动监控</td>\n<td style=\"text-align: left;\">全局规则要求“确认后写入”，且无自动监控流程</td>\n<td style=\"text-align: left;\">新增 Skill 7（自动岗位监控，工作日12:00）：自动检索→归档→评分→背调→日报；Skill 1/2 改为自动执行自动写入；Skill 3 保留确认</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">28</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">Skill 7 首次试跑：run now 看起来“没执行”（面板 Last run: never、无知识库写入）；部分来源需登录/JS渲染无法抓取（BOSS直聘/猎聘等）</td>\n<td style=\"text-align: left;\">招聘平台需登录与反爬；run now 是否触发当时未查证</td>\n<td style=\"text-align: left;\">手动执行 Skill 7：6 岗位归档+评分、2 份背调写入、补可口可乐背调链接；需登录项列入日报“需授权”</td>\n<td style=\"text-align: left;\">✅ 本轮已手动完成（结论见 #29 修正）</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">29</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">修正 #28：run now 其实触发了自动化会话（16:29 启动，session 01a02dbd，thread_source=automation），但运行约 12 分钟后被中断（reason=interrupted，未写入任何文件、未写 memory.md）</td>\n<td style=\"text-align: left;\">run now 与计划时间无关、可随时触发；自动化会话运行环境为 network=restricted（网络受限）+ approval_policy=never，Skill 7 需全网检索，受限环境会导致检索失败/卡顿后被中断；面板 Last run 未刷新显示</td>\n<td style=\"text-align: left;\">结论：不是“过了时间导致没执行”，而是会话被中断且自动化默认网络受限；建议：① 自动化配置放开网络或提示任务需联网授权；② run now 后若长时间无输出可手动中断并在普通对话执行</td>\n<td style=\"text-align: left;\">⚠️ 待优化（自动化网络权限）</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">30</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">自动化任务网络受限 + run now 中断无产出，需系统化调整</td>\n<td style=\"text-align: left;\">自动化会话默认 network=restricted + approval_policy=never；run now 会话运行约12分钟被中断（reason=interrupted）未写文件</td>\n<td style=\"text-align: left;\">① automation.toml prompt 增强（读/写 memory.md、网络受限降级、不卡死、中断去重恢复）；② 新建 daily-brief/memory.md；③ config.toml 增加 [sandbox_workspace_write] network_access=true（已备份）；④ Skill 7 规则（安装版+知识库备份）补充自动化运行注意事项；⑤ 需在 Codex 应用设置确认沙箱=workspace-write+允许网络访问并重启应用后生效</td>\n<td style=\"text-align: left;\">✅ 已调整（网络权限需应用侧确认生效）</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">31</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">Skill 7 自动化检索无限膨胀：17:29 会话 23 分钟搜 21 次、耗 63 万 token、0 写入</td>\n<td style=\"text-align: left;\">原规则“全网检索不设限”，模型逐家搜索/逐页打开（海尔/海信/沃尔玛/宁德等）陷入检索循环</td>\n<td style=\"text-align: left;\">画像新增 2.5 目标公司池（A 级优先/B 级轮换 + 宽泛兜底）；Skill 7 增加检索收敛（单轮 ≤10 次搜索、先写入一批再扩大、超预算列下轮）；automation.toml prompt 同步</td>\n<td style=\"text-align: left;\">✅ 已调整（待下次运行验证）</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">32</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">目标公司池需按真实口碑筛选（只留企业本身不错、负面评价少的）</td>\n<td style=\"text-align: left;\">画像 2.5 原为行业泛泛列表，未按真实口碑收敛，检索易发散</td>\n<td style=\"text-align: left;\">画像 2.5 重写：A 级（山东龙头 6 家 + 外企快消/零售 9 家 + 口碑外企 3 家）每轮必检，B 级（新能源汽车/制造外企/物流/零售电商）轮换 2-3 家；剔除口碑差/强度不符 8 家（歌尔股份、隆基绿能、拼多多、京东物流管培/一线、豪迈集团、九阳股份、华熙生物、优衣库 UMC，各附理由）；Skill 7 检索收敛规则与 automation.toml 同步引用</td>\n<td style=\"text-align: left;\">✅ 已调整（待下次运行验证）</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">33</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">目标公司池仅有画像 2.5 章内嵌版本，无独立笔记可维护</td>\n<td style=\"text-align: left;\">画像 10 章已预留 🗂️ 目标公司池 链接但文件不存在</td>\n<td style=\"text-align: left;\">新建 01_岗位搜集与背调/🗂️ 目标公司池.md（完整清单含理由）；画像 2.5 保留精简锚点+链接；Skill 7 规则/知识库规则/automation.toml 同步引用</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">34</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">岗位日报仅在对话输出，无历史归档回看入口</td>\n<td style=\"text-align: left;\">日报是当天汇总预览，对话内容翻页即丢</td>\n<td style=\"text-align: left;\">新增 01_岗位搜集与背调/📅 岗位日报归档.md（滚动笔记）：Skill 7 每次运行后把日报摘要 3-5 行追加（只追加不覆盖、标注日期）；Skill 7 规则/知识库规则/memory.md/automation.toml/画像索引同步</td>\n<td style=\"text-align: left;\">✅ 已解决</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">35</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">自动化 run now 卡在写入步骤 12+ 分钟无产出（本次 18:17 会话 01a02e20）</td>\n<td style=\"text-align: left;\">自动化环境里 python/py/python3 不在 PATH，模型反复找 Python 失败，调 load_workspace_dependencies 后卡住；知识库写权限本身已放开</td>\n<td style=\"text-align: left;\">① 规则新增「自动化环境写入方法」：直接用 Python 完整路径（-X utf8 + stdin 管道）写 UTF-8 文件；② 防卡死：同一写入失败 2 次停止重试、3 分钟无进展先出日报；③ memory.md/automation.toml 同步</td>\n<td style=\"text-align: left;\">✅ 已调整（待下次运行验证）</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">36</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">威高集团 2027 校招公开检索无结果（供应链/采购岗）</td>\n<td style=\"text-align: left;\">公开源暂无对应公告或未到发布期</td>\n<td style=\"text-align: left;\">列入下轮待办再检；不编造</td>\n<td style=\"text-align: left;\">✅ 已记录</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">37</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">联合利华 27 届供应链英才未启动（牛企直聘页面仍为 26 届批次）</td>\n<td style=\"text-align: left;\">27 届网申未开放</td>\n<td style=\"text-align: left;\">列入关注清单，下轮再检官方招聘页</td>\n<td style=\"text-align: left;\">✅ 已记录</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">38</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">海信 27 秋招供应链管理（采购运营 J44595）要求硕士+CET-6，与文雪本科+CET-4 不匹配</td>\n<td style=\"text-align: left;\">岗位学历/英语门槛高于画像</td>\n<td style=\"text-align: left;\">不收录该岗；官网 jobs.hisense.com 本科供应链岗需授权核对</td>\n<td style=\"text-align: left;\">✅ 已记录</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">39</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">迪卡侬物流供应链管培生详情页（工作365）返回 567 无法抓取</td>\n<td style=\"text-align: left;\">目标站点拦截/临时不可用</td>\n<td style=\"text-align: left;\">仅按搜索摘要归档并标注「需核实」；下轮补官方核实</td>\n<td style=\"text-align: left;\">✅ 已记录</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">40</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">自动化网络受限，宝洁/乖宝背调深度不足（OfferShow/牛客口碑需登录）</td>\n<td style=\"text-align: left;\">自动化会话网络受限</td>\n<td style=\"text-align: left;\">用公开源+目标公司池信息完成背调，未披露项标注；需授权项列入日报待办</td>\n<td style=\"text-align: left;\">✅ 已记录</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">41</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">公开渠道 JD 存在上一届批次（乖宝 2026 届、2025-09-09 发布）被当 2027 届推荐；乖宝/宝洁标「✅已背调」但背调报告文件未写入（坏链接）</td>\n<td style=\"text-align: left;\">规则未要求核对发布批次与届别；自动化背调受网络限制只出摘要未写报告文件，却按「已背调」写入状态与链接</td>\n<td style=\"text-align: left;\">① 规则新增届别核验：上一届批次标 ⚠️ 届别待确认（不标推荐）、模糊标 ⚠️ 届别待核实；② 规则新增背调完整性：报告未写入不得标 ✅已背调/不得链接不存在文件（标 ⚠️ 背调待补充）；③ 修正乖宝/宝洁评分笔记状态与坏链接，宝洁届别确认符合</td>\n<td style=\"text-align: left;\">✅ 已处理</td>\n</tr>\n<tr>\n<td style=\"text-align: center;\">42</td>\n<td style=\"text-align: left;\">2026-08-23</td>\n<td style=\"text-align: left;\">材料笔记「来源/提供日期」把检索日期（2026-08-23）当作来源日期，字段名易与发布日期混淆</td>\n<td style=\"text-align: left;\">规则未区分发布日期与归档日期，自动化把检索日写进来源</td>\n<td style=\"text-align: left;\">① 材料笔记字段改为 来源/发布日期/归档日期：「发布日期」须为来源页/资料明确标注的发布日，无则填「未确定」，禁止冒充或编造；「归档日期」= 录入知识库日期；② 修正全部 10 份 JD 笔记并更新材料索引查询；③ Skill 1/7 规则、automation.toml、memory.md 同步</td>\n<td style=\"text-align: left;\">✅ 已处理</td>\n</tr>\n</tbody>\n</table>"
+    }
+   ]
+  }
+ ],
+ "images": {
+  "bg": {
+   "img1": "assets/img1_bg.jpg",
+   "img2": "assets/img2_bg.jpg",
+   "img3": "assets/img3_bg.jpg",
+   "img4": "assets/img4_bg.jpg"
+  },
+  "av": {
+   "img1": "assets/img1_avatar.jpg",
+   "img2": "assets/img2_avatar.jpg",
+   "img3": "assets/img3_avatar.jpg",
+   "img4": "assets/img4_avatar.jpg"
+  }
+ }
+};
+</script>
+<script>
+/* ===== 文雪求职小窝 · 前端逻辑（数据由生成器自动注入） ===== */
+var D = window.SITE_DATA || {};
+var JOBS = D.jobs || [], COMPS = D.companies || [], TL = D.timeline || [];
+var RESUMES = D.resumes || {general:[], custom:[]}, KBS = D.kb || [];
+var IMGS = D.images || {bg:{}, av:{}};
+
+/* ---------- 工具 ---------- */
+function scoreClass(s){ if(s==="—"||s===""||s==null) return "gray"; s=parseFloat(s); if(isNaN(s)) return "gray"; if(s>=80) return "green"; if(s>=70) return "blue"; if(s>=60) return "amber"; return "red"; }
+function statusClass(s){ return {done:"done",warn:"warn",backup:"backup",new:"new",interview:"interview",dead:"dead"}[s]||"backup"; }
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function setModal(html){ document.getElementById("modalBody").innerHTML = html; document.getElementById("modal").classList.add("show"); }
+function closeModal(){ document.getElementById("modal").classList.remove("show"); }
+var toastTimer=null;
+function toast(msg){ var t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove("show");},2200); }
+
+/* ---------- 首页 ---------- */
+function renderHome(){
+  var st = D.stats||{};
+  document.getElementById("statJobs").textContent = st.jobs||0;
+  document.getElementById("statRec").textContent = st.rec||0;
+  document.getElementById("statInt").textContent = st.interview||0;
+  document.getElementById("statOff").textContent = st.offer||0;
+  var todo = D.todo||[];
+  var todoHtml = todo.length ? todo.map(function(t){ return '<li><input type="checkbox"><span>'+esc(t)+'</span></li>'; }).join("") : '<li style="color:var(--muted)">今天没有待办，轻松一下 🐾</li>';
+  document.getElementById("todoList").innerHTML = todoHtml;
+  var last = TL.slice(0,2);
+  var tlHtml = last.length ? last.map(function(t){
+    return '<div class="tl-item"><span class="tl-date">'+esc(t.date.slice(5))+'</span>'+esc((t.items&&t.items[0])||t.title)+'</div>';
+  }).join("") : '<div class="tl-item" style="color:var(--muted)">还没有日报记录</div>';
+  document.getElementById("homeTl").innerHTML = tlHtml;
+}
+
+/* ---------- 岗位看板 ---------- */
+var curFilter="all", curQuery="";
+function renderJobs(){
+  var list = JOBS.filter(function(j){
+    if(curFilter==="rec" && !(parseFloat(j.score)>=70)) return false;
+    if(curFilter==="backup" && j.status!=="backup") return false;
+    if(curFilter==="done" && j.status!=="done") return false;
+    if(curFilter==="warn" && j.status!=="warn") return false;
+    if(curQuery){ var q=curQuery.toLowerCase(); if((j.company+j.pos+j.city).toLowerCase().indexOf(q)<0) return false; }
+    return true;
+  });
+  var html = "";
+  list.forEach(function(j){
+    html += '<div class="job-card" onclick="openJob('+JOBS.indexOf(j)+')">'
+      + '<div class="job-top"><div class="job-title"><span class="company">'+esc(j.company)+'</span><span class="pos">'+esc(j.pos)+'</span></div>'
+      + '<span class="badge '+scoreClass(j.score)+'">'+esc(j.score)+'</span></div>'
+      + '<div class="job-meta">📍 '+esc(j.city)+' &nbsp;·&nbsp; 💰 '+esc(j.salary)+' &nbsp;·&nbsp; 🗓 截止 '+esc(j.deadline)+'</div>'
+      + '<div class="job-tags"><span class="status '+statusClass(j.status)+'">'+esc(j.statusTxt)+'</span><span class="level">匹配等级 '+esc(j.level)+'</span>'
+      + '<span class="link-btn">🔗 原始链接</span></div></div>';
+  });
+  document.getElementById("jobList").innerHTML = html || '<div class="card" style="text-align:center;color:var(--muted)">🐾 没有符合条件的岗位哦～</div>';
+}
+function fileLinks(j, i){
+  var out = "";
+  if(j.report){
+    if(j.report.pdf) out += '<a href="'+j.report.pdf+'" target="_blank">📄 背调报告 PDF</a>';
+    else if(j.report.html) out += '<a onclick="openJobNote('+i+',\'report\')">📄 查看背调报告</a>';
+  }
+  if(j.resume){
+    if(j.resume.pdf) out += '<a href="'+j.resume.pdf+'" target="_blank">📄 定制简历 PDF</a>';
+    if(j.resume.doc) out += '<a href="'+j.resume.doc+'">📄 定制简历 Word</a>';
+  }
+  if(j.jd){
+    if(j.jd.pdf) out += '<a href="'+j.jd.pdf+'" target="_blank">🗃️ JD 原文 PDF</a>';
+    else if(j.jd.pdfs) j.jd.pdfs.forEach(function(u,k){ out += '<a href="'+u+'" target="_blank">🗃️ JD PDF '+(k+1)+'</a>'; });
+    else if(j.jd.html) out += '<a onclick="openJobNote('+i+',\'jd\')">🗃️ 查看 JD 原文</a>';
+  }
+  return out || '<span style="color:var(--muted)">暂无关联文件</span>';
+}
+function openJob(i){
+  var j = JOBS[i];
+  var rows = (j.detail||[]).map(function(d){ return "<tr><td>"+esc(d[0])+"</td><td>"+esc(d[2])+" / "+esc(d[1])+"</td></tr>"; }).join("");
+  setModal(
+    '<h2>'+esc(j.company)+' · '+esc(j.pos)+'</h2>'
+    + '<div class="m-sub">📍 '+esc(j.city)+' ｜ 💰 '+esc(j.salary)+' ｜ 🗓 截止 '+esc(j.deadline)+'</div>'
+    + '<div class="job-tags"><span class="status '+statusClass(j.status)+'">'+esc(j.statusTxt)+'</span><span class="level">匹配等级 '+esc(j.level)+'</span></div>'
+    + '<div class="m-sec">📄 JD 摘要</div><p style="font-size:13.5px;color:var(--muted)">'+esc(j.summary)+'</p>'
+    + '<div class="m-sec">📊 匹配度评分明细</div>'
+    + '<table class="m-table"><tbody>'+rows+'<tr style="background:var(--pink-soft)"><td><b>总分</b></td><td><b>'+esc(j.score)+' / 100</b></td></tr></tbody></table>'
+    + '<div class="m-sec">🧩 关联资料</div><div class="m-links">'+fileLinks(j, i)
+    + (j.link?'<a href="'+j.link+'" target="_blank">🔗 投递/原始链接</a>':'')
+    + '</div>'
+    + (j.note?'<div class="m-sec">📝 备注</div><p style="font-size:13px;color:var(--muted)">'+esc(j.note)+'</p>':''));
+}
+function openJobNote(i, which){
+  var j = JOBS[i];
+  var h = (which==="report") ? (j.report?j.report.html:"") : (j.jd?j.jd.html:"");
+  var t = (which==="report") ? "背调报告" : "JD 原文";
+  setModal('<h2>'+esc(j.company)+' · '+esc(t)+'</h2><div class="note-body" style="margin-top:12px">'+(h||'<p>暂无内容</p>')+'</div>');
+}
+
+/* ---------- 公司池 ---------- */
+function renderCompanies(){
+  var html = COMPS.map(function(g){
+    var cards = g.groups.map(function(c){
+      return '<div class="cmp-card" onclick="openCmp('+COMPS.indexOf(g)+','+g.groups.indexOf(c)+')">'
+        + '<div class="cn">'+esc(c.cat)+'</div><div class="why">'+esc(c.name)+'</div>'
+        + (c.why?'<div class="why" style="margin-top:6px">💡 '+esc(c.why)+'</div>':'')
+        + '<div class="more">点开看理由 →</div></div>';
+    }).join("");
+    return '<div class="cmp-sec"><h3>'+esc(g.title)+'</h3><div class="cmp-grid">'+cards+'</div></div>';
+  }).join("");
+  document.getElementById("cmpList").innerHTML = html;
+}
+function openCmp(gi, ci){
+  var g = COMPS[gi], c = g.groups[ci];
+  var items = [];
+  c.name.split(/[、，,]/).forEach(function(n){ n=n.trim(); if(n) items.push(n); });
+  var rows = items.map(function(n){ return '<div class="note-item" onclick="toast(\'🏢 公司详情见正式版\')"><span class="ni-ic">🏢</span>'+esc(n)+'</div>'; }).join("");
+  setModal('<h2>'+esc(g.title)+' · '+esc(c.cat)+'</h2>'
+    + '<div class="m-sub">'+esc(c.why||"")+'</div>'
+    + '<div class="m-sec">🏢 公司清单</div>'+rows);
+}
+
+/* ---------- 日报 ---------- */
+function renderTimeline(){
+  var html = TL.map(function(t){
+    var items = (t.items||[]).map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("");
+    return '<div class="tl-card"><div class="tl-head"><span class="tl-title">'+esc(t.title)+'</span><span class="tl-badge">'+esc(t.date)+'</span></div><ul class="tl-body">'+items+'</ul></div>';
+  }).join("");
+  document.getElementById("tlList").innerHTML = html || '<div class="card" style="text-align:center;color:var(--muted)">🐾 还没有日报记录</div>';
+}
+
+/* ---------- 简历库 ---------- */
+function renderResumes(){
+  var general = (RESUMES.general||[]).map(function(r){
+    return '<div class="resume-card" onclick="openResume('+JSON.stringify(r)+')">'
+      + '<div class="resume-ic">📄</div><div><div class="rn">'+esc(r.name)+'</div><div class="rd">'+esc(r.desc)+'</div></div>'
+      + '<div class="act">'+(r.pdf?'<span class="pill g">⬇ 下载 PDF</span>':'')+(r.doc?'<span class="pill o">📄 Word 版</span>':'')+'</div></div>';
+  }).join("");
+  var custom = (RESUMES.custom||[]).map(function(cg){
+    var cards = cg.items.map(function(r){
+      return '<div class="resume-card" onclick="openResume('+JSON.stringify(r)+')">'
+        + '<div class="resume-ic">💙</div><div><div class="rn">'+esc(r.name)+'</div><div class="rd">'+esc(r.desc)+'</div></div>'
+        + '<div class="act">'+(r.pdf?'<span class="pill g">⬇ 下载 PDF</span>':'')+(r.doc?'<span class="pill o">📄 Word 版</span>':'')+'</div></div>';
+    }).join("");
+    return '<div class="company-group"><div class="cg-name">💙 '+esc(cg.company)+'</div><div class="resume-list">'+cards+'</div></div>';
+  }).join("");
+  document.getElementById("resumeGeneral").innerHTML = general;
+  document.getElementById("resumeCustom").innerHTML = custom;
+}
+function openResume(r){
+  var links = "";
+  if(r.pdf) links += '<a href="'+r.pdf+'" target="_blank">⬇️ 下载 PDF</a><a href="'+r.pdf+'" target="_blank">👀 在线预览</a>';
+  if(r.doc) links += '<a href="'+r.doc+'">📄 下载 Word 版</a>';
+  setModal('<h2>📄 '+esc(r.name)+'</h2><div class="m-sub">手机可直接下载或预览 PDF，投递时发给 HR 即可</div>'
+    + (r.pdf?'<div class="pdf-ph">🖨️<br>点击下方「在线预览」查看 PDF 内容</div>':'<div class="pdf-ph">🖨️<br>该简历暂无 PDF 版（生成器会自动补齐）</div>')
+    + '<div class="m-links">'+links+'</div>');
+}
+
+/* ---------- 知识库 ---------- */
+function renderKb(){
+  document.getElementById("kbGrid").innerHTML = KBS.map(function(k,i){
+    return '<div class="kb-card '+k.cls+'" onclick="openKb('+i+')"><div class="ic">'+k.icon+'</div><div class="kn">'+esc(k.name)+'</div><div class="kd">'+esc(k.desc)+'</div><span class="ncount">'+(k.notes?k.notes.length:0)+' 篇笔记</span></div>';
+  }).join("");
+}
+function openKb(i){
+  var k = KBS[i];
+  var items = (k.notes||[]).map(function(n,nj){
+    return '<div class="note-item" onclick="openNote('+i+','+nj+')"><span class="ni-ic">'+esc(n.icon)+'</span>'+esc(n.title)+'<span class="ni-more">打开 →</span></div>';
+  }).join("");
+  setModal('<h2>'+k.icon+' '+esc(k.name)+'</h2><div class="m-sub">'+esc(k.desc)+' · 点击笔记阅读全文</div>'+(items||'<div class="m-sub">这个文件夹还没有内容 🐾</div>'));
+}
+function openNote(i, nj){
+  var n = KBS[i].notes[nj];
+  setModal('<h2>'+n.icon+' '+esc(n.title)+'</h2><div style="margin-top:12px" class="note-body">'+(n.html||'<p>暂无内容</p>')+'</div>');
+}
+
+/* ---------- 头像 & 背景 ---------- */
+var BG_IMGS = IMGS.bg||{}, AV_IMGS = IMGS.av||{};
+var savedBg = Object.keys(BG_IMGS)[0]||"img4", savedAv = Object.keys(AV_IMGS)[0]||"img1";
+try{ savedBg = localStorage.getItem("scm_bg") || Object.keys(BG_IMGS)[0] || "img4"; savedAv = localStorage.getItem("scm_av") || Object.keys(AV_IMGS)[0] || "img1"; }catch(e){}
+function applyBg(){ document.documentElement.style.setProperty("--bg-img", "url('"+BG_IMGS[savedBg]+"')"); }
+function applyAv(){ var a=document.getElementById("avatarImg"); if(a) a.src = AV_IMGS[savedAv]; }
+function pickHtml(type, imgs, cur){
+  var h = '<div class="pick-grid">';
+  Object.keys(imgs).forEach(function(k){
+    h += '<div class="pick-item '+(type==="Av"?"av":"")+(k===cur?" active":"")+'" onclick="set'+type+'(\''+k+'\')">'
+       + '<img src="'+imgs[k]+'" alt=""><div class="pn">'+(k==="img1"?"图1":k==="img2"?"图2":k==="img3"?"图3":"图4")+'</div></div>';
+  });
+  return h + '</div>';
+}
+function openPersonalize(){
+  setModal('<h2>🐱 换个风格</h2><div class="m-sub">点下面的图片，实时换背景和头像，你的选择会被记住</div>'
+    + '<div class="pick-sec"><div class="m-sec">🖼️ 背景图</div><div class="pick-hint">选一张做整站背景（会自动加柔光保证文字清晰）</div>'+pickHtml("Bg", BG_IMGS, savedBg)+'</div>'
+    + '<div class="pick-sec"><div class="m-sec">😺 小头像</div><div class="pick-hint">右上角头像，点它随时能换</div>'+pickHtml("Av", AV_IMGS, savedAv)+'</div>');
+}
+function setBg(k){ savedBg=k; try{localStorage.setItem("scm_bg",k);}catch(e){} applyBg(); openPersonalize(); }
+function setAv(k){ savedAv=k; try{localStorage.setItem("scm_av",k);}catch(e){} applyAv(); openPersonalize(); }
+
+/* ---------- 页面切换 ---------- */
+var TITLES = {home:"🐱 作战看板", jobs:"🐾 岗位看板", companies:"🐈 目标公司池", timeline:"😺 每日日报", resume:"📄 简历库", knowledge:"📚 知识库"};
+function go(view){
+  document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("active"); });
+  document.getElementById("view-"+view).classList.add("active");
+  document.querySelectorAll(".nav-item,.bn-item").forEach(function(n){ n.classList.toggle("active", n.getAttribute("data-go")===view); });
+  document.getElementById("pageTitle").textContent = TITLES[view];
+  window.scrollTo({top:0});
+}
+document.addEventListener("click", function(e){
+  var t = e.target.closest("[data-go]");
+  if(t){ go(t.getAttribute("data-go")); }
+});
+document.querySelectorAll(".chip").forEach(function(c){
+  c.addEventListener("click", function(){
+    document.querySelectorAll(".chip").forEach(function(x){ x.classList.remove("active"); });
+    c.classList.add("active");
+    curFilter = c.getAttribute("data-f");
+    renderJobs();
+  });
+});
+document.getElementById("search").addEventListener("input", function(e){ curQuery=e.target.value; renderJobs(); });
+document.addEventListener("keydown", function(e){ if(e.key==="Escape") closeModal(); });
+
+/* ---------- 漂浮小元素 ---------- */
+(function(){
+  var emojis=["🐱","🐾","🐈","🧶","🐟","😺","🌸"];
+  function spawn(){
+    var s=document.createElement("span");
+    s.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    s.style.left=(Math.random()*96)+"vw";
+    s.style.fontSize=(12+Math.random()*15)+"px";
+    s.style.animationDuration=(7+Math.random()*7)+"s";
+    document.getElementById("floats").appendChild(s);
+    setTimeout(function(){s.remove()},16000);
+  }
+  spawn();spawn();
+  setInterval(spawn,1500);
+})();
+
+/* ---------- 初始化 ---------- */
+(function(){
+  var upd = document.getElementById("syncText");
+  if(upd && D.updated) upd.textContent = "自动同步 · " + D.updated;
+  renderHome(); renderJobs(); renderCompanies(); renderTimeline(); renderResumes(); renderKb();
+  applyBg(); applyAv();
+})();
+</script>
+</body>
+</html>

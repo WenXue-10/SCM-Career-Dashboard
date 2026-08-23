@@ -1,0 +1,7 @@
+# Obsidian 本地状态（不入库）
+.obsidian/workspace.json
+.trash/
+# Python
+__pycache__/
+*.pyc
+# 生成器临时输出

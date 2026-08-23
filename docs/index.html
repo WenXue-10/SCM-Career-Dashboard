@@ -452,7 +452,7 @@ a{color:var(--pink-deep);text-decoration:none}
 <div class="toast" id="toast"></div>
 <script>
 window.SITE_DATA = {
- "updated": "2026-08-23 23:36",
+ "updated": "2026-08-24 00:31",
  "stats": {
   "jobs": 1,
   "rec": 1,
@@ -1017,25 +1017,31 @@ function openJob(i){
 }
 function quickAction(i, status){
   var j = JOBS[i];
-  if(!BRIDGE.url || !BRIDGE.key){ toast("🚧 快捷操作还在接入中，稍等片刻～"); return; }
   if(!j.file){ toast("这个岗位暂不支持快捷操作"); return; }
+  var label = STATUS_LABEL[status] || "";
+  function okUpdate(){
+    toast("✅ 已更新为「" + label + "」，自动同步中～");
+    j.statusTxt = label;
+    j.status = status;
+    renderJobs();
+  }
+  function fallback(){
+    var editUrl = "https://github.com/WenXue-10/SCM-Career-Dashboard/edit/main/" + encodeURIComponent(j.file);
+    var msg = "更新岗位状态：" + j.company + "-" + j.pos + " → " + label;
+    try { if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(msg); } } catch(e){}
+    setModal('<h2>⚡ 快捷更新「' + label + '」</h2>'
+      + '<p style="font-size:13.5px;color:var(--muted);margin-top:8px">中转站当前不可达（国内网络限制）。给你两个手动办法（都很快）：</p>'
+      + '<div class="m-links" style="margin-top:12px"><a href="' + editUrl + '" target="_blank">✏️ 用 GitHub 直接改状态</a></div>'
+      + '<p style="font-size:12.5px;color:var(--muted);margin-top:12px">已复制一句话：<b>' + esc(msg) + '</b>。也可以到电脑上的 Codex 里粘贴这句话，我 1 分钟帮你改好。</p>');
+  }
+  if(!BRIDGE.url || !BRIDGE.key){ fallback(); return; }
   fetch(BRIDGE.url, {
     method: "POST",
     headers: {"Content-Type":"application/json"},
     body: JSON.stringify({ key: BRIDGE.key, file: j.file, status: status })
   }).then(function(r){ return r.json(); }).then(function(res){
-    if(res.ok){
-      toast("✅ 已更新为「" + STATUS_LABEL[status] + "」，自动同步中～");
-      j.statusTxt = STATUS_LABEL[status];
-      if(status === "sent") j.status = "sent";
-      else if(status === "interview") j.status = "interview";
-      else if(status === "dead") j.status = "dead";
-      else if(status === "ready") j.status = "ready";
-      renderJobs();
-    } else {
-      toast("❌ 更新失败：" + (res.error || "未知错误"));
-    }
-  }).catch(function(){ toast("❌ 网络异常，稍后再试"); });
+    if(res.ok){ okUpdate(); } else { toast("❌ 更新失败：" + (res.error || "未知错误")); }
+  }).catch(function(){ fallback(); });
 }
 function openJobNote(i, which){
   var j = JOBS[i];

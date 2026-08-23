@@ -164,13 +164,14 @@ def status_key(t):
     t = t or ""
     low = t.lower()
     if "已背调" in t: return "done"
-    if "offer" in low: return "done"
-    if "待投递" in t or "已投递" in t: return "new"
-    if "待确认" in t or "待补充" in t or "待核实" in t or "待背调" in t: return "warn"
-    if "新收录" in t: return "new"
+    if "offer" in low: return "offer"
+    if "待投递" in t or "已写简历" in t or "定制简历" in t: return "ready"
+    if "已投递" in t: return "sent"
     if "面试" in t: return "interview"
-    if "已挂" in t or "放弃" in t: return "dead"
+    if "已挂" in t or "放弃" in t or "红线" in t: return "dead"
+    if "待确认" in t or "待补充" in t or "待核实" in t or "待背调" in t: return "warn"
     if "备选" in t: return "backup"
+    if "新收录" in t: return "new"
     return "backup"
 
 def parse_detail_table(text):
@@ -400,42 +401,110 @@ def scan_resumes():
     return {"general": general, "custom": custom}
 
 # ---------- 知识库 ----------
+import html as htmlmod
+
 _KB_META = [
-    ("00_战略与定位", "🐱", "战略总览、求职画像、目标与红线", "c1", True),
-    ("01_岗位搜集与背调", "🐾", "岗位汇总、公司池、日报（公司调研见岗位看板）", "c2", False),
-    ("02_定制简历库", "🧾", "通用底版 + 各企业定制（下载见简历库页）", "c3", True),
-    ("03_笔面试题库", "✍️", "技术题、行为题、错题本", "c4", True),
-    ("04_实战复盘", "🪞", "面试复盘与原始记录", "c5", True),
-    ("05_供应链知识库", "📖", "专业知识卡片、英语术语卡", "c1", True),
-    ("06_证书与附件", "🎓", "成绩单、获奖证书等文件", "c2", True),
-    ("07_原始材料库", "🗃️", "JD 原文与登记索引", "c3", True),
-    ("99_系统与规则", "⚙️", "Skill 规则、问题日志", "c4", True),
+    ("00_战略与定位", "🐱", "战略总览、求职画像、目标与红线", "c1", "gen"),
+    ("01_岗位搜集与背调", "🐾", "岗位汇总（自动表格）、公司池、日报、公司调研", "c2", "kb01"),
+    ("02_定制简历库", "🧾", "通用底版 + 各企业定制（仅文件）", "c3", "kb02"),
+    ("03_笔面试题库", "✍️", "技术题、行为题、错题本", "c4", "gen"),
+    ("04_实战复盘", "🪞", "面试复盘与原始记录", "c5", "gen"),
+    ("05_供应链知识库", "📖", "专业知识卡片、英语术语卡", "c1", "gen"),
+    ("06_证书与附件", "🎓", "成绩单、获奖证书等文件", "c2", "gen"),
+    ("07_原始材料库", "🗃️", "JD 原文与登记索引", "c3", "gen"),
+    ("99_系统与规则", "⚙️", "Skill 规则、问题日志", "c4", "gen"),
 ]
-def scan_kb():
+
+def _md_note(path):
+    fn = os.path.basename(path)
+    return {"title": os.path.splitext(fn)[0], "icon": "📄", "html": md_to_html(strip_fm(read(path)))}
+
+def _file_note(path):
+    fn = os.path.basename(path)
+    url = copy_file(path)
+    return {"title": fn, "icon": "📎", "html": f'<p><a href="{url}" target="_blank">📥 查看 / 下载：{fn}</a></p>'}
+
+def _walk_notes(root):
+    notes = []
+    if not os.path.isdir(root):
+        return notes
+    for r, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if d not in (".trash",)]
+        for fn in sorted(files):
+            p = os.path.join(r, fn)
+            if fn.endswith(".md"):
+                if fn.startswith("评分-") or fn.startswith("背调报告-"):
+                    continue
+                notes.append(_md_note(p))
+            elif fn.lower().endswith((".pdf", ".doc", ".docx", ".png", ".jpg", ".jpeg")):
+                notes.append(_file_note(p))
+    return notes
+
+def jobs_table_html(jobs):
+    head = "<tr><th>公司</th><th>方向</th><th>城市</th><th>总分</th><th>等级</th><th>状态</th><th>薪资</th></tr>"
+    rows = []
+    for j in jobs:
+        rows.append("<tr><td>{}</td><td>{}</td><td>{}</td><td><b>{}</b></td><td>{}</td><td>{}</td><td>{}</td></tr>".format(
+            htmlmod.escape(str(j["company"])), htmlmod.escape(str(j["pos"])), htmlmod.escape(str(j["city"])),
+            j["score"], htmlmod.escape(str(j["level"])), htmlmod.escape(str(j["statusTxt"])), htmlmod.escape(str(j["salary"]))))
+    return '<p>自动汇总自全部评分笔记，共 {} 个岗位：</p><table><thead>{}</thead><tbody>{}</tbody></table>'.format(
+        len(jobs), head, "".join(rows))
+
+def _kb_01(jobs):
+    groups = []
+    groups.append({"title": "📊 岗位汇总表（自动生成）",
+                   "notes": [{"title": "全部岗位汇总", "icon": "📊", "html": jobs_table_html(jobs)}]})
+    for fn, title, icon in [("🗂️ 目标公司池.md", "目标公司池完整清单", "🏢"), ("📅 岗位日报归档.md", "岗位日报归档", "📅")]:
+        p = os.path.join(BASE, "01_岗位搜集与背调", fn)
+        if os.path.exists(p):
+            groups.append({"title": icon + " " + title[:4], "notes": [{"title": title, "icon": icon, "html": md_to_html(strip_fm(read(p)))}]})
+    research = os.path.join(BASE, "01_岗位搜集与背调", "公司调研")
+    companies = []
+    if os.path.isdir(research):
+        for company in sorted(os.listdir(research)):
+            cp = os.path.join(research, company)
+            if not os.path.isdir(cp):
+                continue
+            children = []
+            for r, dirs, files in os.walk(cp):
+                for fn in sorted(files):
+                    if fn.endswith(".md") and (fn.startswith("评分-") or fn.startswith("背调报告-")):
+                        children.append(_md_note(os.path.join(r, fn)))
+            if children:
+                companies.append({"title": company, "icon": "🐈", "children": children})
+    groups.append({"title": "🏢 公司调研（评分 / 背调报告）", "notes": companies})
+    return groups
+
+def _resume_note(r):
+    links = []
+    if r.get("pdf"):
+        links.append(f'<a href="{r["pdf"]}" target="_blank">📥 下载 PDF</a>')
+    if r.get("doc"):
+        links.append(f'<a href="{r["doc"]}" target="_blank">📥 下载 Word</a>')
+    return {"title": r["name"], "icon": "📄", "html": "<p>" + " &nbsp; ".join(links) + "</p>"}
+
+def _kb_02(resumes):
+    groups = []
+    general = [_resume_note(r) for r in resumes.get("general", [])]
+    groups.append({"title": "📁 通用简历", "notes": general})
+    custom = []
+    for cg in resumes.get("custom", []):
+        children = [_resume_note(r) for r in cg["items"]]
+        if children:
+            custom.append({"title": cg["company"], "icon": "💙", "children": children})
+    groups.append({"title": "📁 各企业定制", "notes": custom})
+    return groups
+
+def scan_kb(jobs, resumes):
     kb = []
-    for folder, icon, desc, cls, recursive in _KB_META:
-        fp = os.path.join(BASE, folder)
-        notes = []
-        if os.path.isdir(fp):
-            targets = []
-            if recursive:
-                for root, dirs, files in os.walk(fp):
-                    dirs[:] = [d for d in dirs if d not in (".trash",)]
-                    for fn in sorted(files):
-                        targets.append(os.path.join(root, fn))
-            else:
-                targets = [os.path.join(fp, fn) for fn in os.listdir(fp) if os.path.isfile(os.path.join(fp, fn))]
-            for t in sorted(targets):
-                fn = os.path.basename(t)
-                if fn.endswith(".md"):
-                    if fn.startswith("评分-") or fn.startswith("背调报告-"):
-                        continue
-                    text = read(t)
-                    notes.append({"title": os.path.splitext(fn)[0], "icon": "📄", "html": md_to_html(strip_fm(text))})
-                elif fn.lower().endswith((".pdf", ".doc", ".docx", ".png", ".jpg", ".jpeg")):
-                    url = copy_file(t)
-                    notes.append({"title": fn, "icon": "📎", "html": f'<p><a href="{url}" target="_blank">📥 查看 / 下载文件：{fn}</a></p>'})
-        kb.append({"icon": icon, "name": folder, "desc": desc, "cls": cls, "notes": notes})
+    for folder, icon, desc, cls, handler in _KB_META:
+        if handler == "kb01":
+            groups = _kb_01(jobs)
+        elif handler == "kb02":
+            groups = _kb_02(resumes)
+        else:
+            groups = [{"title": "", "notes": _walk_notes(os.path.join(BASE, folder))}]
+        kb.append({"icon": icon, "name": folder, "desc": desc, "cls": cls, "groups": groups})
     return kb
 
 # 取知识库最近一次改动时间（保证只有真的改过才更新时间，避免自动提交刷屏）
@@ -479,7 +548,7 @@ def build():
     companies = scan_companies()
     timeline, todo = scan_timeline()
     resumes = scan_resumes()
-    kb = scan_kb()
+    kb = scan_kb(jobs, resumes)
 
     stats = {"jobs": len(jobs), "rec": 0, "interview": 0, "offer": 0}
     for j in jobs:
@@ -531,10 +600,15 @@ window.SITE_DATA = """ + data_json + """;
     idx = os.path.join(OUT, "index.html")
     with open(idx, "w", encoding="utf-8") as f:
         f.write(html_out)
+    kb_count = 0
+    for k in kb:
+        for g in k.get("groups", []):
+            for n in g.get("notes", []):
+                kb_count += len(n.get("children", [])) if "children" in n else 1
     print("✅ 网站已生成：", idx)
     print("   岗位:", stats["jobs"], "| 公司池分组:", len(companies), "| 日报:", len(timeline),
           "| 简历: 通用", len(resumes["general"]), "/ 定制", sum(len(c["items"]) for c in resumes["custom"]),
-          "| 知识库笔记:", sum(len(k["notes"]) for k in kb))
+          "| 知识库条目:", kb_count)
     print("   files/ 文件数:", len(os.listdir(FILES_DIR)))
 
 if __name__ == "__main__":

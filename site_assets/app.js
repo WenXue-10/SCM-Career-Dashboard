@@ -33,11 +33,10 @@ function renderHome(){
 /* ---------- 岗位看板 ---------- */
 var curFilter="all", curQuery="";
 function renderJobs(){
+  var STATUS_FILTERS = ["done","ready","sent","interview","offer","backup","dead","warn"];
   var list = JOBS.filter(function(j){
     if(curFilter==="rec" && !(parseFloat(j.score)>=70)) return false;
-    if(curFilter==="backup" && j.status!=="backup") return false;
-    if(curFilter==="done" && j.status!=="done") return false;
-    if(curFilter==="warn" && j.status!=="warn") return false;
+    if(STATUS_FILTERS.indexOf(curFilter)>=0 && j.status!==curFilter) return false;
     if(curQuery){ var q=curQuery.toLowerCase(); if((j.company+j.pos+j.city).toLowerCase().indexOf(q)<0) return false; }
     return true;
   });
@@ -124,47 +123,83 @@ function renderTimeline(){
 }
 
 /* ---------- 简历库 ---------- */
-function renderResumes(){
-  var general = (RESUMES.general||[]).map(function(r){
-    return '<div class="resume-card" onclick="openResume('+JSON.stringify(r)+')">'
-      + '<div class="resume-ic">📄</div><div><div class="rn">'+esc(r.name)+'</div><div class="rd">'+esc(r.desc)+'</div></div>'
-      + '<div class="act">'+(r.pdf?'<span class="pill g">⬇ 下载 PDF</span>':'')+(r.doc?'<span class="pill o">📄 Word 版</span>':'')+'</div></div>';
-  }).join("");
-  var custom = (RESUMES.custom||[]).map(function(cg){
-    var cards = cg.items.map(function(r){
-      return '<div class="resume-card" onclick="openResume('+JSON.stringify(r)+')">'
-        + '<div class="resume-ic">💙</div><div><div class="rn">'+esc(r.name)+'</div><div class="rd">'+esc(r.desc)+'</div></div>'
-        + '<div class="act">'+(r.pdf?'<span class="pill g">⬇ 下载 PDF</span>':'')+(r.doc?'<span class="pill o">📄 Word 版</span>':'')+'</div></div>';
-    }).join("");
-    return '<div class="company-group"><div class="cg-name">💙 '+esc(cg.company)+'</div><div class="resume-list">'+cards+'</div></div>';
-  }).join("");
-  document.getElementById("resumeGeneral").innerHTML = general;
-  document.getElementById("resumeCustom").innerHTML = custom;
+var RESUME_LIST = [];
+function resumeCard(r){
+  return '<div class="resume-card" onclick="openResume('+r._i+')">'
+    + '<div class="resume-top"><div class="resume-ic">📄</div><div><div class="rn">'+esc(r.name)+'</div><div class="rd">'+esc(r.desc)+'</div></div></div>'
+    + '<div class="resume-actions">'
+    + (r.pdf?'<a class="pill g" href="'+r.pdf+'" download onclick="event.stopPropagation()">⬇ 下载 PDF</a>':'')
+    + (r.doc?'<a class="pill o" href="'+r.doc+'" download onclick="event.stopPropagation()">📄 下载 Word</a>':'')
+    + '<span class="pill o" onclick="event.stopPropagation();openResume('+r._i+')">👀 预览</span>'
+    + '</div></div>';
 }
-function openResume(r){
+function renderResumes(){
+  RESUME_LIST = [];
+  var general = [];
+  (RESUMES.general||[]).forEach(function(r){ r._i = RESUME_LIST.length; RESUME_LIST.push(r); general.push(resumeCard(r)); });
+  var custom = [];
+  (RESUMES.custom||[]).forEach(function(cg){
+    var cards = cg.items.map(function(r){ r._i = RESUME_LIST.length; RESUME_LIST.push(r); return resumeCard(r); }).join("");
+    custom.push('<div class="company-group"><div class="cg-name">💙 '+esc(cg.company)+'</div><div class="resume-list">'+cards+'</div></div>');
+  });
+  document.getElementById("resumeGeneral").innerHTML = general.join("");
+  document.getElementById("resumeCustom").innerHTML = custom.join("");
+}
+function openResume(i){
+  var r = RESUME_LIST[i]; if(!r) return;
   var links = "";
   if(r.pdf) links += '<a href="'+r.pdf+'" target="_blank">⬇️ 下载 PDF</a><a href="'+r.pdf+'" target="_blank">👀 在线预览</a>';
-  if(r.doc) links += '<a href="'+r.doc+'">📄 下载 Word 版</a>';
+  if(r.doc) links += '<a href="'+r.doc+'" target="_blank">📄 下载 Word 版</a>';
   setModal('<h2>📄 '+esc(r.name)+'</h2><div class="m-sub">手机可直接下载或预览 PDF，投递时发给 HR 即可</div>'
     + (r.pdf?'<div class="pdf-ph">🖨️<br>点击下方「在线预览」查看 PDF 内容</div>':'<div class="pdf-ph">🖨️<br>该简历暂无 PDF 版（生成器会自动补齐）</div>')
     + '<div class="m-links">'+links+'</div>');
 }
 
 /* ---------- 知识库 ---------- */
+var KB_FLAT = [];
+function flattenKb(){
+  KB_FLAT = [];
+  KBS.forEach(function(k){
+    (k.groups||[{title:"", notes:k.notes||[]}]).forEach(function(g){
+      (g.notes||[]).forEach(function(n){
+        if(n.children){ n.children.forEach(function(c){ KB_FLAT.push(c); }); }
+        else KB_FLAT.push(n);
+      });
+    });
+  });
+}
+function kbNoteItem(n){
+  var idx = KB_FLAT.indexOf(n);
+  return '<div class="note-item" onclick="openKbNote('+idx+')"><span class="ni-ic">'+esc(n.icon)+'</span>'+esc(n.title)+'<span class="ni-more">打开 →</span></div>';
+}
 function renderKb(){
   document.getElementById("kbGrid").innerHTML = KBS.map(function(k,i){
-    return '<div class="kb-card '+k.cls+'" onclick="openKb('+i+')"><div class="ic">'+k.icon+'</div><div class="kn">'+esc(k.name)+'</div><div class="kd">'+esc(k.desc)+'</div><span class="ncount">'+(k.notes?k.notes.length:0)+' 篇笔记</span></div>';
+    var cnt = 0;
+    (k.groups||[{title:"", notes:k.notes||[]}]).forEach(function(g){
+      (g.notes||[]).forEach(function(n){ cnt += n.children ? n.children.length : 1; });
+    });
+    return '<div class="kb-card '+k.cls+'" onclick="openKb('+i+')"><div class="ic">'+k.icon+'</div><div class="kn">'+esc(k.name)+'</div><div class="kd">'+esc(k.desc)+'</div><span class="ncount">'+cnt+' 项</span></div>';
   }).join("");
 }
 function openKb(i){
   var k = KBS[i];
-  var items = (k.notes||[]).map(function(n,nj){
-    return '<div class="note-item" onclick="openNote('+i+','+nj+')"><span class="ni-ic">'+esc(n.icon)+'</span>'+esc(n.title)+'<span class="ni-more">打开 →</span></div>';
-  }).join("");
-  setModal('<h2>'+k.icon+' '+esc(k.name)+'</h2><div class="m-sub">'+esc(k.desc)+' · 点击笔记阅读全文</div>'+(items||'<div class="m-sub">这个文件夹还没有内容 🐾</div>'));
+  var html = "";
+  (k.groups||[{title:"", notes:k.notes||[]}]).forEach(function(g){
+    if(g.title) html += '<div class="kb-section">'+esc(g.title)+'</div>';
+    var items = (g.notes||[]).map(function(n){
+      if(n.children){
+        return '<div class="kb-folder"><div class="kf-name">'+n.icon+' '+esc(n.title)+'</div>'
+          + n.children.map(function(c){ return kbNoteItem(c); }).join("") + '</div>';
+      }
+      return kbNoteItem(n);
+    }).join("");
+    html += items || '<div style="color:var(--muted);font-size:13px;margin:4px 0">（空）🐾</div>';
+  });
+  setModal('<h2>'+k.icon+' '+esc(k.name)+'</h2><div class="m-sub">'+esc(k.desc)+' · 点击查看</div>'+(html||'<div class="m-sub">这个文件夹还没有内容 🐾</div>'));
 }
-function openNote(i, nj){
-  var n = KBS[i].notes[nj];
+function openKbNote(idx){
+  var n = KB_FLAT[idx];
+  if(!n) return;
   setModal('<h2>'+n.icon+' '+esc(n.title)+'</h2><div style="margin-top:12px" class="note-body">'+(n.html||'<p>暂无内容</p>')+'</div>');
 }
 
@@ -234,6 +269,6 @@ document.addEventListener("keydown", function(e){ if(e.key==="Escape") closeModa
 (function(){
   var upd = document.getElementById("syncText");
   if(upd && D.updated) upd.textContent = "自动同步 · " + D.updated;
-  renderHome(); renderJobs(); renderCompanies(); renderTimeline(); renderResumes(); renderKb();
+  flattenKb(); renderHome(); renderJobs(); renderCompanies(); renderTimeline(); renderResumes(); renderKb();
   applyBg(); applyAv();
 })();

@@ -265,3 +265,42 @@ a{color:var(--pink-deep);text-decoration:none}
 @media(min-width:821px){
   .modal{border-radius:28px;margin-bottom:8vh}
 }
+
+/* ===== 正式版 v2 补充 ===== */
+/* 筛选胶囊：手机可横向滑动 */
+.chips{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0}
+/* 完整状态颜色 */
+.status.ready{background:var(--sky-soft,#e0f2ff);color:#1d7fd6}
+.status.sent{background:var(--sky-soft);color:#0369a1}
+.status.offer{background:var(--mint-soft);color:#1f9d6b}
+.status.dead{background:var(--red-soft);color:#e2654a}
+/* 简历卡：名字在上、按钮在下一行，不再挤压名字 */
+.resume-card{flex-direction:column;align-items:stretch;gap:10px}
+.resume-top{display:flex;align-items:center;gap:12px}
+.resume-top .rn{font-weight:800;font-size:14.5px}
+.resume-top .rd{font-size:12.5px;color:var(--muted);margin-top:2px}
+.resume-actions{display:flex;gap:8px;flex-wrap:wrap}
+.resume-actions .pill{flex:1;min-width:104px;text-align:center;display:inline-block}
+.resume-actions a.pill{text-decoration:none}
+/* 知识库弹窗分组 */
+.kb-section{font-size:13.5px;font-weight:800;margin:16px 0 8px;color:var(--pink-deep);display:flex;align-items:center;gap:6px}
+.kb-folder{background:var(--gray-soft);border-radius:16px;padding:10px 12px;margin:8px 0}
+.kb-folder .kf-name{font-size:13px;font-weight:800;margin-bottom:6px}
+.kb-folder .note-item{margin-bottom:6px}
+.note-body{font-size:13.5px;line-height:1.7;color:var(--text)}
+.note-body h1,.note-body h2,.note-body h3{margin:14px 0 6px;color:var(--text)}
+.note-body table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+.note-body th,.note-body td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.note-body th{background:var(--pink-soft)}
+.note-body img{max-width:100%;border-radius:12px}
+.note-body blockquote{border-left:3px solid var(--pink);background:var(--pink-soft);padding:8px 12px;border-radius:8px;margin:8px 0;color:var(--muted)}
+.note-body ul,.note-body ol{padding-left:20px;margin:6px 0}
+.note-body li{margin:3px 0}
+.note-body code{background:var(--gray-soft);padding:1px 6px;border-radius:6px;font-size:12px}
+.note-body pre{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;overflow-x:auto;font-size:12px}
+@media(max-width:820px){
+  .resume-actions .pill{min-width:0}
+  .resume-actions .pill{flex:1 1 46%}
+}

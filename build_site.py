@@ -237,6 +237,7 @@ def scan_jobs():
             except Exception:
                 score = "—"
             job = {
+                "file": os.path.relpath(score_file, BASE).replace("\\", "/"),
                 "company": fm.get("公司名称", company),
                 "pos": fm.get("岗位方向", posdir),
                 "city": fm.get("城市", "未标注"),

@@ -3,6 +3,9 @@ var D = window.SITE_DATA || {};
 var JOBS = D.jobs || [], COMPS = D.companies || [], TL = D.timeline || [];
 var RESUMES = D.resumes || {general:[], custom:[]}, KBS = D.kb || [];
 var IMGS = D.images || {bg:{}, av:{}};
+/* 快捷操作中转站（Cloudflare Worker），接入后由助手填写 */
+var BRIDGE = { url: "", key: "" };
+var STATUS_LABEL = {ready:"📮 待投递", sent:"✉️ 已投递", interview:"📞 面试中", dead:"❌ 已挂", backup:"🗂️ 备选", done:"✅ 已背调"};
 
 /* ---------- 工具 ---------- */
 function scoreClass(s){ if(s==="—"||s===""||s==null) return "gray"; s=parseFloat(s); if(isNaN(s)) return "gray"; if(s>=80) return "green"; if(s>=70) return "blue"; if(s>=60) return "amber"; return "red"; }
@@ -81,7 +84,37 @@ function openJob(i){
     + '<div class="m-sec">🧩 关联资料</div><div class="m-links">'+fileLinks(j, i)
     + (j.link?'<a href="'+j.link+'" target="_blank">🔗 投递/原始链接</a>':'')
     + '</div>'
+    + '<div class="m-sec">⚡ 快捷操作</div>'
+    + '<div class="m-links" style="margin-bottom:4px">'
+    + '<a onclick="quickAction('+i+',\'ready\')">📮 待投递</a>'
+    + '<a onclick="quickAction('+i+',\'sent\')">✉️ 已投递</a>'
+    + '<a onclick="quickAction('+i+',\'interview\')">📞 面试中</a>'
+    + '<a onclick="quickAction('+i+',\'dead\')">❌ 已挂</a>'
+    + '</div>'
+    + '<p style="font-size:11.5px;color:var(--muted)">点一下即可更新知识库状态，自动同步到电脑和网站</p>'
     + (j.note?'<div class="m-sec">📝 备注</div><p style="font-size:13px;color:var(--muted)">'+esc(j.note)+'</p>':''));
+}
+function quickAction(i, status){
+  var j = JOBS[i];
+  if(!BRIDGE.url || !BRIDGE.key){ toast("🚧 快捷操作还在接入中，稍等片刻～"); return; }
+  if(!j.file){ toast("这个岗位暂不支持快捷操作"); return; }
+  fetch(BRIDGE.url, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ key: BRIDGE.key, file: j.file, status: status })
+  }).then(function(r){ return r.json(); }).then(function(res){
+    if(res.ok){
+      toast("✅ 已更新为「" + STATUS_LABEL[status] + "」，自动同步中～");
+      j.statusTxt = STATUS_LABEL[status];
+      if(status === "sent") j.status = "sent";
+      else if(status === "interview") j.status = "interview";
+      else if(status === "dead") j.status = "dead";
+      else if(status === "ready") j.status = "ready";
+      renderJobs();
+    } else {
+      toast("❌ 更新失败：" + (res.error || "未知错误"));
+    }
+  }).catch(function(){ toast("❌ 网络异常，稍后再试"); });
 }
 function openJobNote(i, which){
   var j = JOBS[i];

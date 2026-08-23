@@ -1,0 +1,9 @@
+# 文本文件统一用 LF，避免自动同步时换行符反复触发“改动”
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.doc binary
+*.docx binary
+*.heic binary

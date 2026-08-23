@@ -438,6 +438,22 @@ def scan_kb():
         kb.append({"icon": icon, "name": folder, "desc": desc, "cls": cls, "notes": notes})
     return kb
 
+# 取知识库最近一次改动时间（保证只有真的改过才更新时间，避免自动提交刷屏）
+_SKIP_DIRS = {".git", ".obsidian", ".trash", "Templates", ".agents", ".codex", "docs"}
+def latest_mtime():
+    latest = 0.0
+    for root, dirs, files in os.walk(BASE):
+        rel = os.path.relpath(root, BASE)
+        if rel == "." or any(part in _SKIP_DIRS for part in rel.split(os.sep)):
+            dirs[:] = [d for d in dirs if d not in _SKIP_DIRS]
+            continue
+        for fn in files:
+            try:
+                latest = max(latest, os.path.getmtime(os.path.join(root, fn)))
+            except Exception:
+                pass
+    return datetime.datetime.fromtimestamp(latest) if latest else datetime.datetime.now()
+
 # ---------- 组装 ----------
 def build():
     # 先清空旧的生成目录，避免残留文件
@@ -475,7 +491,7 @@ def build():
             stats["offer"] += 1
 
     data = {
-        "updated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "updated": latest_mtime().strftime("%Y-%m-%d %H:%M"),
         "stats": stats,
         "todo": todo,
         "jobs": jobs,

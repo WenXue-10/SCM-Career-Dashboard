@@ -4,7 +4,7 @@ var JOBS = D.jobs || [], COMPS = D.companies || [], TL = D.timeline || [];
 var RESUMES = D.resumes || {general:[], custom:[]}, KBS = D.kb || [];
 var IMGS = D.images || {bg:{}, av:{}};
 /* 快捷操作中转站（Cloudflare Worker），接入后由助手填写 */
-var BRIDGE = { url: "", key: "" };
+var BRIDGE = { url: "https://1473705102-gh71l7a70a.ap-shanghai.tencentscf.com", key: "XNTbRx7spQJHDGWfKjchz8iSL2OIwoFY" };
 var STATUS_LABEL = {ready:"📮 待投递", sent:"✉️ 已投递", interview:"📞 面试中", dead:"❌ 已挂", backup:"🗂️ 备选", done:"✅ 已背调"};
 
 /* ---------- 工具 ---------- */

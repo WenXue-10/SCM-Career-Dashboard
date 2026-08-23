@@ -10,11 +10,12 @@ const CORS = { "Access-Control-Allow-Origin":"*", "Access-Control-Allow-Methods"
 function decodeB64(s){ return Buffer.from(s, "base64").toString("utf8"); }
 function encodeB64(s){ return Buffer.from(s, "utf8").toString("base64"); }
 function updateFM(content, val){
-  const m = /^---\s*\n([\s\S]*?)\n---/.exec(content);
-  if (!m) return null;
+  content = content.replace(/^\uFEFF/, "");           // 去掉可能的 BOM
+  const m = /^---\s*\r?\n([\s\S]*?)\r?\n---/.exec(content);  // 兼容 LF / CRLF
+  if (!m) return "NOTFOUND";
   const fm = m[1];
-  const n = fm.replace(/^(当前状态\s*:\s*).*$/m, "$1" + val);
-  if (n === fm) return null;
+  const n = fm.replace(/^(当前状态\s*:\s*)[^\r\n]*/m, "$1" + val);
+  if (n === fm) return "NOCHANGE";
   return content.slice(0, m.index) + "---\n" + n + "\n---" + content.slice(m.index + m[0].length);
 }
 function send(res, code, obj){ res.writeHead(code, CORS); res.end(JSON.stringify(obj)); }
@@ -39,8 +40,8 @@ async function handle(req, res){
     const meta = await getRes.json();
     const content = decodeB64(meta.content);
     const updated = updateFM(content, newValue);
-    if (!updated) { send(res, 422, { ok:false, error:"frontmatter not found" }); return; }
-    if (updated === content) { send(res, 200, { ok:true, noChange:true, status:newValue }); return; }
+    if (updated === "NOTFOUND") { send(res, 422, { ok:false, error:"frontmatter not found" }); return; }
+    if (updated === "NOCHANGE") { send(res, 200, { ok:true, noChange:true, status:newValue }); return; }
     const putRes = await fetch("https://api.github.com/repos/" + REPO + "/contents/" + enc, {
       method: "PUT",
       headers: Object.assign({}, H, { "Content-Type":"application/json" }),

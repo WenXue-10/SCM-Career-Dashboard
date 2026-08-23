@@ -543,6 +543,15 @@ def build():
                 bg[key.replace("_bg", "")] = url
             elif fn.endswith("_avatar.jpg"):
                 av[key.replace("_avatar", "")] = url
+    # PWA：图标 + manifest + service worker
+    icon_src = os.path.join(ASSETS, "icons")
+    if os.path.isdir(icon_src):
+        for fn in os.listdir(icon_src):
+            shutil.copy2(os.path.join(icon_src, fn), os.path.join(img_out, fn))
+    for fname in ("manifest.json", "sw.js"):
+        sp = os.path.join(ASSETS, fname)
+        if os.path.exists(sp):
+            shutil.copy2(sp, os.path.join(OUT, fname))
 
     jobs = scan_jobs()
     companies = scan_companies()
@@ -583,6 +592,8 @@ def build():
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>文雪求职小窝</title>
 <meta name="theme-color" content="#ffd0e2">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
 <style>
 """ + css + """
 </style>
@@ -593,6 +604,9 @@ window.SITE_DATA = """ + data_json + """;
 </script>
 <script>
 """ + js + """
+</script>
+<script>
+if('serviceWorker' in navigator){ window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js'); }); }
 </script>
 </body>
 </html>"""

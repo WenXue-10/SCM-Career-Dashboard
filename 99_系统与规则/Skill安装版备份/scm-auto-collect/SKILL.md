@@ -9,6 +9,7 @@ description: 定时自动监控岗位（每天12:00）：全网检索可投岗�
 - 本技能所有相对路径（01_岗位搜集与背调/…、07_原始材料库/…、99_系统与规则/… 等）均以 D:\Obsidian\SCM-Career 为根目录。
 - 执行前先确认当前工作目录是 D:\Obsidian\SCM-Career；若不是或不确定（例如定时任务未设置工作空间），所有读写路径一律用绝对路径 D:\Obsidian\SCM-Career\…，禁止按错误的相对路径落盘。
 
+- 环境路径适配（重要）：运行环境可能是 Windows Git Bash（MSYS，uname 含 MINGW64，WorkBuddy 常见）。此时 Windows 风格路径 D:\Obsidian\SCM-Career 直接打不开是正常的，**不要因此判定"知识库不可达"而降级**；应改用 Git Bash 路径 /d/Obsidian/SCM-Career：先执行 `ls /d/Obsidian/SCM-Career` 验证，可达即正常执行，所有读写用 /d/Obsidian/SCM-Career/… 落盘；Windows 原生环境（Codex/PowerShell）仍用 D:\Obsidian\SCM-Career。
 ## 触发方式
 - 定时唤醒（每天 12:00，含周末），或用户说“执行 Skill 7”；run now 可随时手动触发，与计划时间无关。
 - 自动化运行时：先读取 `$CODEX_HOME/automations/daily-brief/memory.md`（若存在）避免重复；运行后更新 memory.md 摘要；被中断后下次运行先按 07_原始材料库 与 岗位汇总表 去重恢复。

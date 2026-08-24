@@ -33,3 +33,6 @@
 ## 重要：数据目录位置（2026-08-25 修正）
 - WorkBuddy 数据目录现位于 `D:\WorkBuddyData`（junction：`C:\Users\22814\.workbuddy` → `D:\WorkBuddyData\.workbuddy`）。
 - **切勿把数据目录放进应用安装目录 `D:\WorkBuddy`**：WorkBuddy 会拒绝更新（提示"应用安装目录下存在用户项目目录"），且更新/卸载可能丢数据。
+## ⚠️ 关键前提：自动化执行环境（2026-08-25 发现）
+- WorkBuddy 自动化默认跑在**云端沙箱**，无法访问本机 D:\Obsidian\SCM-Career（表现为 Skill 7 一直降级「待普通对话代劳」）。
+- 修复：WorkBuddy → 设置 → 运行模式/执行环境 → 切「本机模式/桌面端深度执行」（本机模式要求电脑开机 + WorkBuddy 运行）。

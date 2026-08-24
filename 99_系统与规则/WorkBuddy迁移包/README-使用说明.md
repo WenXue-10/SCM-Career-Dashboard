@@ -29,3 +29,7 @@
 - 评分标准、报告六板块、文件路径、确认流程等全部规则相同 → 产出结构一致。
 - 仅环境词不同：Chrome 登录态复用（Codex 扩展 ↔ WorkBuddy Web Access）、python 路径、自动化记忆路径、沙箱降级描述。
 - 实际生成内容会因模型/检索结果略有差异（同一助手跑两次也会有），但流程与落盘位置完全一致。
+
+## 重要：数据目录位置（2026-08-25 修正）
+- WorkBuddy 数据目录现位于 `D:\WorkBuddyData`（junction：`C:\Users\22814\.workbuddy` → `D:\WorkBuddyData\.workbuddy`）。
+- **切勿把数据目录放进应用安装目录 `D:\WorkBuddy`**：WorkBuddy 会拒绝更新（提示"应用安装目录下存在用户项目目录"），且更新/卸载可能丢数据。

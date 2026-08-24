@@ -36,7 +36,9 @@ Get-ChildItem -Directory -LiteralPath $src | Sort-Object Name | ForEach-Object {
 if($Install){
   $wbSkills = Join-Path $env:USERPROFILE ".workbuddy\skills"
   Get-ChildItem -Directory -LiteralPath $out | ForEach-Object {
-    Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $wbSkills $_.Name) -Recurse -Force
+    $dst = Join-Path $wbSkills $_.Name
+    if(Test-Path -LiteralPath $dst){ Remove-Item -LiteralPath $dst -Recurse -Force }
+    Copy-Item -LiteralPath $_.FullName -Destination $dst -Recurse -Force
     Write-Output "已安装: $($_.Name) -> $wbSkills"
   }
 }else{

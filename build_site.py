@@ -408,7 +408,7 @@ _KB_META = [
     ("00_战略与定位", "🐱", "战略总览、求职画像、目标与红线", "c1", "gen"),
     ("01_岗位搜集与背调", "🐾", "岗位汇总（自动表格）、公司池、日报、公司调研", "c2", "kb01"),
     ("02_定制简历库", "🧾", "通用底版 + 各企业定制（仅文件）", "c3", "kb02"),
-    ("03_笔面试题库", "✍️", "技术题、行为题、错题本", "c4", "gen"),
+    ("03_笔面试题库", "✍️", "技术题、行为题、错题本", "c4", "kb03"),
     ("04_实战复盘", "🪞", "面试复盘与原始记录", "c5", "gen"),
     ("05_供应链知识库", "📖", "专业知识卡片、英语术语卡", "c1", "gen"),
     ("06_证书与附件", "🎓", "成绩单、获奖证书等文件", "c2", "gen"),
@@ -496,6 +496,44 @@ def _kb_02(resumes):
     groups.append({"title": "📁 各企业定制", "notes": custom})
     return groups
 
+
+def _kb_03():
+    root = os.path.join(BASE, "03_笔面试题库")
+    groups = []
+    if not os.path.isdir(root):
+        return groups
+    idx = os.path.join(root, "📋 面试资料索引.md")
+    if os.path.exists(idx):
+        groups.append({"title": "📋 面试资料索引",
+                       "notes": [{"title": "面试资料索引", "icon": "📋", "html": md_to_html(strip_fm(read(idx)))}]})
+    for sub in sorted(os.listdir(root)):
+        sp = os.path.join(root, sub)
+        if not os.path.isdir(sp):
+            continue
+        direct = []
+        nested = []
+        for name in sorted(os.listdir(sp)):
+            p = os.path.join(sp, name)
+            if os.path.isdir(p):
+                children = []
+                for fn in sorted(os.listdir(p)):
+                    fp = os.path.join(p, fn)
+                    if fn.endswith(".md") and not (fn.startswith("评分-") or fn.startswith("背调报告-")):
+                        children.append(_md_note(fp))
+                    elif fn.lower().endswith((".pdf", ".doc", ".docx", ".png", ".jpg", ".jpeg")):
+                        children.append(_file_note(fp))
+                if children:
+                    nested.append({"title": "📂 " + name, "icon": "📂", "children": children})
+            else:
+                if name.endswith(".md") and not (name.startswith("评分-") or name.startswith("背调报告-")):
+                    direct.append(_md_note(p))
+                elif name.lower().endswith((".pdf", ".doc", ".docx", ".png", ".jpg", ".jpeg")):
+                    direct.append(_file_note(p))
+        notes = direct + nested
+        if notes:
+            groups.append({"title": "📁 " + sub, "notes": notes})
+    return groups
+
 def scan_kb(jobs, resumes):
     kb = []
     for folder, icon, desc, cls, handler in _KB_META:
@@ -503,6 +541,8 @@ def scan_kb(jobs, resumes):
             groups = _kb_01(jobs)
         elif handler == "kb02":
             groups = _kb_02(resumes)
+        elif handler == "kb03":
+            groups = _kb_03()
         else:
             groups = [{"title": "", "notes": _walk_notes(os.path.join(BASE, folder))}]
         kb.append({"icon": icon, "name": folder, "desc": desc, "cls": cls, "groups": groups})

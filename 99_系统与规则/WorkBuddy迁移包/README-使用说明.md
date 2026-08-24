@@ -36,3 +36,10 @@
 ## ⚠️ 关键前提：自动化执行环境（2026-08-25 发现）
 - WorkBuddy 自动化默认跑在**云端沙箱**，无法访问本机 D:\Obsidian\SCM-Career（表现为 Skill 7 一直降级「待普通对话代劳」）。
 - 修复：WorkBuddy → 设置 → 运行模式/执行环境 → 切「本机模式/桌面端深度执行」（本机模式要求电脑开机 + WorkBuddy 运行）。
+
+## 当前采用：手动执行模式（2026-08-25 起）
+- 定时自动化已停用（云端沙箱无法直连本机 + GitHub 网络不稳），需要时**手动让 WorkBuddy 执行**。
+- 操作：打开 WorkBuddy **普通对话**（建议工作目录选 D:\Obsidian\SCM-Career，或新建 SCM-Career 项目）→ 输入"执行 Skill 7（自动岗位监控）"或"执行 Skill X"。
+- 本机会话直接读写 D:\Obsidian\SCM-Career → 落库后，本地每 10 分钟自动同步会更新网页/手机。
+- 手动执行要求：电脑开机 + WorkBuddy 运行。
+- 也可用 Codex（本会话）执行同样的 Skill，两边结果一致。

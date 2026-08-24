@@ -5,3 +5,5 @@
 __pycache__/
 *.pyc
 # 生成器临时输出
+# WorkBuddy 工作空间内部记忆（不入库）
+.workbuddy/

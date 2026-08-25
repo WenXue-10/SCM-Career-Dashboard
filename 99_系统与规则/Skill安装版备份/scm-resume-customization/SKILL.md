@@ -134,10 +134,11 @@ description: 当用户说“执行Skill 3”或要求针对目标岗位JD定制�
 ## Word 简历格式规范（简历专用——优先于全局规则 4，简历 Word 不加封面/目录/页眉页脚/编号）
 定制简历的 Word 统一采用「模板替换法」生成，版式与照片 1:1 继承模板：
 1. **模板**：`02_定制简历库/简历Word模板/文雪简历模板（京东格式）.docx`（含左上角一寸证件照与全套版式）。`02_定制简历库/通用简历/` 下另有秋招 A/B/C/D 四版 .doc 原稿，如某方向版式明显更合适，可以其实际版式为准（照片与格式同样保留）
-2. **生成方式**：优先用现成脚本 `D:/Obsidian/SCM-Career/.workbuddy/gen_resume.py`（模板替换法，python-docx 实现，版式/照片/中英文字体 1:1 继承模板）：`python -X utf8 .workbuddy/gen_resume.py <md路径> <docx输出路径>`，超出 1 页时加 `--compact`（自动删 GPA 行压缩）；脚本不适用时退回 Word COM（PowerShell：`New-Object -ComObject Word.Application`）按段落替换文字。**禁止用 markdown 直转 docx 的方式生成简历**（那样会丢失照片和版式）
+2. **生成方式**：优先用现成脚本 `D:/Obsidian/SCM-Career/.workbuddy/gen_resume.py`（模板替换法，python-docx 实现，版式/照片/中英文字体 1:1 继承模板）：`python -X utf8 .workbuddy/gen_resume.py <md路径> <docx输出路径>`，默认不放 GPA 行（81.87/100 非加分项，JD 明确要求成绩时加 `--gpa` 保留）；超出 1 页时加 `--compact` 压缩；脚本不适用时退回 Word COM（PowerShell：`New-Object -ComObject Word.Application`）按段落替换文字。**禁止用 markdown 直转 docx 的方式生成简历**（那样会丢失照片和版式）
 2b. **PDF 导出**：docx 生成后立即用 Word COM 导出同名 PDF（`$doc.SaveAs([ref]$pdf, [ref]17)`），并统计页数。docx 与 pdf 均随网页自动同步发布，手机可直接预览下载
 3. **必须保留**：证件照（浮动图片，位置尺寸不动）、A4 超窄页边距（约 0.6cm）、姓名宋体 22pt 加粗、小节标题 12pt 加粗、正文宋体 10.5pt、日期/数字 Times New Roman 10.5pt
 4. **板块顺序默认**：姓名/联系方式/求职意向/个人优势 → 教育背景 → 项目经历 → 实践经历 → 校园实践 → 技能证书。**项目经历与实践经历的顺序可按 JD 匹配度对调**（与岗位最相关的板块置前，怎么更好怎么来），各板块条目数量可按定制内容增删
+4b. **经历标题长度**：项目/实践标题以 ≤14 字为宜，过长会在标题格折成两行破坏版式；脚本对 >15 字标题自动去「（…）」后缀并警告、标题列已加宽至约 21 字容量；方向类后缀信息写进描述 bullet 而非标题
 5. **生成后自检**：确认 docx 与 pdf 均一页以内、证件照仍在、无格式错乱；异常则先修复再交付（超 1 页时先试 --compact）
 
 ## 禁止行为

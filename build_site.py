@@ -296,37 +296,72 @@ def scan_jobs():
     return jobs
 
 # ---------- 公司池 ----------
+# 源文件 2026-08-25 由「目标公司池」改版为「候选线索池」，结构变为
+# 「初始候选 / 已考察记录 / 已排除」三段，此处适配新结构解析。
+def _classify_result(res):
+    r = res or ""
+    if "已收录" in r:
+        return "✅ 已收录"
+    if "不匹配" in r:
+        return "⛔ 不匹配"
+    if "未启动" in r or "未明确" in r or "未发布" in r:
+        return "⏳ 未启动"
+    if "待" in r or "列下轮" in r or "待回核" in r:
+        return "📝 待核实"
+    return "📋 其他"
+
 def scan_companies():
-    p = os.path.join(BASE, "01_岗位搜集与背调", "🗂️ 目标公司池.md")
+    p = os.path.join(BASE, "01_岗位搜集与背调", "🗂️ 候选线索池.md")
     if not os.path.exists(p):
         return []
     text = read(p)
-    grades = []
+    sections = []          # 每个元素 {"title":..., "mode":..., "groups":[]}
     cur = None
     for line in text.splitlines():
         if line.startswith("## "):
-            h = line[3:]
-            if "A 级" in h:
-                cur = {"title": "🅰️ A 级 · 每轮必检", "groups": []}
-            elif "B 级" in h:
-                cur = {"title": "🅱️ B 级 · 轮换补充", "groups": []}
-            elif "剔除" in h:
-                cur = {"title": "🚫 已剔除（口碑/强度不符）", "groups": []}
+            h = line[3:].strip()
+            if "初始候选" in h:
+                cur = {"title": "🔍 初始候选（参考线索）", "mode": "init", "groups": []}
+            elif "已考察" in h:
+                cur = {"title": "📋 已考察记录（已收录 / 未收录）", "mode": "record", "groups": []}
+            elif "已排除" in h or "剔除" in h:
+                cur = {"title": "🚫 已排除（一票否决）", "mode": "exclude", "groups": []}
             else:
                 cur = None
             if cur:
-                grades.append(cur)
-        elif line.startswith("- ") and cur and "剔除" in cur["title"]:
-            m = re.match(r"-\s*\*{0,2}([^*（(]+)[（(]?([^）)]*)[）)]?\s*[：:]\s*(.*)", line)
-            if m:
-                cur["groups"].append({"cat": "已剔除", "name": m.group(1).strip(), "why": m.group(3).strip()})
-            else:
-                cur["groups"].append({"cat": "已剔除", "name": line[2:].strip(), "why": ""})
-        elif line.startswith("|") and cur and "剔除" not in cur["title"]:
+                sections.append(cur)
+            continue
+        if not cur:
+            continue
+        mode = cur["mode"]
+        if line.startswith("|"):
             cells = [c.strip() for c in line.strip("|").split("|")]
-            if len(cells) >= 3 and cells[0] not in ("类别", "") and "---" not in cells[0]:
-                cur["groups"].append({"cat": cells[0], "name": cells[1], "why": cells[2]})
-    return grades
+            if len(cells) < 2 or cells[0] in ("类别", "日期", "企业", "") or "---" in cells[0]:
+                continue
+            if mode == "init":
+                cur["groups"].append({"cat": cells[0], "name": cells[1], "why": ""})
+            elif mode == "record":
+                why = cells[2] if len(cells) >= 3 else ""
+                cur["groups"].append({"cat": _classify_result(why), "name": cells[1], "why": why})
+        elif line.startswith("- ") and mode == "exclude":
+            body = line[2:].strip()
+            m = re.match(r"\*{0,2}(.+?)\*\*\s*(.*)", body)
+            if m:
+                name = m.group(1).strip()
+                rest = m.group(2).strip()
+                lm = re.match(r"[（(]([^）)]*)[）)]\s*[：:]?\s*(.*)", rest)
+                if lm:
+                    loc = lm.group(1).strip()
+                    reason = lm.group(2).strip()
+                else:
+                    rm = re.match(r"[：:]\s*(.*)", rest)
+                    loc, reason = "", (rm.group(1).strip() if rm else rest)
+                why = (("（" + loc + "）") if loc else "") + reason
+                cur["groups"].append({"cat": "已排除", "name": name, "why": why})
+            else:
+                cur["groups"].append({"cat": "已排除", "name": body, "why": ""})
+    # 去掉空分组
+    return [s for s in sections if s["groups"]]
 
 # ---------- 日报 / 待办 ----------
 def scan_timeline():

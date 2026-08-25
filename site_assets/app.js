@@ -211,10 +211,7 @@ function flattenKb(){
   KB_FLAT = [];
   KBS.forEach(function(k){
     (k.groups||[{title:"", notes:k.notes||[]}]).forEach(function(g){
-      (g.notes||[]).forEach(function(n){
-        if(n.children){ n.children.forEach(function(c){ KB_FLAT.push(c); }); }
-        else KB_FLAT.push(n);
-      });
+      (function walk(ns){ ns.forEach(function(n){ if(n.children){ walk(n.children); } else { KB_FLAT.push(n); } }); })(g.notes||[]);
     });
   });
 }
@@ -222,13 +219,21 @@ function kbNoteItem(n){
   var idx = KB_FLAT.indexOf(n);
   return '<div class="note-item" onclick="openKbNote('+idx+')"><span class="ni-ic">'+esc(n.icon)+'</span>'+esc(n.title)+'<span class="ni-more">打开 →</span></div>';
 }
+function countNotes(ns){ var c=0; (ns||[]).forEach(function(n){ c += n.children ? countNotes(n.children) : 1; }); return c; }
 function renderKb(){
   document.getElementById("kbGrid").innerHTML = KBS.map(function(k,i){
     var cnt = 0;
-    (k.groups||[{title:"", notes:k.notes||[]}]).forEach(function(g){
-      (g.notes||[]).forEach(function(n){ cnt += n.children ? n.children.length : 1; });
-    });
+    (k.groups||[{title:"", notes:k.notes||[]}]).forEach(function(g){ cnt += countNotes(g.notes); });
     return '<div class="kb-card '+k.cls+'" onclick="openKb('+i+')"><div class="ic">'+k.icon+'</div><div class="kn">'+esc(k.name)+'</div><div class="kd">'+esc(k.desc)+'</div><span class="ncount">'+cnt+' 项</span></div>';
+  }).join("");
+}
+function renderNotes(ns){
+  return (ns||[]).map(function(n){
+    if(n.children){
+      return '<div class="kb-folder"><div class="kf-name">'+n.icon+' '+esc(n.title)+'</div>'
+        + renderNotes(n.children) + '</div>';
+    }
+    return kbNoteItem(n);
   }).join("");
 }
 function openKb(i){
@@ -236,13 +241,7 @@ function openKb(i){
   var html = "";
   (k.groups||[{title:"", notes:k.notes||[]}]).forEach(function(g){
     if(g.title) html += '<div class="kb-section">'+esc(g.title)+'</div>';
-    var items = (g.notes||[]).map(function(n){
-      if(n.children){
-        return '<div class="kb-folder"><div class="kf-name">'+n.icon+' '+esc(n.title)+'</div>'
-          + n.children.map(function(c){ return kbNoteItem(c); }).join("") + '</div>';
-      }
-      return kbNoteItem(n);
-    }).join("");
+    var items = renderNotes(g.notes);
     html += items || '<div style="color:var(--muted);font-size:13px;margin:4px 0">（空）🐾</div>';
   });
   setModal('<h2>'+k.icon+' '+esc(k.name)+'</h2><div class="m-sub">'+esc(k.desc)+' · 点击查看</div>'+(html||'<div class="m-sub">这个文件夹还没有内容 🐾</div>'));
@@ -279,13 +278,14 @@ function buildSearchIndex(){
   });});
   KBS.forEach(function(k){
     (k.groups||[{title:"", notes:k.notes||[]}]).forEach(function(g){
-      (g.notes||[]).forEach(function(n){
-        (n.children||[n]).forEach(function(nn){
-          var txt = plainText(nn.html);
-          idx.push({type:"笔记", icon:nn.icon||"📄", title: nn.title, sub: txt.slice(0,60), keys: (nn.title+" "+txt).toLowerCase(),
+      (function walk(ns){ ns.forEach(function(n){
+        if(n.children){ walk(n.children); }
+        else {
+          var txt = plainText(n.html);
+          idx.push({type:"笔记", icon:n.icon||"📄", title:n.title, sub: txt.slice(0,60), keys: (n.title+" "+txt).toLowerCase(),
             open: function(){ closeModal(); go("knowledge"); }});
-        });
-      });
+        }
+      }); })(g.notes||[]);
     });
   });
   return idx;

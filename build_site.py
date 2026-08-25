@@ -447,8 +447,8 @@ _KB_META = [
     ("04_实战复盘", "🪞", "面试复盘与原始记录", "c5", "gen"),
     ("05_供应链知识库", "📖", "专业知识卡片、英语术语卡", "c1", "gen"),
     ("06_证书与附件", "🎓", "成绩单、获奖证书等文件", "c2", "gen"),
-    ("07_原始材料库", "🗃️", "JD 原文与登记索引", "c3", "gen"),
-    ("08_个人资料库", "👤", "个人档案：学业课程、经历素材、报告论文", "c5", "gen"),
+    ("07_原始材料库", "🗃️", "JD 原文与登记索引", "c3", "kb07"),
+    ("08_个人资料库", "👤", "个人档案：学业课程、经历素材、报告论文", "c5", "kb08"),
     ("99_系统与规则", "⚙️", "Skill 规则、问题日志", "c4", "gen"),
 ]
 
@@ -502,13 +502,24 @@ def _kb_01(jobs):
             cp = os.path.join(research, company)
             if not os.path.isdir(cp):
                 continue
-            children = []
-            for r, dirs, files in os.walk(cp):
-                for fn in sorted(files):
-                    if fn.endswith(".md") and (fn.startswith("评分-") or fn.startswith("背调报告-")):
-                        children.append(_md_note(os.path.join(r, fn)))
-            if children:
-                companies.append({"title": company, "icon": "🐈", "children": children})
+            # 每个岗位方向一个子分组：公司 > 岗位方向 > 评分/背调报告文件
+            pos_groups = []
+            for posdir in sorted(os.listdir(cp)):
+                pp = os.path.join(cp, posdir)
+                if not os.path.isdir(pp):
+                    continue
+                leafs = []
+                for fn in sorted(os.listdir(pp)):
+                    p = os.path.join(pp, fn)
+                    if fn.startswith("评分-") or fn.startswith("背调报告-"):
+                        if fn.endswith(".md"):
+                            leafs.append(_md_note(p))
+                        elif fn.lower().endswith((".pdf", ".doc", ".docx")):
+                            leafs.append(_file_note(p))
+                if leafs:
+                    pos_groups.append({"title": posdir, "icon": "📂", "children": leafs})
+            if pos_groups:
+                companies.append({"title": company, "icon": "🐈", "children": pos_groups})
     groups.append({"title": "🏢 公司调研（评分 / 背调报告）", "notes": companies})
     return groups
 
@@ -570,6 +581,67 @@ def _kb_03():
             groups.append({"title": "📁 " + sub, "notes": notes})
     return groups
 
+def _kb_07():
+    """07_原始材料库：公司 > 岗位方向 > 材料文件，顶部保留材料索引"""
+    root = os.path.join(BASE, "07_原始材料库")
+    groups = []
+    idx = os.path.join(root, "📋 材料索引.md")
+    if os.path.exists(idx):
+        groups.append({"title": "📋 材料索引",
+                       "notes": [{"title": "材料索引", "icon": "📋", "html": md_to_html(strip_fm(read(idx)))}]})
+    companies = []
+    if os.path.isdir(root):
+        for company in sorted(os.listdir(root)):
+            cp = os.path.join(root, company)
+            if not os.path.isdir(cp):
+                continue
+            pos_groups = []
+            for posdir in sorted(os.listdir(cp)):
+                pp = os.path.join(cp, posdir)
+                if not os.path.isdir(pp):
+                    continue
+                leafs = []
+                for fn in sorted(os.listdir(pp)):
+                    p = os.path.join(pp, fn)
+                    if fn.endswith(".md"):
+                        leafs.append(_md_note(p))
+                    elif fn.lower().endswith((".pdf", ".doc", ".docx")):
+                        leafs.append(_file_note(p))
+                if leafs:
+                    pos_groups.append({"title": posdir, "icon": "📂", "children": leafs})
+            if pos_groups:
+                companies.append({"title": company, "icon": "🏢", "children": pos_groups})
+    groups.append({"title": "🏢 各企业原始材料（JD / 公告）", "notes": companies})
+    return groups
+
+def _kb_08():
+    """08_个人资料库：核心档案（根目录 md）+ 各子目录（如报告论文与作品）"""
+    root = os.path.join(BASE, "08_个人资料库")
+    groups = []
+    core = []
+    if os.path.isdir(root):
+        for fn in sorted(os.listdir(root)):
+            p = os.path.join(root, fn)
+            if os.path.isfile(p) and fn.endswith(".md"):
+                core.append(_md_note(p))
+    if core:
+        groups.append({"title": "👤 核心档案", "notes": core})
+    if os.path.isdir(root):
+        for sub in sorted(os.listdir(root)):
+            sp = os.path.join(root, sub)
+            if not os.path.isdir(sp):
+                continue
+            leafs = []
+            for fn in sorted(os.listdir(sp)):
+                p = os.path.join(sp, fn)
+                if fn.endswith(".md"):
+                    leafs.append(_md_note(p))
+                elif fn.lower().endswith((".pdf", ".doc", ".docx")):
+                    leafs.append(_file_note(p))
+            if leafs:
+                groups.append({"title": "📂 " + sub, "notes": leafs})
+    return groups
+
 def scan_kb(jobs, resumes):
     kb = []
     for folder, icon, desc, cls, handler in _KB_META:
@@ -579,6 +651,10 @@ def scan_kb(jobs, resumes):
             groups = _kb_02(resumes)
         elif handler == "kb03":
             groups = _kb_03()
+        elif handler == "kb07":
+            groups = _kb_07()
+        elif handler == "kb08":
+            groups = _kb_08()
         else:
             groups = [{"title": "", "notes": _walk_notes(os.path.join(BASE, folder))}]
         kb.append({"icon": icon, "name": folder, "desc": desc, "cls": cls, "groups": groups})

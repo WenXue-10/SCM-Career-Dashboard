@@ -289,6 +289,7 @@ a{color:var(--pink-deep);text-decoration:none}
 .kb-folder{background:var(--gray-soft);border-radius:16px;padding:10px 12px;margin:8px 0}
 .kb-folder .kf-name{font-size:13px;font-weight:800;margin-bottom:6px}
 .kb-folder .note-item{margin-bottom:6px}
+.kb-folder .kb-folder{margin-left:14px;background:var(--gray-soft);box-shadow:inset 3px 0 0 var(--pink-soft)}
 .note-body{font-size:13.5px;line-height:1.7;color:var(--text)}
 .note-body h1,.note-body h2,.note-body h3{margin:14px 0 6px;color:var(--text)}
 .note-body table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}

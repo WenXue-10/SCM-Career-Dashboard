@@ -377,11 +377,25 @@ def scan_timeline():
             entries.append(cur)
         elif line.startswith("- ") and cur:
             cur["items"].append(line[2:].strip())
+    def _extract_todo(items):
+        out = []
+        for it in items:
+            # 兼容「待办：」「关键待办：」「**待办**：」「**关键待办**：」等写法
+            m = re.match(r"^\*{0,2}(?:关键)?待办\*{0,2}\s*[:：]\s*(.*)$", it)
+            if m:
+                out += [x.strip() for x in re.split(r"[；;]", m.group(1)) if x.strip()]
+        return out
+
     todo = []
-    for it in (entries[-1]["items"] if entries else []):  # 取最新一条日报的待办
-        if it.startswith("待办"):
-            body = re.sub(r"^待办\s*[:：]\s*", "", it)
-            todo += [x.strip() for x in re.split(r"[；;]", body) if x.strip()]
+    candidates = []
+    for ent in entries:
+        t = _extract_todo(ent["items"])
+        if t:
+            candidates.append((ent["date"], t))
+    if candidates:
+        # 取「日期最新」且含待办（含关键待办）的日报，避免合规整改等非任务型条目清空待办
+        candidates.sort(key=lambda x: x[0], reverse=True)
+        todo = candidates[0][1]
     return entries, todo
 
 # ---------- 简历库 ----------

@@ -452,7 +452,7 @@ a{color:var(--pink-deep);text-decoration:none}
 <div class="toast" id="toast"></div>
 <script>
 window.SITE_DATA = {
- "updated": "2026-08-25 14:24",
+ "updated": "2026-08-25 14:25",
  "stats": {
   "jobs": 25,
   "rec": 11,
@@ -460,9 +460,9 @@ window.SITE_DATA = {
   "offer": 0
  },
  "todo": [
-  "重跑 Skill 7 正式归档评分背调",
-  "海信官网本科岗/宇通官网/宁德 JD 日期回官方核实",
-  "施耐德届别确认"
+  "迪卡侬英语要求需文雪评估是否投递",
+  "CVTE/创维官网JD待核",
+  "上轮结转（赢合/双环/ATL背调补充、施耐德届别确认等）继续"
  ],
  "jobs": [
   {
@@ -2786,7 +2786,7 @@ function renderHome(){
   var todo = D.todo||[];
   var todoHtml = todo.length ? todo.map(function(t){ return '<li><input type="checkbox"><span>'+esc(t)+'</span></li>'; }).join("") : '<li style="color:var(--muted)">今天没有待办，轻松一下 🐾</li>';
   document.getElementById("todoList").innerHTML = todoHtml;
-  var last = TL.slice(0,2);
+  var last = TL.slice(-2).reverse(); // 取最新两条（数组末尾为最新，倒序让最新置顶）
   var tlHtml = last.length ? last.map(function(t){
     return '<div class="tl-item"><span class="tl-date">'+esc(t.date.slice(5))+'</span>'+esc((t.items&&t.items[0])||t.title)+'</div>';
   }).join("") : '<div class="tl-item" style="color:var(--muted)">还没有日报记录</div>';

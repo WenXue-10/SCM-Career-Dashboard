@@ -343,7 +343,7 @@ def scan_timeline():
         elif line.startswith("- ") and cur:
             cur["items"].append(line[2:].strip())
     todo = []
-    for it in (entries[0]["items"] if entries else []):
+    for it in (entries[-1]["items"] if entries else []):  # 取最新一条日报的待办
         if it.startswith("待办"):
             body = re.sub(r"^待办\s*[:：]\s*", "", it)
             todo += [x.strip() for x in re.split(r"[；;]", body) if x.strip()]

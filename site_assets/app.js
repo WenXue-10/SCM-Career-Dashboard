@@ -26,7 +26,7 @@ function renderHome(){
   var todo = D.todo||[];
   var todoHtml = todo.length ? todo.map(function(t){ return '<li><input type="checkbox"><span>'+esc(t)+'</span></li>'; }).join("") : '<li style="color:var(--muted)">今天没有待办，轻松一下 🐾</li>';
   document.getElementById("todoList").innerHTML = todoHtml;
-  var last = TL.slice(0,2);
+  var last = TL.slice(-2).reverse(); // 取最新两条（数组末尾为最新，倒序让最新置顶）
   var tlHtml = last.length ? last.map(function(t){
     return '<div class="tl-item"><span class="tl-date">'+esc(t.date.slice(5))+'</span>'+esc((t.items&&t.items[0])||t.title)+'</div>';
   }).join("") : '<div class="tl-item" style="color:var(--muted)">还没有日报记录</div>';

@@ -1,0 +1,3 @@
+interface:
+  display_name: "岗位搜集与匹配"
+  short_description: "按文雪求职规则给岗位JD评分匹配并写入知识库"

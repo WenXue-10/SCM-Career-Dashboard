@@ -1,0 +1,3 @@
+interface:
+  display_name: "岗位背调分析"
+  short_description: "按文雪求职规则生成六大板块背调报告"

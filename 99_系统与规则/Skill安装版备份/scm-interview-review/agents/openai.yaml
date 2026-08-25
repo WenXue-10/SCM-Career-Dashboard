@@ -1,3 +1,0 @@
-interface:
-  display_name: "面试复盘"
-  short_description: "按文雪求职规则生成面试复盘报告并追加错题本"

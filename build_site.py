@@ -752,6 +752,22 @@ def build():
     js = read(os.path.join(ASSETS, "app.js"))
     data_json = json.dumps(data, ensure_ascii=False, indent=1)
 
+    # 读取同步状态并注入页脚
+    sync_status = "⏳ 等待首次同步"
+    status_file = os.path.join(BASE, "LAST_SYNC_STATUS.txt")
+    if os.path.exists(status_file):
+        try:
+            with open(status_file, encoding="utf-8") as f:
+                for line in f:
+                    if line.startswith("状态:"):
+                        sync_status = line.split(":", 1)[1].strip()
+                        break
+        except Exception:
+            pass
+    updated_time = data["updated"]
+    body = body.replace("{{SYNC_STATUS}}", sync_status)
+    body = body.replace("{{UPDATED_TIME}}", updated_time)
+
     html_out = """<!DOCTYPE html>
 <html lang="zh-CN">
 <head>

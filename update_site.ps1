@@ -1,38 +1,154 @@
-﻿# 文雪求职小窝 · 电脑自动同步脚本
-# 流程：拉取远端(GitHub) → 重新生成网站 → 提交本地改动 → 推送
+﻿# 文雪求职小窝 · 电脑自动同步脚本（优化版 v2）
+# 流程：并发保护 → 锁文件清理 → 网络预检查 → git pull → build → commit → push → 状态记录
+# 优化点：pid并发保护 / index.lock自动清理 / GitHub连通性预检查 / build失败保护 / 状态文件 / 日志持久化
+
 $ErrorActionPreference = "Continue"
 $vault  = "D:\Obsidian\SCM-Career"
 $git    = "C:\Users\22814\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\git\cmd\git.exe"
 $gitBin = "C:\Users\22814\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\git\mingw64\bin"
 $py     = "C:\Users\22814\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
-$log    = Join-Path $env:TEMP "scm_site_sync.log"
+$logDir = Join-Path $vault "99_系统与规则\sync_log"
+$log    = Join-Path $logDir "sync_$(Get-Date -Format 'yyyyMMdd').log"
+$statusFile = Join-Path $vault "LAST_SYNC_STATUS.txt"
+$pidFile = Join-Path $vault ".sync_pid"
 $env:Path = "$gitBin;$env:Path"
 Set-Location $vault
 
-function Log($m){ Add-Content -Path $log -Value ("[{0}] {1}" -f (Get-Date -Format "HH:mm:ss"), $m) -Encoding UTF8 }
+# 确保日志目录存在
+if(-not (Test-Path $logDir)){ New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
+
+function Log($m){
+  $msg = "[{0}] {1}" -f (Get-Date -Format "HH:mm:ss"), $m
+  Add-Content -Path $log -Value $msg -Encoding UTF8
+}
+
+function Write-Status($status, $detail){
+  $content = "状态: $status`n时间: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')`n详情: $detail"
+  Set-Content -Path $statusFile -Value $content -Encoding UTF8
+}
 
 try {
-    # 1) 拉取远端（手机/GitHub 改动 → 本地），失败不中断
-    & $git -c rebase.autoStash=true pull --rebase origin main *>> $log
+  Log "=== 同步开始 ==="
 
-    # 2) 重新生成网站
-    & $py "$vault\build_site.py" *>> $log
-
-    # 3) 提交本地改动
-    & $git add -A *>> $log
-    $status = (& $git status --porcelain) -join ""
-    if($status){
-        & $git commit -m "auto-sync: vault update -> site update" *>> $log
-        # 4) 推送（网络不稳，重试）
-        for($i=1; $i -le 5; $i++){
-            & $git push origin main *>> $log
-            if($LASTEXITCODE -eq 0){ break }
-            Start-Sleep -Seconds 6
-        }
-        Log "pushed update"
+  # ========== 1. 并发保护（pid文件） ==========
+  if(Test-Path $pidFile){
+    $oldPid = (Get-Content $pidFile -Raw).Trim()
+    $oldProc = Get-Process -Id $oldPid -ErrorAction SilentlyContinue
+    if($oldProc){
+      Log "上一轮同步仍在运行（PID $oldPid），跳过本轮"
+      Write-Status "⏳ 运行中" "上一轮同步仍在进行（PID $oldPid），本轮跳过。"
+      exit 0
     } else {
-        Log "no change, skip commit"
+      Log "发现残留pid文件（PID $oldPid，进程已不存在），清理"
+      Remove-Item $pidFile -Force
     }
+  }
+  $PID | Out-File $pidFile -Encoding ASCII
+  Log "写入pid文件: $PID"
+
+  # ========== 2. 锁文件自动清理 ==========
+  $lockFile = Join-Path $vault ".git\index.lock"
+  if(Test-Path $lockFile){
+    $gitProcs = Get-Process -Name "git" -ErrorAction SilentlyContinue
+    if(-not $gitProcs){
+      Log "发现残留 index.lock，无git进程运行，自动删除"
+      Remove-Item $lockFile -Force
+    } else {
+      Log "发现 index.lock，但有git进程运行，不删除"
+    }
+  }
+
+  # ========== 3. 网络连通性预检查 ==========
+  Log "测试GitHub连通性..."
+  $netOk = $false
+  try {
+    $test = Invoke-WebRequest -Uri "https://github.com" -Method Head -TimeoutSec 5 -UseBasicParsing -ErrorAction Stop
+    $netOk = $true
+    Log "GitHub连通正常"
+  } catch {
+    Log "GitHub不可达: $($_.Exception.Message)"
+  }
+
+  if(-not $netOk){
+    # 网络不可达：仍执行build（本地网页可更新），但不push
+    Log "网络不可达，跳过pull/push，仅执行本地build"
+    & $py "$vault\build_site.py" *>> $log
+    if($LASTEXITCODE -eq 0){
+      Log "本地build成功（未push）"
+      Write-Status "⚠️ 本地已更新" "GitHub不可达，本地网页已重新生成，未push。网络恢复后自动同步会推送。"
+    } else {
+      Log "本地build失败"
+      Write-Status "❌ 失败" "GitHub不可达且本地build失败。"
+    }
+    Remove-Item $pidFile -Force
+    exit 0
+  }
+
+  # ========== 4. git pull（冲突处理） ==========
+  Log "拉取远端..."
+  $localChanges = & $git status --porcelain
+  if($localChanges){
+    Log "本地有未提交更改，先stash"
+    & $git stash push -m "auto-sync-stash-$(Get-Date -Format 'yyyyMMdd-HHmmss')" *>> $log
+  }
+  & $git -c rebase.autoStash=true pull --rebase origin main *>> $log
+  if($localChanges){
+    Log "恢复stash"
+    & $git stash pop *>> $log
+  }
+
+  # ========== 5. 重新生成网站（build失败保护） ==========
+  Log "生成网站..."
+  & $py "$vault\build_site.py" *>> $log
+  $buildExit = $LASTEXITCODE
+
+  $indexHtml = Join-Path $vault "docs\index.html"
+  if($buildExit -ne 0 -or -not (Test-Path $indexHtml) -or (Get-Item $indexHtml).Length -lt 1000){
+    Log "❌ build失败（exit=$buildExit，index.html存在=$(Test-Path $indexHtml)），不commit"
+    Write-Status "❌ 失败" "build_site.py生成失败，未提交。请检查build脚本或查看日志。"
+    Remove-Item $pidFile -Force
+    exit 1
+  }
+  Log "网站生成成功"
+
+  # ========== 6. 提交本地改动 ==========
+  & $git add -A *>> $log
+  $status = (& $git status --porcelain) -join ""
+  if($status){
+    & $git commit -m "auto-sync: vault update -> site update" *>> $log
+    Log "已commit"
+
+    # ========== 7. 推送（重试3次） ==========
+    $pushed = $false
+    for($i=1; $i -le 3; $i++){
+      Log "push第 $i 次..."
+      & $git push origin main *>> $log
+      if($LASTEXITCODE -eq 0){
+        $pushed = $true
+        Log "✅ push成功"
+        break
+      }
+      Log "push第 $i 次失败，等待5秒..."
+      Start-Sleep -Seconds 5
+    }
+
+    if($pushed){
+      Log "✅ 同步完成"
+      Write-Status "✅ 成功" "同步完成，网页已更新。"
+    } else {
+      Log "❌ push失败（3次重试）"
+      Write-Status "❌ 失败" "commit成功但push失败（3次重试），本地更改已保留。网络恢复后自动同步会推送。"
+    }
+  } else {
+    Log "无更改，跳过commit/push"
+    Write-Status "✅ 成功" "无新更改，无需同步。"
+  }
+
 } catch {
-    Log ("error: " + $_.Exception.Message)
+  Log "error: $($_.Exception.Message)"
+  Write-Status "❌ 失败" "脚本异常: $($_.Exception.Message)"
+} finally {
+  # 清理pid文件
+  if(Test-Path $pidFile){ Remove-Item $pidFile -Force }
+  Log "=== 同步结束 ==="
 }

@@ -409,20 +409,27 @@ def scan_resumes():
     general = []
     gdir = os.path.join(BASE, "02_定制简历库", "通用简历")
     if os.path.isdir(gdir):
-        for fn in sorted(os.listdir(gdir)):
+        all_files = sorted(os.listdir(gdir))
+        for fn in all_files:
             if fn.startswith("简历-") and fn.endswith(".md"):
                 base = fn[:-3]
-                name = "简历 · " + base.split("-", 1)[1] if "-" in base else base
-                pdf = gen_pdf_from_md(os.path.join(gdir, fn), name)
-                doc = None
-                for k, keys in _DOC_KEY.items():
-                    if k in name:
-                        for d in sorted(os.listdir(gdir)):
-                            if d.lower().endswith(".doc") and any(x in d for x in keys):
-                                doc = copy_file(os.path.join(gdir, d))
-                                break
+                direction = base.split("-", 1)[1] if "-" in base else base
+                name = "简历 · " + direction
+                # 优先使用文件夹中已有的Word导出PDF（带人像排版）
+                pdf = None
+                for d in all_files:
+                    if d.lower().endswith(".pdf") and direction in d and "文雪" in d:
+                        pdf = copy_file(os.path.join(gdir, d))
                         break
-                general.append({"name": name, "desc": "通用底版 · 适配" + (base.split("-", 1)[1] if "-" in base else ""), "pdf": pdf, "doc": doc})
+                if pdf is None:
+                    pdf = gen_pdf_from_md(os.path.join(gdir, fn), name)
+                # 查找对应的docx文件
+                doc = None
+                for d in all_files:
+                    if d.lower().endswith(".docx") and direction in d and "文雪" in d:
+                        doc = copy_file(os.path.join(gdir, d))
+                        break
+                general.append({"name": name, "desc": "通用底版 · 适配" + direction, "pdf": pdf, "doc": doc})
     custom = []
     cdir = os.path.join(BASE, "02_定制简历库")
     if os.path.isdir(cdir):
@@ -437,15 +444,25 @@ def scan_resumes():
                 pp = os.path.join(cp, posdir)
                 if not os.path.isdir(pp):
                     continue
-                for fn in sorted(os.listdir(pp)):
+                pp_files = sorted(os.listdir(pp))
+                for fn in pp_files:
                     if fn.endswith(".md") and ("文雪" in fn or "简历" in fn):
-                        pdf = gen_pdf_from_md(os.path.join(pp, fn), os.path.splitext(fn)[0])
+                        base_name = os.path.splitext(fn)[0]
+                        # 优先使用同目录下已有的Word导出PDF（带人像排版）
+                        pdf = None
+                        for d in pp_files:
+                            if d.lower().endswith(".pdf") and base_name in d:
+                                pdf = copy_file(os.path.join(pp, d))
+                                break
+                        if pdf is None:
+                            pdf = gen_pdf_from_md(os.path.join(pp, fn), base_name)
+                        # 查找对应的docx文件
                         doc = None
-                        for d in sorted(os.listdir(pp)):
+                        for d in pp_files:
                             if d.lower().endswith((".docx", ".doc")) and ("文雪" in d or "简历" in d):
                                 doc = copy_file(os.path.join(pp, d))
                                 break
-                        items.append({"name": os.path.splitext(fn)[0], "desc": posdir, "pdf": pdf, "doc": doc})
+                        items.append({"name": base_name, "desc": posdir, "pdf": pdf, "doc": doc})
             if items:
                 custom.append({"company": company, "items": items})
     return {"general": general, "custom": custom}

@@ -1,6 +1,6 @@
-﻿# 文雪求职小窝 · 电脑自动同步脚本（优化版 v3）
-# 流程：并发保护 → 锁文件清理 → 网络预检查 → 【本地修改自动commit保护】→ git pull → build → commit → push → 状态记录
-# v3优化：本地修改不再stash，改为先自动commit保护，彻底杜绝回退/丢失
+﻿# 文雪求职小窝 · 电脑自动同步脚本（优化版 v4）
+# 流程：并发保护 → 锁文件清理 → 网络预检查 → 【本地修改自动commit】→ build → commit → push → 状态记录
+# v4优化：彻底去掉git pull，知识库（本地）是唯一源头，只从本地上传到远端，杜绝远端覆盖本地
 
 $ErrorActionPreference = "Continue"
 $vault  = "D:\Obsidian\SCM-Career"
@@ -84,22 +84,23 @@ try {
     exit 0
   }
 
-  # ========== 4. 本地修改保护 + git pull ==========
-  # v3关键优化：检测到用户未提交的修改时，先自动commit保护，再pull --rebase
-  # 彻底避免stash/pop过程中冲突或丢失，确保用户修改永远进入git历史
-  Log "拉取远端..."
+  # ========== 4. 本地修改自动commit（知识库为唯一源头，不从远端拉取） ==========
+  # v4关键优化：彻底去掉git pull，知识库（本地）是唯一源头，只从本地上传到远端
+  # 永远不会出现远端覆盖本地的情况，杜绝"回退"
+  Log "检查本地修改..."
   $localChanges = & $git status --porcelain
   if($localChanges){
-    Log "检测到本地未提交更改，先自动commit保护（防止回退/丢失）"
+    Log "检测到本地未提交更改，自动commit（知识库为唯一源头）"
     & $git add -A *>> $log
-    & $git commit -m "auto-commit: 保护用户本地修改（$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')）" *>> $log
+    & $git commit -m "auto-commit: 知识库本地修改（$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')）" *>> $log
     if($LASTEXITCODE -eq 0){
-      Log "✅ 用户本地修改已commit保护"
+      Log "✅ 本地修改已commit"
     } else {
-      Log "自动commit无实际变更（可能已被处理），继续pull"
+      Log "自动commit无实际变更，继续build"
     }
+  } else {
+    Log "无本地修改，继续build"
   }
-  & $git -c rebase.autoStash=true pull --rebase origin main *>> $log
 
   # ========== 5. 重新生成网站（build失败保护） ==========
   Log "生成网站..."

@@ -1,4 +1,10 @@
-# 文雪
+# -*- coding: utf-8 -*-
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
+
+base = r'D:\Obsidian\SCM-Career\02_定制简历库\通用简历'
+
+content3 = """# 文雪
 
 18658249341 ｜ 2631217547@qq.com ｜ 共青团员 ｜ 济南
 
@@ -70,3 +76,7 @@
 - **办公与数据分析**：Excel（透视表/VLOOKUP/函数/台账搭建）、Word、PPT
 - **数据分析**：Python、R、SPSS（数据清洗与统计分析）
 - **通用能力**：项目文档全生命周期管理、跨部门沟通进度同步、报批流程梳理与标准化、采购与库存单据处理
+"""
+with open(base + r'\简历-项目采购方向.md', 'w', encoding='utf-8') as f:
+    f.write(content3)
+print('项目采购方向 updated')

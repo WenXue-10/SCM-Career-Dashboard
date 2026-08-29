@@ -15,10 +15,10 @@ NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 
 
 def find_text(el):
-    return "".join(t.text or "" for t in el.findall(f".//{{{NS}}}t"))
+    return "".join(t.text or "" for t in el.findall(".//" + NS + "}t"))
 
 def clear_para(p):
-    for t in p.findall(f".//{{{NS}}}t"):
+    for t in p.findall(".//" + NS + "}t"):
         t.text = ""
 
 def add_run(par, text, bold=False, size=10.5):

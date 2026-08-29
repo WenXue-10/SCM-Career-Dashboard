@@ -15,32 +15,35 @@ NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 
 
 def find_text(el):
-    return "".join(t.text or "" for t in el.findall(".//" + NS + "}t"))
+    return el.text or ""
 
-def clear_para(p):
-    for t in p.findall(".//" + NS + "}t"):
-        t.text = ""
+def clear_para(para):
+    for run in para.runs:
+        run.text = ''
 
 def add_run(par, text, bold=False, size=10.5):
-    r = OxmlElement("w:r")
-    if bold:
-        rPr = OxmlElement("w:rPr")
-        rPr.append(OxmlElement("w:b"))
-        r.append(rPr)
-    t = OxmlElement("w:t")
-    t.text = text
-    t.set(qn("xml:space"), "preserve")
-    r.append(t)
-    par.append(r)
+    run = par.add_run(text)
+    run.bold = bold
+    run.font.size = Pt(size)
+    return run
 
 def set_cell(cell, text, bold=False, size=10.5):
-    paras = cell._element.findall(".//" + NS + "}p")
-    if not paras:
-        p = OxmlElement("w:p")
-        cell._element.append(p)
-        paras = [p]
-    clear_para(paras[0])
-    add_run(paras[0], text, bold=bold, size=size)
+    if cell.paragraphs:
+        clear_para(cell.paragraphs[0])
+        add_run(cell.paragraphs[0], text, bold=bold, size=size)
+    else:
+        cell.text = text
+def add_formatted_text(par, text, size=9.5):
+    """Write text with **bold** support. Parses **keyword**: rest into two runs."""
+    parts = re.split(r"(\*\*[^*]+\*\*)", text)
+    for part in parts:
+        if not part:
+            continue
+        if part.startswith("**") and part.endswith("**"):
+            bold_text = part[2:-2]
+            add_run(par, bold_text, bold=True, size=size)
+        else:
+            add_run(par, part, bold=False, size=size)
 
 
 def parse_md(path):
@@ -91,7 +94,7 @@ def parse_md(path):
                 d["honors"] = re.sub(r"^\*\*[^*]*\*\*[：:]\s*", "", s).strip()
         elif s.startswith("### "):
             if section in ("projects", "practices", "campus"):
-                item = dict(title=s[4:].strip(), role="", dates="", bullets=[])
+                item = dict(title=s[4:].strip().replace("**", ""), role="", dates="", bullets=[])
                 d[section].append(item)
         elif s.startswith("**") and ("｜" in s or "|" in s) and item is not None:
             parts = s.split("｜")
@@ -112,14 +115,20 @@ def update_header(doc, d):
     if d["intent"]:
         set_cell(tbl.rows[2].cells[0], "求职意向：" + d["intent"], size=10)
     if d["summary"]:
-        set_cell(tbl.rows[3].cells[0], "个人优势：" + d["summary"], size=9)
+        # "个人优势" 4字加粗，内容普通
+        paras = list(tbl.rows[3].cells[0].paragraphs)
+        if paras:
+            p = paras[0]
+            clear_para(p)
+            add_run(p, "个人优势：", bold=True, size=9)
+            add_run(p, d["summary"], bold=False, size=9)
 
 
 def update_edu(doc, d):
     tbl = doc.tables[1]
     for row in tbl.rows[1:]:
         for c in row.cells:
-            for p in c._element.findall(".//" + NS + "}p"):
+            for p in c.paragraphs:
                 clear_para(p)
     cells = tbl.rows[1].cells
     if len(cells) >= 1:
@@ -153,7 +162,7 @@ def update_section(doc, tidx, items, kwds):
         return
     for row in tbl.rows[hi + 1:]:
         for c in row.cells:
-            for p in c._element.findall(".//" + NS + "}p"):
+            for p in c.paragraphs:
                 clear_para(p)
     ri = hi + 1
     for it in items:
@@ -162,18 +171,27 @@ def update_section(doc, tidx, items, kwds):
         row = tbl.rows[ri]
         cells = row.cells
         if len(cells) > 0:
-            set_cell(cells[0], it["title"], bold=True, size=10.5)
+            paras = list(cells[0].paragraphs)
+            if paras:
+                clear_para(paras[0])
+                add_formatted_text(paras[0], it["title"], size=10.5)
         if len(cells) > 1 and it.get("role"):
-            set_cell(cells[1], it["role"], size=9.5)
+            paras = list(cells[1].paragraphs)
+            if paras:
+                clear_para(paras[0])
+                add_formatted_text(paras[0], it["role"], size=9.5)
         if len(cells) > 2 and it.get("dates"):
-            set_cell(cells[2], it["dates"], size=9.5)
+            paras = list(cells[2].paragraphs)
+            if paras:
+                clear_para(paras[0])
+                add_formatted_text(paras[0], it["dates"], size=9.5)
         for bi, b in enumerate(it.get("bullets", [])):
             ci = 3 + bi
             if ci < len(cells):
-                paras = cells[ci]._element.findall(".//" + NS + "}p")
+                paras = list(cells[ci].paragraphs)
                 if paras:
                     clear_para(paras[0])
-                    add_run(paras[0], "\u2022 " + b, size=9.5)
+                    add_formatted_text(paras[0], "\u2022 " + b, size=9.5)
         ri += 1
 
 
@@ -181,15 +199,15 @@ def update_skills(doc, d):
     tbl = doc.tables[-1]
     for row in tbl.rows:
         for c in row.cells:
-            for p in c._element.findall(".//" + NS + "}p"):
+            for p in c.paragraphs:
                 clear_para(p)
     cells = tbl.rows[0].cells
     for i, s in enumerate(d.get("skills", [])):
         if i < len(cells):
-            paras = cells[i]._element.findall(".//" + NS + "}p")
+            paras = list(cells[i].paragraphs)
             if paras:
                 clear_para(paras[0])
-                add_run(paras[0], "\u2022 " + s, size=9.5)
+                add_formatted_text(paras[0], "\u2022 " + s, size=9.5)
 
 
 def build(md_path, out_path, template=None):
@@ -239,3 +257,4 @@ if __name__ == "__main__":
     p.add_argument("--template", required=True, help="Template docx path")
     args = p.parse_args()
     build(args.md_path, args.out_path, template=args.template)
+

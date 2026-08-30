@@ -170,23 +170,24 @@ def update_section(doc, tidx, items, kwds):
             break
         row = tbl.rows[ri]
         cells = row.cells
-        if len(cells) > 0:
-            paras = list(cells[0].paragraphs)
-            if paras:
-                clear_para(paras[0])
-                add_formatted_text(paras[0], it["title"], size=10.5)
-        if len(cells) > 1 and it.get("role"):
+        # 修复列索引：模板结构是 cells[1]=标题, cells[2]=角色, cells[3]=日期, cells[4+]=bullet
+        if len(cells) > 1:
             paras = list(cells[1].paragraphs)
             if paras:
                 clear_para(paras[0])
-                add_formatted_text(paras[0], it["role"], size=9.5)
-        if len(cells) > 2 and it.get("dates"):
+                add_formatted_text(paras[0], it["title"], size=10.5)
+        if len(cells) > 2 and it.get("role"):
             paras = list(cells[2].paragraphs)
+            if paras:
+                clear_para(paras[0])
+                add_formatted_text(paras[0], it["role"], size=9.5)
+        if len(cells) > 3 and it.get("dates"):
+            paras = list(cells[3].paragraphs)
             if paras:
                 clear_para(paras[0])
                 add_formatted_text(paras[0], it["dates"], size=9.5)
         for bi, b in enumerate(it.get("bullets", [])):
-            ci = 3 + bi
+            ci = 4 + bi
             if ci < len(cells):
                 paras = list(cells[ci].paragraphs)
                 if paras:
@@ -233,9 +234,10 @@ def build(md_path, out_path, template=None):
     doc = Document(tmp_path)
     update_header(doc, d)
     update_edu(doc, d)
-    update_section(doc, 4, d["projects"], ["项目经历"])
-    update_section(doc, 5, d["practices"], ["实践经历"])
-    update_section(doc, 6, d["campus"], ["校园经历"])
+    # 修复表格索引：3=项目经历, 4=实践经历, 5=校园经历
+    update_section(doc, 3, d["projects"], ["项目经历"])
+    update_section(doc, 4, d["practices"], ["实践经历"])
+    update_section(doc, 5, d["campus"], ["校园经历"])
     update_skills(doc, d)
     doc.save(out_path)
     os.unlink(tmp_path)

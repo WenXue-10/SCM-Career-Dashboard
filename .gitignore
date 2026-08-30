@@ -8,3 +8,7 @@ __pycache__/
 # WorkBuddy 工作空间内部记忆（不入库）
 .workbuddy/
 !.tools/
+
+# Word 临时文件
+~$*
+

@@ -34,7 +34,6 @@ def set_cell(cell, text, bold=False, size=10.5):
     else:
         cell.text = text
 def add_formatted_text(par, text, size=9.5):
-    """Write text with **bold** support. Parses **keyword**: rest into two runs."""
     parts = re.split(r"(\*\*[^*]+\*\*)", text)
     for part in parts:
         if not part:
@@ -115,7 +114,6 @@ def update_header(doc, d):
     if d["intent"]:
         set_cell(tbl.rows[2].cells[0], "求职意向：" + d["intent"], size=10)
     if d["summary"]:
-        # "个人优势" 4字加粗，内容普通
         paras = list(tbl.rows[3].cells[0].paragraphs)
         if paras:
             p = paras[0]
@@ -233,28 +231,14 @@ def build(md_path, out_path, template=None):
     doc.save(out_path)
     os.unlink(tmp_path)
     print("  docx: " + os.path.basename(out_path))
-    try:
-        import win32com.client
-        pdf_path = os.path.splitext(out_path)[0] + ".pdf"
-        word = win32com.client.Dispatch("Word.Application")
-        word.Visible = False
-        word.DisplayAlerts = 0
-        doc_src = word.Documents.Open(os.path.abspath(out_path))
-        doc_src.SaveAs(os.path.abspath(pdf_path), FileFormat=17)
-        doc_src.Close(SaveChanges=False)
-        word.Quit()
-        print("  pdf: " + os.path.basename(pdf_path))
-    except Exception as e:
-        print("  pdf: skipped (" + str(e) + ")")
     return d
 
 
 if __name__ == "__main__":
     import argparse
-    p = argparse.ArgumentParser(description="Resume generator with PDF export")
+    p = argparse.ArgumentParser(description="Resume generator")
     p.add_argument("md_path", help="Path to resume markdown file")
     p.add_argument("out_path", help="Output docx path")
     p.add_argument("--template", required=True, help="Template docx path")
     args = p.parse_args()
     build(args.md_path, args.out_path, template=args.template)
-

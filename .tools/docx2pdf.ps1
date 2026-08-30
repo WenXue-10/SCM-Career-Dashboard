@@ -48,7 +48,50 @@ if ($files.Count -eq 0) {
     exit 1
 }
 
-Write-Host "找到 $($files.Count) 个 docx 文件，开始转换..." -ForegroundColor Green
+# ========== 增量转换筛选（仅全库模式，拖拽模式全部转换）==========
+$filesToConvert = @()
+$skippedCount = 0
+
+if ($args.Count -eq 0) {
+    # 全库模式：只转换有变更的文件
+    Write-Host "🔍 增量检查：找到 $($files.Count) 个 docx，筛选需要转换的..." -ForegroundColor Yellow
+    
+    foreach ($f in $files) {
+        $pdf = [System.IO.Path]::ChangeExtension($f, '.pdf')
+        
+        if (-not (Test-Path $pdf)) {
+            # PDF 不存在，是新文件，需要转换
+            $filesToConvert += $f
+        } else {
+            # PDF 存在，比较修改时间
+            $docxTime = (Get-Item $f).LastWriteTime
+            $pdfTime = (Get-Item $pdf).LastWriteTime
+            
+            if ($docxTime -gt $pdfTime) {
+                # docx 比 pdf 新，有更新，需要转换
+                $filesToConvert += $f
+            } else {
+                # 没有变更，跳过
+                $skippedCount++
+            }
+        }
+    }
+    
+    Write-Host "   需要转换：$($filesToConvert.Count) 个，跳过（无变更）：$skippedCount 个" -ForegroundColor Green
+    Write-Host ''
+} else {
+    # 拖拽模式：用户指定的文件全部转换
+    $filesToConvert = $files
+}
+
+if ($filesToConvert.Count -eq 0) {
+    Write-Host '✅ 没有需要转换的文件（所有 docx 都已有最新的 PDF）' -ForegroundColor Green
+    Write-Host ''
+    if ($isInteractive) { Read-Host '按回车键退出' }
+    exit 0
+}
+
+Write-Host "开始转换 $($filesToConvert.Count) 个文件..." -ForegroundColor Green
 Write-Host ''
 
 # 启动 Word
@@ -66,7 +109,7 @@ $success = 0
 $failed = 0
 $failedFiles = @()
 
-foreach ($f in $files) {
+foreach ($f in $filesToConvert) {
     $name = [System.IO.Path]::GetFileName($f)
     try {
         $pdf = [System.IO.Path]::ChangeExtension($f, '.pdf')

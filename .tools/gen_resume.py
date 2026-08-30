@@ -7,6 +7,8 @@ try:
     from docx.oxml.ns import qn
     from docx.oxml import OxmlElement
     from docx.shared import Pt
+    from docx.enum.table import WD_ALIGN_VERTICAL
+    from docx.enum.table import WD_ROW_HEIGHT_RULE
 except ImportError:
     print("ERROR: python-docx not installed", file=sys.stderr)
     sys.exit(1)
@@ -196,6 +198,10 @@ def update_section(doc, tidx, items, kwds):
 def update_skills(doc, d):
     tbl = doc.tables[-1]
     for row in tbl.rows:
+        row.height_rule = WD_ROW_HEIGHT_RULE.AT_LEAST
+        for cell in row.cells:
+            cell.vertical_alignment = WD_ALIGN_VERTICAL.TOP
+    for row in tbl.rows:
         for c in row.cells:
             for p in c.paragraphs:
                 clear_para(p)
@@ -204,8 +210,11 @@ def update_skills(doc, d):
         if i < len(cells):
             paras = list(cells[i].paragraphs)
             if paras:
-                clear_para(paras[0])
-                add_formatted_text(paras[0], "\u2022 " + s, size=9.5)
+                p = paras[0]
+                clear_para(p)
+                p.paragraph_format.space_before = Pt(0)
+                p.paragraph_format.space_after = Pt(0)
+                add_formatted_text(p, "\u2022 " + s, size=9.5)
 
 
 def build(md_path, out_path, template=None):

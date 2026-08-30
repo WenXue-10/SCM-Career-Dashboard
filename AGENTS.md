@@ -55,7 +55,7 @@ tags: [路由, Agent, 系统]
 ## 约束
 
 1. **git 提交**：每次操作完必须 `git add -A && git commit -m "说明" && git push origin main`，不要攒一堆修改最后一起提交
-2. **PDF 转换职责划分**：codex 只负责生成 `.docx`，**不要在 codex 里尝试 Word COM 转 PDF**（沙箱环境会失败）。PDF 由 Windows 定时任务 `SCM-Career-ResumePDFSync` 每5分钟自动转换；如需手动转换，用桌面 `简历转PDF.bat`
+2. **PDF 转换职责划分**：codex 只负责生成 `.docx`，**不要在 codex 里尝试 Word COM 转 PDF**（沙箱环境会失败）。PDF 由用户手动转换：双击桌面 `简历转PDF.bat` 全库增量转换（只转有变更的），或把 docx 拖拽到 bat 上单独转换。定时任务 `SCM-Career-ResumePDFSync` 已禁用，不再自动转换。
 3. **简历命名规范**：`文雪_山东大学_公司_岗位.docx`，不符合此规范的旧命名文件会被清理
 4. 禁止编造：无法确认标注'未收录/未披露'
 5. 届别核验：与用户2027届核对，上一届标⚠️

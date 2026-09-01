@@ -170,9 +170,9 @@ description: 当用户说“执行Skill 3”或要求针对目标岗位JD定制�
 只有用户回复“确认”或“可以”后，才执行写入操作。
 
 确认后写入：
-- 用 gen_resume.py 生成 Word：`python .workbuddy/gen_resume.py <修改后的md路径> <输出docx路径> --template <对应方向的通用简历docx路径>`
-  例：`python .workbuddy/gen_resume.py "02_定制简历库/通用简历/简历-供应链数据方向.md" "02_定制简历库/{公司}/{岗位（方向）}/文雪_山东大学_{公司}_{岗位}（{方向}）.docx" --template "02_定制简历库/通用简历/文雪_山东大学_供应链数据方向.docx"`
-- 同文件夹同步生成同名 .pdf（Word COM 导出）
+- 用 gen_resume.py 生成 Word：`python .tools/gen_resume.py <修改后的md路径> <输出docx路径> --template <对应方向的通用简历docx路径>`
+  例：`python .tools/gen_resume.py "02_定制简历库/通用简历/简历-供应链数据方向.md" "02_定制简历库/{公司}/{岗位（方向）}/文雪_山东大学_{公司}_{岗位}（{方向}）.docx" --template "02_定制简历库/通用简历/文雪_山东大学_供应链数据方向.docx"`
+- **PDF 由用户手动转换（不在 codex 内生成）**：codex 只产出 .docx；PDF 请双击桌面 `简历转PDF.bat` 全库增量转换，或拖拽 docx 到 bat 单独转换；**禁止在 codex 内用 Word COM 转 PDF**（沙箱环境会失败，见 AGENTS.md 约束第 2 条）
 - 写入 md：`02_定制简历库/{公司名}/{岗位名}（{方向}）/文雪_山东大学_{公司名}_{岗位名}（{方向}）.md`
 - 同步更新对应评分笔记 `01_岗位搜集与背调/公司调研/{公司名}/{岗位名}（{方向}）/评分-{公司名}-{岗位名}（{方向}）.md`：frontmatter「定制简历」字段与正文「## 定制简历」小节写入简历链接，frontmatter「当前状态」更新为 📮 待投递。
 

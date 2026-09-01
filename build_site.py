@@ -475,7 +475,7 @@ _KB_META = [
     ("01_岗位搜集与背调", "🐾", "岗位汇总（自动表格）、公司池、日报、公司调研", "c2", "kb01"),
     ("02_定制简历库", "🧾", "通用底版 + 各企业定制（仅文件）", "c3", "kb02"),
     ("03_笔面试题库", "✍️", "技术题、行为题、错题本", "c4", "kb03"),
-    ("04_实战复盘", "🪞", "面试复盘与原始记录", "c5", "gen"),
+    ("04_实战复盘", "🪞", "面试复盘与原始记录（按企业/岗位分组）", "c5", "kb04"),
     ("05_供应链知识库", "📖", "专业知识卡片、英语术语卡", "c1", "gen"),
     ("06_证书与附件", "🎓", "成绩单、获奖证书等文件", "c2", "gen"),
     ("07_原始材料库", "🗃️", "JD 原文与登记索引", "c3", "kb07"),
@@ -673,6 +673,51 @@ def _kb_08():
                 groups.append({"title": "📂 " + sub, "notes": leafs})
     return groups
 
+def _kb_04():
+    """04_实战复盘：根目录文件（错题本等）+ 按企业/岗位分组的面试复盘"""
+    root = os.path.join(BASE, "04_实战复盘")
+    groups = []
+    # 根目录下的文件（如错题本.md）
+    root_files = []
+    if os.path.isdir(root):
+        for fn in sorted(os.listdir(root)):
+            p = os.path.join(root, fn)
+            if os.path.isfile(p):
+                if fn.endswith(".md"):
+                    root_files.append(_md_note(p))
+                elif fn.lower().endswith((".pdf", ".doc", ".docx", ".m4a", ".mp3", ".wav")):
+                    root_files.append(_file_note(p))
+    if root_files:
+        groups.append({"title": "📚 通用资料", "notes": root_files})
+    # 按企业/岗位分组
+    companies = []
+    if os.path.isdir(root):
+        for company in sorted(os.listdir(root)):
+            cp = os.path.join(root, company)
+            if not os.path.isdir(cp):
+                continue
+            pos_groups = []
+            for posdir in sorted(os.listdir(cp)):
+                pp = os.path.join(cp, posdir)
+                if not os.path.isdir(pp):
+                    continue
+                leafs = []
+                # 递归扫描岗位目录下的所有文件
+                for r, dirs, files in os.walk(pp):
+                    for fn in sorted(files):
+                        p = os.path.join(r, fn)
+                        if fn.endswith(".md"):
+                            leafs.append(_md_note(p))
+                        elif fn.lower().endswith((".pdf", ".doc", ".docx", ".m4a", ".mp3", ".wav", ".png", ".jpg", ".jpeg")):
+                            leafs.append(_file_note(p))
+                if leafs:
+                    pos_groups.append({"title": posdir, "icon": "📂", "children": leafs})
+            if pos_groups:
+                companies.append({"title": company, "icon": "🏢", "children": pos_groups})
+    if companies:
+        groups.append({"title": "🎯 企业岗位复盘", "notes": companies})
+    return groups
+
 def scan_kb(jobs, resumes):
     kb = []
     for folder, icon, desc, cls, handler in _KB_META:
@@ -682,6 +727,8 @@ def scan_kb(jobs, resumes):
             groups = _kb_02(resumes)
         elif handler == "kb03":
             groups = _kb_03()
+        elif handler == "kb04":
+            groups = _kb_04()
         elif handler == "kb07":
             groups = _kb_07()
         elif handler == "kb08":
